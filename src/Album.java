@@ -1,0 +1,104 @@
+import java.util.LinkedList;
+
+public class Album {
+    public enum TypeOfMedia {VINYL, CD, CASSETTE}
+
+    private LinkedList<Track> trackList;
+    private String albumName;
+    private String albumArtist;
+    private int releaseYear;
+    private String albumCoverPath;
+    private String whereBought;
+
+    public Album() {
+        // Empty constructor
+    }
+
+    public Album(LinkedList<Track> pTrackList, String pAlbumName, String pAlbumArtist, int pReleaseYear, String pWhereBought) {
+        trackList = pTrackList;
+        albumName = pAlbumName;
+        albumArtist = pAlbumArtist;
+        releaseYear = pReleaseYear;
+        whereBought = pWhereBought;
+    }
+
+    /**
+     * Sets/Overrides the track list
+     * @param pTrackList New track list
+     */
+    public void setTrackList(LinkedList<Track> pTrackList) {
+        trackList = pTrackList;
+    }
+
+    /**
+     * Gets the track list
+     * @return Album's track list
+     */
+    public LinkedList<Track> getTrackList() {
+        return trackList;
+    }
+
+    /**
+     * Sets/Overrides the album name
+     * @param pTrackList New album name
+     */
+    public void setAlbumName(String pAlbumName) {
+        albumName = pAlbumName;
+    }
+
+    /**
+     * Gets the album's name
+     * @return Album's name
+     */
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    /**
+     * Sets/Overrides the album's artist
+     * @param pTrackList New artist of the album
+     */
+    public void setAlbumArtist(String pAlbumArtist) {
+        albumArtist = pAlbumArtist;
+    }
+
+    /**
+     * Gets the album's artist
+     * @return Album's artist
+     */
+    public String getAlbumArtist() {
+        return albumArtist;
+    }
+
+    /**
+     * Sets/Overrides the album's release year
+     * @param pTrackList New release year
+     */
+    public void setReleaseYear(int pReleaseYear) {
+        releaseYear = pReleaseYear;
+    }
+
+    /**
+     * Gets the album's release year
+     * @return Album's release year
+     */
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    /**
+     * Sets/Overrides where the physical medium was bought
+     * @param pTrackList New place where the album was bought
+     */
+    public void setWhereBought(String pWhereBought) {
+        whereBought = pWhereBought;
+    }
+
+    /**
+     * Gets where the album was bought
+     * @return Place where the album was bought
+     */
+    public String getWhereBought() {
+        return whereBought;
+    }
+}
