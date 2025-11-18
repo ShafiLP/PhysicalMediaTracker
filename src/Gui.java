@@ -3,6 +3,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,14 +13,15 @@ import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +41,7 @@ public class Gui extends JFrame {
         com.formdev.flatlaf.FlatLightLaf.updateUI();
 
         this.setTitle("Physical Media Tracker");
-        this.setSize(500, 800);
+        this.setSize(510, 800);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
@@ -51,27 +53,66 @@ public class Gui extends JFrame {
         });
         this.add(bAddAlbum, BorderLayout.SOUTH);
 
-        // JScrollPane for scrollable album display
-        JScrollPane scrollPane = new JScrollPane();
+        // JPanel with search bar and sorter
+        JPanel panSearchSort = new JPanel(new GridBagLayout());
 
+        PlaceholderTextField tfSearchBar = new PlaceholderTextField("Suchen");
+        panSearchSort.add(tfSearchBar, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 0;
+            weightx = 0.8;
+            weighty = 1.0;
+            insets = new Insets(5, 5, 5, 5);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        JComboBox<String> cbSortBy = new JComboBox<>();
+        cbSortBy.addItem("Kürzlich hinzugefügt");
+        cbSortBy.addItem("Alphabetisch");
+        cbSortBy.addItem("Künstler");
+        panSearchSort.add(cbSortBy, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 0;
+            weightx = 0.2;
+            weighty = 1.0;
+            insets = new Insets(5, 0, 5, 5);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        this.add(panSearchSort, BorderLayout.NORTH);
+       
         // JPanel with albums
-        JPanel panAlbums = new JPanel(new GridLayout(3, 5));
+        JPanel panAlbums = new JPanel(new WrapLayout(FlowLayout.LEFT, 10, 10)) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                d.width = getParent() != null ? getParent().getWidth() : d.width;
+                return d;
+            }
+        };
 
-        // DEBUG
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test1.jpg", "DUNKEL", "Die Ärzte"));
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test2.jpg", "Three Cheers for Sweet Revenge", "My Chemical Romance"));
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test3.jpg", "Does This Look Infected?", "Sum 41"));
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test4.jpg", "Appeal To Reason", "Rise Against"));
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test5.jpg", "TEKKNO", "Electric Callboy"));
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test6.jpg", "Angelika Express", "Angelika Express"));
-        panAlbums.add(new AlbumComponent("media\\albumCovers\\test7.jpg", "Phoenix", "zebrahead"));
-
-        for(Component c : panAlbums.getComponents()) {
-            c.setPreferredSize(new Dimension(150, 160));
+        // Add albums from JSON save file
+        LinkedList<Album> llAlbums = PMT.getAlbumList();
+        for (int i = llAlbums.size() - 1; i >= 0; i--) {
+            Album idxAlbum = llAlbums.get(i);
+            LinkedList<String> llMedia = new LinkedList<>();
+            if (idxAlbum.isOnVinyl()) llMedia.add("Vinyl");
+            if (idxAlbum.isOnCd()) llMedia.add("CD");
+            if (idxAlbum.isOnCassette()) llMedia.add("Kassette");
+            panAlbums.add(new AlbumComponent(idxAlbum.getCoverPath(), idxAlbum.getAlbumName(), idxAlbum.getAlbumArtist(), idxAlbum.getReleaseYear(), llMedia));
         }
 
-        scrollPane.setViewportView(panAlbums);
-        this.add(scrollPane, BorderLayout.CENTER);
+        // JScrollPane for scrollable album display
+        JScrollPane scrollPane = new JScrollPane(panAlbums);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getViewport().addChangeListener(_ -> {
+            panAlbums.revalidate();
+        });
+        
+        this.add(scrollPane);
 
         this.setVisible(true);
     }
@@ -105,7 +146,7 @@ public class Gui extends JFrame {
         bCover.setBackground(new Color(200, 200, 200));
         bCover.setForeground(new Color(150, 150, 150));
         bCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        bCover.setPreferredSize(new Dimension(220, 200));
+        bCover.setPreferredSize(new Dimension(200, 200));
         bCover.setMinimumSize(new Dimension(200, 200));
         bCover.setMaximumSize(new Dimension(200, 200));
         bCover.addActionListener(_ -> {
@@ -254,10 +295,18 @@ public class Gui extends JFrame {
         GridBagConstraints gbcTextField = new GridBagConstraints();
         gbcTextField.gridx = 1;
         gbcTextField.gridy = 1;
-        gbcTextField.weightx = 0.9;
-        gbcTextField.insets = new Insets(0, 0, 5, 5);
+        gbcTextField.weightx = 0.8;
+        gbcTextField.insets = new Insets(0, 0, 5, 0);
         gbcTextField.anchor = GridBagConstraints.CENTER;
         gbcTextField.fill = GridBagConstraints.HORIZONTAL;
+
+        GridBagConstraints gbcDelete = new GridBagConstraints();
+        gbcDelete.gridx = 2;
+        gbcDelete.gridy = 1;
+        gbcDelete.weightx = 0.1;
+        gbcDelete.insets = new Insets(0, 0, 5, 5);
+        gbcDelete.anchor = GridBagConstraints.CENTER;
+        gbcDelete.fill = GridBagConstraints.NONE;
 
         // Add three blank entries as placeholder
         for(int i = 0; i < 5; i++) {
@@ -268,6 +317,30 @@ public class Gui extends JFrame {
 
             panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
             gbcTextField.gridy++;
+
+            panTracks.add(llTrackEntries.getLast().getDeleteButton(), gbcDelete);
+            gbcDelete.gridy++;
+
+            final NewTrackEntry DELETE = llTrackEntries.getLast();
+
+            // Add action listener to delete button
+            llTrackEntries.getLast().getDeleteButton().addActionListener(_ -> {
+                final int DELETEIDX = DELETE.getIndex() - 1;
+
+                // Change name of tracks to the one that are next and remove last track 
+                for (int j = DELETEIDX; j < llTrackEntries.size() - 1; j++) {
+                    llTrackEntries.get(j).getTextField().setText(llTrackEntries.get(j + 1).getTextField().getText());
+                    llTrackEntries.get(j).setIndex(j + 1);
+                }
+                llTrackEntries.getLast().getIndexLabel().setVisible(false);
+                llTrackEntries.getLast().getTextField().setVisible(false);
+                llTrackEntries.getLast().getDeleteButton().setVisible(false);
+                llTrackEntries.removeLast();
+                gbcIndex.gridy--;
+                gbcTextField.gridy--;
+                gbcDelete.gridy--;
+                latestIndex[0]--;
+            });
 
             latestIndex[0]++;
         }
@@ -303,6 +376,30 @@ public class Gui extends JFrame {
 
             panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
             gbcTextField.gridy++;
+
+            panTracks.add(llTrackEntries.getLast().getDeleteButton(), gbcDelete);
+            gbcDelete.gridy++;
+
+            final NewTrackEntry DELETE = llTrackEntries.getLast();
+
+            // Add action listener to delete button
+            llTrackEntries.getLast().getDeleteButton().addActionListener(_ -> {
+                final int DELETEIDX = DELETE.getIndex() - 1;
+
+                // Change name of tracks to the one that are next and remove last track 
+                for (int i = DELETEIDX; i < llTrackEntries.size() - 1; i++) {
+                    llTrackEntries.get(i).getTextField().setText(llTrackEntries.get(i + 1).getTextField().getText());
+                    llTrackEntries.get(i).setIndex(i + 1);
+                }
+                llTrackEntries.getLast().getIndexLabel().setVisible(false);
+                llTrackEntries.getLast().getTextField().setVisible(false);
+                llTrackEntries.getLast().getDeleteButton().setVisible(false);
+                llTrackEntries.removeLast();
+                gbcIndex.gridy--;
+                gbcTextField.gridy--;
+                gbcDelete.gridy--;
+                latestIndex[0]--;
+            });
 
             fNewAlbum.revalidate();
             latestIndex[0]++;
@@ -422,18 +519,36 @@ class AlbumComponent extends JPanel {
     private String imgPath;
     private String name;
     private String artist;
+    private int releaseYear;
+    private String typeOfMedia;
 
     public AlbumComponent() {
         // Empty constructor
     }
 
-    public AlbumComponent(String pImgPath, String pName, String pArtist) {
+    public AlbumComponent(String pImgPath, String pName, String pArtist, int pReleaseYear, LinkedList<String> pMedia) {
         imgPath = pImgPath;
         name = pName;
         artist = pArtist;
+        releaseYear = pReleaseYear;
 
+        for(int i = 0; i < pMedia.size(); i++) {
+            if (typeOfMedia == null) {
+                typeOfMedia = pMedia.get(i);
+            } else {
+                typeOfMedia += ", " + pMedia.get(i);
+            }
+        }
+        
         this.setLayout(new GridBagLayout());
         this.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // TODO open edit menu
+            }
+        });
 
         // Cover
         ImageIcon icon = new ImageIcon(imgPath);
@@ -442,9 +557,10 @@ class AlbumComponent extends JPanel {
         this.add(lImg, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
-            weightx = 1;
-            anchor = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.VERTICAL;
+            weightx = 1.0;
+            weighty = 1.0;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
         }});
 
         // Name
@@ -455,8 +571,9 @@ class AlbumComponent extends JPanel {
         this.add(lName, new GridBagConstraints() {{
             gridx = 0;
             gridy = 1;
-            weightx = 1;
-            anchor = GridBagConstraints.CENTER;
+            weightx = 1.0;
+            weighty = 1.0;
+            anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
@@ -467,9 +584,37 @@ class AlbumComponent extends JPanel {
             gridx = 0;
             gridy = 2;
             weightx = 1;
-            anchor = GridBagConstraints.CENTER;
+            anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
+
+        // Release Year
+        JLabel lRelease = new JLabel(releaseYear + "");
+        lRelease.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        lRelease.setBackground(new Color(200, 200, 200));
+        lRelease.setOpaque(true);
+        this.add(lRelease, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 3;
+            weightx = 1;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Type of media
+        JLabel lMedia = new JLabel(typeOfMedia);
+        lMedia.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        this.add(lMedia, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 4;
+            weightx = 1;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        this.setMaximumSize(new Dimension(150, getPreferredSize().height));
+        this.setMinimumSize(new Dimension(150, getPreferredSize().height));
+        this.setPreferredSize(new Dimension(150, getMaximumSize().height));
     }
 }
 
@@ -477,6 +622,7 @@ class NewTrackEntry {
     private int index;
     private JLabel lIndex;
     private JTextField tfName;
+    private JButton bDelete;
 
     NewTrackEntry() {
         // Empty constructor
@@ -486,6 +632,12 @@ class NewTrackEntry {
         this.index = index;
         this.tfName = tfName;
         lIndex = new JLabel(index + "");
+
+        // Delete button
+        ImageIcon icon = new ImageIcon("media\\icons\\delete.png");
+        Image img = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+        bDelete = new JButton(new ImageIcon(img));
+        bDelete.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
     }
 
     public void setIndex(int index) {
@@ -507,6 +659,10 @@ class NewTrackEntry {
 
     public JLabel getIndexLabel() {
         return lIndex;
+    }
+
+    public JButton getDeleteButton() {
+        return bDelete;
     }
 
 }
