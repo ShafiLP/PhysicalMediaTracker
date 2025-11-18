@@ -1,25 +1,31 @@
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
 
 public class Gui extends JFrame {
@@ -74,9 +80,13 @@ public class Gui extends JFrame {
      * Opens the frame where the user can add a new album to the list
      */
     private void openAddAlbumFrame() {
+        // Local objects
+        LinkedList<NewTrackEntry> llTrackEntries = new LinkedList<>();
+        Image[] albumCover = {null}; // Array so local object can be accessed in action listener
+
         JFrame fNewAlbum = new JFrame();
         fNewAlbum.setTitle("Neues Album");
-        fNewAlbum.setSize(500, 500);
+        fNewAlbum.setSize(500, 480);
         fNewAlbum.setLocationRelativeTo(null);
         fNewAlbum.setLayout(new BorderLayout());
 
@@ -89,19 +99,28 @@ public class Gui extends JFrame {
         JPanel panUpper = new JPanel();
         panUpper.setLayout(new GridBagLayout());
 
-        // JLabel where cover can be uploaded
-        JLabel lCover = new JLabel("Cover hinzufügen", SwingConstants.CENTER);
-        lCover.setOpaque(true);
-        lCover.setBackground(new Color(200, 200, 200));
-        lCover.setForeground(new Color(150, 150, 150));
-        lCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        // TODO: Add MouseListener
-        panUpper.add(lCover, new GridBagConstraints() {{
+        // JButton where cover can be uploaded
+        JButton bCover = new JButton("Cover hinzufügen");
+        bCover.setOpaque(true);
+        bCover.setBackground(new Color(200, 200, 200));
+        bCover.setForeground(new Color(150, 150, 150));
+        bCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        bCover.setPreferredSize(new Dimension(220, 200));
+        bCover.setMinimumSize(new Dimension(200, 200));
+        bCover.setMaximumSize(new Dimension(200, 200));
+        bCover.addActionListener(_ -> {
+            albumCover[0] = iconFromUpload(bCover.getWidth(), bCover.getHeight());
+            if(albumCover[0] != null) {
+                bCover.setIcon(new ImageIcon(albumCover[0]));
+                bCover.setText("");
+            }
+        });
+        panUpper.add(bCover, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
-            weightx = 0.3;
-            weighty = 1;
-            gridheight = 3;
+            weightx = 0;
+            weighty = 0;
+            gridheight = 8;
             anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.BOTH;
         }});
@@ -134,6 +153,59 @@ public class Gui extends JFrame {
             gridx = 1;
             gridy = 2;
             weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Type of media
+        JLabel lTypeOfMedia = new JLabel("Tonträger:");
+        JCheckBox cbVinyl = new JCheckBox("Vinyl");
+        JCheckBox cbCd = new JCheckBox("CD");
+        JCheckBox cbCassette = new JCheckBox("Kassette");
+
+        panUpper.add(lTypeOfMedia, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 3;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        panUpper.add(cbVinyl, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 4;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        panUpper.add(cbCd, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 5;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        panUpper.add(cbCassette, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 6;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Where bought?
+        PlaceholderTextField tfWhereBought = new PlaceholderTextField("Woher?");
+        panUpper.add(tfWhereBought, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 7;
+            weightx = 0.7;
             insets = new Insets(0, 5, 0, 0);
             anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
@@ -148,21 +220,28 @@ public class Gui extends JFrame {
         panTracks.setLayout(new GridBagLayout());
         int[] latestIndex = {1}; // Must be array to be changable in ActionListener class
 
+        // CheckBox for Nulltracks
         JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack"); // If checked, index will start at 0
         cbNulltrack.addActionListener(_ -> {
-            // TODO
+            if(cbNulltrack.isSelected()) {
+                for(int i = 0; i < llTrackEntries.size(); i++) {
+                    llTrackEntries.get(i).setIndex(llTrackEntries.get(i).getIndex() - 1);
+                }
+            } else {
+                for(int i = 0; i < llTrackEntries.size(); i++) {
+                    llTrackEntries.get(i).setIndex(llTrackEntries.get(i).getIndex() + 1);
+                }
+            }
         });
-        panLower.add(cbNulltrack, new GridBagConstraints() {{
+        panTracks.add(cbNulltrack, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
             gridwidth = 2;
-            weightx = 1;
-            anchor = GridBagConstraints.WEST;
+            weightx = 1.0;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
-
-        LinkedList<Track> llTracks = new LinkedList<>();
-        llTracks.add(new Track("", null, 1));
 
         GridBagConstraints gbcIndex = new GridBagConstraints();
         gbcIndex.gridx = 0;
@@ -180,19 +259,30 @@ public class Gui extends JFrame {
         gbcTextField.anchor = GridBagConstraints.CENTER;
         gbcTextField.fill = GridBagConstraints.HORIZONTAL;
 
-        panTracks.add(new JLabel(llTracks.get(latestIndex[0]-1).getTrackNumber() + ""), gbcIndex);
-        gbcIndex.gridy++;
+        // Add three blank entries as placeholder
+        for(int i = 0; i < 5; i++) {
+            llTrackEntries.addLast(new NewTrackEntry(latestIndex[0], new JTextField())); // Add new entry to LinkedList so index and JTextField can easily be accessed
 
-        panTracks.add(new JTextField(), gbcTextField);
-        gbcTextField.gridy++;
+            panTracks.add(llTrackEntries.getLast().getIndexLabel(), gbcIndex);
+            gbcIndex.gridy++;
 
-        // Add track panel to JScrollPane
-        JScrollPane spTracks = new JScrollPane(panTracks);
+            panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
+            gbcTextField.gridy++;
+
+            latestIndex[0]++;
+        }
+
+        // Wrap panTracks so its content stays top-aligned inside the scroll pane
+        JPanel panTracksWrapper = new JPanel(new BorderLayout());
+        panTracksWrapper.add(panTracks, BorderLayout.NORTH);
+
+        // Add track panel to JScrollPane (use wrapper as viewport)
+        JScrollPane spTracks = new JScrollPane(panTracksWrapper);
 
         // Add JScrollPane to main pane
         panLower.add(spTracks, new GridBagConstraints() {{
             gridx = 0;
-            gridy = 3;
+            gridy = 1;
             gridwidth = 2;
             gridheight = 3;
             weightx = 1.0;
@@ -203,25 +293,27 @@ public class Gui extends JFrame {
         }});
 
         // Button to add tracks at the bottom of main panel
-        JButton bAddTrack = new JButton("Track hinzufügen");
+        JButton bAddTrack = new JButton("+");
+        bAddTrack.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bAddTrack.addActionListener(_ -> {
-            latestIndex[0]++;
+            llTrackEntries.addLast(new NewTrackEntry(latestIndex[0], new JTextField()));
 
-            panTracks.add(new JLabel(latestIndex[0] + ""), gbcIndex);
+            panTracks.add(llTrackEntries.getLast().getIndexLabel(), gbcIndex);
             gbcIndex.gridy++;
 
-            panTracks.add(new JTextField(), gbcTextField);
+            panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
             gbcTextField.gridy++;
 
             fNewAlbum.revalidate();
+            latestIndex[0]++;
         });
         panLower.add(bAddTrack, new GridBagConstraints() {{
             gridx = 0;
-            gridy = 6;
+            gridy = 4;
             gridwidth = 2;
             weightx = 1;
             insets = new Insets(5, 0, 5, 0);
-            anchor = GridBagConstraints.CENTER;
+            anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.NONE;
         }});
 
@@ -230,17 +322,16 @@ public class Gui extends JFrame {
             gridx = 0;
             gridy = 0;
             weightx = 1.0;
-            weighty = 0.4;
-            anchor = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.BOTH;
+            weighty = 0;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
         }});
         panMain.add(panLower, new GridBagConstraints() {{
             gridx = 0;
             gridy = 1;
             weightx = 1.0;
-            weighty = 0.6;
-            gridheight = 2;
-            anchor = GridBagConstraints.CENTER;
+            weighty = 1.0;
+            anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.BOTH;
         }});
 
@@ -251,7 +342,8 @@ public class Gui extends JFrame {
         JPanel panButtons = new JPanel();
         panButtons.setLayout(new GridBagLayout());
 
-        JButton bReturn = new JButton("Abbrechen");
+        JButton bReturn = new JButton("X");
+        bReturn.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bReturn.addActionListener(_ -> {
             fNewAlbum.dispose();
         });
@@ -259,18 +351,45 @@ public class Gui extends JFrame {
             gridy = 0;
             gridx = 0;
             weightx = 0.1;
+            insets = new Insets(0, 0, 5, 5);
             anchor = GridBagConstraints.EAST;
             fill = GridBagConstraints.NONE;
         }});
 
-        JButton bConfirm = new JButton("Bestätigen");
+        JButton bConfirm = new JButton("✓");
+        bConfirm.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bConfirm.addActionListener(_ -> {
-            // TODO
+            // Add new album to control class
+            LinkedList<Track> llNewTracks = new LinkedList<>(); // Read tracks
+            for(int i = 0; i < llTrackEntries.size(); i++) {
+                llNewTracks.addLast(new Track(llTrackEntries.get(i).getTextField().getText(), llTrackEntries.get(i).getIndex()));
+            }
+            try {
+                // Save album cover as image
+                BufferedImage bImage = new BufferedImage(albumCover[0].getWidth(null), albumCover[0].getHeight(null), BufferedImage.TYPE_INT_ARGB); // Als PNG
+                Graphics2D g2d = bImage.createGraphics();
+                g2d.drawImage(albumCover[0], 0, 0, null);
+                g2d.dispose();
+                String path = "media\\albumCovers\\" + tfArtist.getText().toLowerCase().replace(" ", "") + "_" + tfName.getText().toLowerCase().replace(" ", "") + ".png";
+                File outputFile = new File(path);
+                ImageIO.write(bImage, "png", outputFile);
+
+                // Save album in control class
+                Album newAlbum = new Album(llNewTracks, tfName.getText(), tfArtist.getText(), Integer.parseInt(tfRelease.getText()), path,
+                tfWhereBought.getText(), cbNulltrack.isSelected(), cbVinyl.isSelected(), cbCd.isSelected(), cbCassette.isSelected());
+                PMT.addAlbum(newAlbum);
+                fNewAlbum.dispose();
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         panButtons.add(bConfirm, new GridBagConstraints() {{
             gridy = 0;
             gridx = 1;
             weightx = 0.1;
+            insets = new Insets(0, 5, 5, 0);
             anchor = GridBagConstraints.WEST;
             fill = GridBagConstraints.NONE;
         }});
@@ -278,6 +397,24 @@ public class Gui extends JFrame {
         fNewAlbum.add(panButtons, BorderLayout.SOUTH);
 
         fNewAlbum.setVisible(true);
+    }
+
+    private Image iconFromUpload(int pWidth, int pHeight) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+        int result = chooser.showOpenDialog(this);
+
+        if(result == JFileChooser.APPROVE_OPTION) {
+            File chosenFile = chooser.getSelectedFile();
+
+            ImageIcon icon = new ImageIcon(chosenFile.getAbsolutePath());
+
+            Image scaledImage = icon.getImage().getScaledInstance(pWidth, pHeight, Image.SCALE_SMOOTH);
+            return scaledImage;
+        } else {
+            return null;
+        }
     }
 }
 
@@ -336,3 +473,40 @@ class AlbumComponent extends JPanel {
     }
 }
 
+class NewTrackEntry {
+    private int index;
+    private JLabel lIndex;
+    private JTextField tfName;
+
+    NewTrackEntry() {
+        // Empty constructor
+    }
+
+    NewTrackEntry(int index, JTextField tfName) {
+        this.index = index;
+        this.tfName = tfName;
+        lIndex = new JLabel(index + "");
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+        lIndex.setText(index + "");
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setTextField(JTextField tfName) {
+        this.tfName = tfName;
+    }
+
+    public JTextField getTextField() {
+        return tfName;
+    }
+
+    public JLabel getIndexLabel() {
+        return lIndex;
+    }
+
+}

@@ -1,25 +1,34 @@
 import java.util.LinkedList;
 
 public class Album {
-    public enum TypeOfMedia {VINYL, CD, CASSETTE}
-
     private LinkedList<Track> trackList;
     private String albumName;
     private String albumArtist;
     private int releaseYear;
     private String albumCoverPath;
     private String whereBought;
+    private boolean containsNulltrack;
+
+    private boolean onVinyl;
+    private boolean onCd;
+    private boolean onCassette;
 
     public Album() {
         // Empty constructor
     }
 
-    public Album(LinkedList<Track> pTrackList, String pAlbumName, String pAlbumArtist, int pReleaseYear, String pWhereBought) {
+    public Album(LinkedList<Track> pTrackList, String pAlbumName, String pAlbumArtist, int pReleaseYear, String pCoverPath,
+    String pWhereBought, boolean pContainsNulltrack, boolean pOnVinyl, boolean pOnCd, boolean pOnCassette) {
         trackList = pTrackList;
         albumName = pAlbumName;
         albumArtist = pAlbumArtist;
         releaseYear = pReleaseYear;
+        albumCoverPath = pCoverPath;
         whereBought = pWhereBought;
+        containsNulltrack = pContainsNulltrack;
+        onVinyl = pOnVinyl;
+        onCd = pOnCd;
+        onCassette = pOnCassette;
     }
 
     /**
@@ -100,5 +109,61 @@ public class Album {
      */
     public String getWhereBought() {
         return whereBought;
+    }
+
+    /**
+     * Sets/Overrides if album contains a nulltrack
+     * @param pTrackList New boolean if album contains a nulltrack
+     */
+    public void setContainsNulltrack(boolean pNulltrack) {
+        containsNulltrack = pNulltrack;
+    }
+
+    /**
+     * Gets if album contains a nulltrack
+     * @return boolean if album contains a nulltrack
+     */
+    public boolean containsNulltrack() {
+        return containsNulltrack;
+    }
+
+    /**
+     * Sets/Overrides path to the album's cover
+     * @param pTrackList New path to album's cover
+     */
+    public void setCoverPath(String pPath) {
+        albumCoverPath = pPath;
+    }
+
+    /**
+     * Gets path to album's cover
+     * @return Path to album's cover
+     */
+    public String getCoverPath() {
+        return albumCoverPath;
+    }
+
+    public void setOnVinyl(boolean onVinyl) {
+        this.onVinyl = onVinyl;
+    }
+
+    public boolean isOnVinyl() {
+        return onVinyl;
+    }
+
+    public void setOnCd(boolean onCd) {
+        this.onCd = onCd;
+    }
+
+    public boolean isOnCd() {
+        return onCd;
+    }
+
+    public void setOnCassette(boolean onCassette) {
+        this.onCassette = onCassette;
+    }
+
+    public boolean isOnCassette() {
+        return onCassette;
     }
 }

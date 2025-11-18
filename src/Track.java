@@ -1,17 +1,13 @@
-import java.util.LinkedList;
-
 public class Track {
     private String trackName;
-    private LinkedList<String> trackFeatures;
     private int trackNumber;
 
     public Track() {
         // Empty constructor
     }
 
-    public Track(String pName, LinkedList<String> pFeatures, int pTrackNumb) {
+    public Track(String pName, int pTrackNumb) {
         trackName = pName;
-        trackFeatures = pFeatures;
         trackNumber = pTrackNumb;
     }
 
@@ -29,22 +25,6 @@ public class Track {
      */
     public String getTrackName() {
         return trackName;
-    }
-
-    /**
-     * Sets/Overrides the track's features
-     * @param pTrackList New track's features
-     */
-    public void setTrackFeatures(LinkedList<String> pFeatures) {
-        trackFeatures = pFeatures;
-    }
-
-    /**
-     * Gets the track's features
-     * @return Track's features
-     */
-    public LinkedList<String> getTrackFeatures() {
-        return trackFeatures;
     }
 
     /**
