@@ -3,16 +3,16 @@ import java.util.LinkedList;
 public class Track {
     private String trackName;
     private LinkedList<String> trackFeatures;
-    private boolean containsNullTrack;
+    private int trackNumber;
 
     public Track() {
         // Empty constructor
     }
 
-    public Track(String pName, LinkedList<String> pFeatures, boolean pNulltrack) {
+    public Track(String pName, LinkedList<String> pFeatures, int pTrackNumb) {
         trackName = pName;
         trackFeatures = pFeatures;
-        containsNullTrack = pNulltrack;
+        trackNumber = pTrackNumb;
     }
 
     /**
@@ -48,18 +48,18 @@ public class Track {
     }
 
     /**
-     * Sets/Overrides the track's features
-     * @param pTrackList New track's features
+     * Sets/Overrides the track's number (index)
+     * @param pTrackList New track's number (index)
      */
-    public void setContainsNulltrack(boolean pNulltrack) {
-        containsNullTrack = pNulltrack;
+    public void setTrackNumber(int pNumb) {
+        trackNumber = pNumb;
     }
 
     /**
-     * Gets the track's features
-     * @return Track's features
+     * Gets the track's number (index)
+     * @return Track's number (index)
      */
-    public boolean getContainsNulltrack() {
-        return containsNullTrack;
+    public int getTrackNumber() {
+        return trackNumber;
     }
 }

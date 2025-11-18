@@ -5,7 +5,7 @@ public class Pmt {
     private LinkedList<Album> albumList;
 
     public Pmt() {
-        
+        // Empty constructor
     }
 
     public Album getAlbum(int Index) {

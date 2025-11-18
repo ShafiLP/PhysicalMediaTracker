@@ -1,10 +1,13 @@
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +17,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
+import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -74,6 +79,173 @@ public class Gui extends JFrame {
         fNewAlbum.setSize(500, 500);
         fNewAlbum.setLocationRelativeTo(null);
         fNewAlbum.setLayout(new BorderLayout());
+
+        // Main panel where user inserts all information
+        JPanel panMain = new JPanel();
+        panMain.setLayout(new GridBagLayout());
+        panMain.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        // Upper panel for album cover, name, artist & release
+        JPanel panUpper = new JPanel();
+        panUpper.setLayout(new GridBagLayout());
+
+        // JLabel where cover can be uploaded
+        JLabel lCover = new JLabel("Cover hinzufügen", SwingConstants.CENTER);
+        lCover.setOpaque(true);
+        lCover.setBackground(new Color(200, 200, 200));
+        lCover.setForeground(new Color(150, 150, 150));
+        lCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        // TODO: Add MouseListener
+        panUpper.add(lCover, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 0;
+            weightx = 0.3;
+            weighty = 1;
+            gridheight = 3;
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.BOTH;
+        }});
+
+        // Album name
+        PlaceholderTextField tfName = new PlaceholderTextField("Name");
+        panUpper.add(tfName, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 0;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Album artist
+        PlaceholderTextField tfArtist = new PlaceholderTextField("Künstler");
+        panUpper.add(tfArtist, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 1;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Release Year
+        PlaceholderTextField tfRelease = new PlaceholderTextField("Erscheinungsjahr");
+        panUpper.add(tfRelease, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 2;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 0, 0);
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Lower panel for track list
+        JPanel panLower = new JPanel();
+        panLower.setLayout(new GridBagLayout());
+
+        // Track List
+        JPanel panTracks = new JPanel();
+        panTracks.setLayout(new GridBagLayout());
+        int[] latestIndex = {1}; // Must be array to be changable in ActionListener class
+
+        JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack"); // If checked, index will start at 0
+        cbNulltrack.addActionListener(_ -> {
+            // TODO
+        });
+        panLower.add(cbNulltrack, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 0;
+            gridwidth = 2;
+            weightx = 1;
+            anchor = GridBagConstraints.WEST;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        LinkedList<Track> llTracks = new LinkedList<>();
+        llTracks.add(new Track("", null, 1));
+
+        GridBagConstraints gbcIndex = new GridBagConstraints();
+        gbcIndex.gridx = 0;
+        gbcIndex.gridy = 1;
+        gbcIndex.weightx = 0.1;
+        gbcIndex.insets = new Insets(0, 0, 5, 0);
+        gbcIndex.anchor = GridBagConstraints.CENTER;
+        gbcIndex.fill = GridBagConstraints.NONE;
+
+        GridBagConstraints gbcTextField = new GridBagConstraints();
+        gbcTextField.gridx = 1;
+        gbcTextField.gridy = 1;
+        gbcTextField.weightx = 0.9;
+        gbcTextField.insets = new Insets(0, 0, 5, 5);
+        gbcTextField.anchor = GridBagConstraints.CENTER;
+        gbcTextField.fill = GridBagConstraints.HORIZONTAL;
+
+        panTracks.add(new JLabel(llTracks.get(latestIndex[0]-1).getTrackNumber() + ""), gbcIndex);
+        gbcIndex.gridy++;
+
+        panTracks.add(new JTextField(), gbcTextField);
+        gbcTextField.gridy++;
+
+        // Add track panel to JScrollPane
+        JScrollPane spTracks = new JScrollPane(panTracks);
+
+        // Add JScrollPane to main pane
+        panLower.add(spTracks, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 3;
+            gridwidth = 2;
+            gridheight = 3;
+            weightx = 1.0;
+            weighty = 1.0;
+            insets = new Insets(5, 0, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.BOTH;
+        }});
+
+        // Button to add tracks at the bottom of main panel
+        JButton bAddTrack = new JButton("Track hinzufügen");
+        bAddTrack.addActionListener(_ -> {
+            latestIndex[0]++;
+
+            panTracks.add(new JLabel(latestIndex[0] + ""), gbcIndex);
+            gbcIndex.gridy++;
+
+            panTracks.add(new JTextField(), gbcTextField);
+            gbcTextField.gridy++;
+
+            fNewAlbum.revalidate();
+        });
+        panLower.add(bAddTrack, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 6;
+            gridwidth = 2;
+            weightx = 1;
+            insets = new Insets(5, 0, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.NONE;
+        }});
+
+        // Add panels to main panel
+        panMain.add(panUpper, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 0;
+            weightx = 1.0;
+            weighty = 0.4;
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.BOTH;
+        }});
+        panMain.add(panLower, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 1;
+            weightx = 1.0;
+            weighty = 0.6;
+            gridheight = 2;
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.BOTH;
+        }});
+
+        // Add main panel to frame
+        fNewAlbum.add(panMain, BorderLayout.CENTER);
 
         // Confirm & Return buttons
         JPanel panButtons = new JPanel();
