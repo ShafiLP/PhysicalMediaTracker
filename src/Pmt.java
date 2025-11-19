@@ -1,6 +1,7 @@
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import com.google.gson.Gson;
@@ -34,6 +35,45 @@ public class Pmt {
      */
     public LinkedList<Album> getAlbumList() {
         return albumList;
+    }
+
+    /**
+     * Gets the local LinkedList<Album>, sorts it by album name alphabetically and returns it
+     * @return LinkedList<Album> with all albums, sorted by album name
+     */
+    public LinkedList<Album> sortByName() {
+        LinkedList<Album> llSorted = new LinkedList<>();
+        for (int i = 0; i < albumList.size(); i++) {
+            llSorted.add(albumList.get(i));
+        }
+        llSorted.sort(Comparator.comparing(Album::getAlbumName));
+        return llSorted;
+    }
+
+    /**
+     * Gets the local LinkedList<Album>, sorts it by album artists alphabetically and returns it
+     * @return LinkedList<Album> with all albums, sorted by album artists
+     */
+    public LinkedList<Album> sortByArtist() {
+        LinkedList<Album> llSorted = new LinkedList<>();
+        for (int i = 0; i < albumList.size(); i++) {
+            llSorted.add(albumList.get(i));
+        }
+        llSorted.sort(Comparator.comparing(Album::getAlbumArtist, String.CASE_INSENSITIVE_ORDER));
+        return llSorted;
+    }
+
+    /**
+     * Gets the local LinkedList<Album>, sorts it by album release years and returns it
+     * @return LinkedList<Album> with all albums, sorted by release years
+     */
+    public LinkedList<Album> sortByRelease() {
+        LinkedList<Album> llSorted = new LinkedList<>();
+        for (int i = 0; i < albumList.size(); i++) {
+            llSorted.add(albumList.get(i));
+        }
+        llSorted.sort(Comparator.comparing(Album::getReleaseYear));
+        return llSorted;
     }
 
     /**
@@ -97,6 +137,23 @@ public class Pmt {
 
         // If no matching album was found
         System.out.println("No matching album found to delete.");
+    }
+
+    /**
+     * Searches the given String in local LinkedList<Album> and returns matches as a LinkedList<Album>
+     * Matches can contain album names and artists
+     * @param pSearch Term to search in List
+     * @return LinkedList<Album> with matches in album name or artist. If no matches, return empty List
+     */
+    public LinkedList<Album> searchForAlbum(String pSearch) {
+        pSearch = pSearch.trim().toLowerCase();
+        LinkedList<Album> llResults = new LinkedList<>();
+
+        for (int i = 0; i < albumList.size(); i++) {
+            if (albumList.get(i).getAlbumName().trim().toLowerCase().contains(pSearch) || albumList.get(i).getAlbumArtist().trim().toLowerCase().contains(pSearch)) llResults.add(albumList.get(i));
+        }
+
+        return llResults;
     }
 
     //** METHODS TO SAVE AND LOAD ALBUM OBJECTS FROM A JSON FILE*/

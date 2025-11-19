@@ -2,8 +2,10 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,10 +18,16 @@ import java.util.LinkedList;
 
 class AlbumComponent extends JPanel {
 
-    public AlbumComponent() {
-        // Empty constructor
-    }
+    /**
+     * Empty constructor
+     */
+    public AlbumComponent() {}
 
+    /**
+     * Constructor of AlbumComponent class
+     * @param album Album object with all album information
+     * @param pmt Object of control class
+     */
     public AlbumComponent(Album album, Pmt pmt) {
         LinkedList<String> llMedia = new LinkedList<>();
         if (album.isOnVinyl()) llMedia.add("Vinyl");
@@ -43,13 +51,28 @@ class AlbumComponent extends JPanel {
         JMenuItem menuDelete = new JMenuItem("Löschen");
 
         menuView.addActionListener(_ -> {
-
+            new AlbumViewFrame(album, pmt);
         });
         menuEdit.addActionListener(_ -> {
             new AlbumEditFrame(album, pmt);
         });
         menuDelete.addActionListener(_ -> {
-
+            int n = JOptionPane.showConfirmDialog(
+                null,
+                "Wirklich " + album.getAlbumName() + " löschen?",
+                "Album löschen",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            
+            switch (n) {
+                case 0:
+                    pmt.deleteAlbum(album);
+                    break;
+                default:
+                    System.out.println("Deletion cancelled"); // DEBUG
+                    break;
+            }
         });
 
         popupMenu.add(menuView);
@@ -57,9 +80,22 @@ class AlbumComponent extends JPanel {
         popupMenu.add(menuDelete);
 
         this.addMouseListener(new MouseAdapter() {
+            // Open menu when clicked
             @Override
             public void mouseClicked(MouseEvent e) {
                 popupMenu.show(e.getComponent(), e.getX(), e.getY()); // Menu opens where user clicks
+            }
+
+            // Change border to accent color when hovering
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                AlbumComponent.this.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.focusColor"), 2));
+            }
+
+            // Change border back to default when hover exit
+            @Override
+            public void mouseExited(MouseEvent e) {
+                AlbumComponent.this.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
             }
         });
 
@@ -128,6 +164,7 @@ class AlbumComponent extends JPanel {
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
+        // Set size
         this.setMaximumSize(new Dimension(150, getPreferredSize().height));
         this.setMinimumSize(new Dimension(150, getPreferredSize().height));
         this.setPreferredSize(new Dimension(150, getMaximumSize().height));
