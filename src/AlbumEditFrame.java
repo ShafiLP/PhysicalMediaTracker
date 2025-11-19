@@ -3,7 +3,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,7 +13,6 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -23,123 +21,21 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatLightLaf;
 
-public class Gui extends JFrame {
-    private final Pmt PMT;
-    private JPanel panAlbums;
+public class AlbumEditFrame extends JFrame {
+    private LinkedList<NewTrackEntry> llTracks = new LinkedList<>();
+    private Image[] albumCover = {null};
 
-    public Gui(Pmt pPmt) {
-        PMT = pPmt;
-
-        // Setup FlatLaf
-        FlatLightLaf.setup();
-        com.formdev.flatlaf.FlatLightLaf.updateUI();
-
-        this.setTitle("Physical Media Tracker");
-        this.setSize(510, 800);
+    public AlbumEditFrame(Album album, Pmt pmt) {
+        this.setTitle(album.getAlbumName());
+        this.setSize(500, 480);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
-
-        // JButton for adding new album
-        JButton bAddAlbum = new JButton("Album hinzufügen");
-        bAddAlbum.addActionListener(_ -> {
-            openAddAlbumFrame();
-        });
-        this.add(bAddAlbum, BorderLayout.SOUTH);
-
-        // JPanel with search bar and sorter
-        JPanel panSearchSort = new JPanel(new GridBagLayout());
-
-        PlaceholderTextField tfSearchBar = new PlaceholderTextField("Suchen");
-        panSearchSort.add(tfSearchBar, new GridBagConstraints() {{
-            gridx = 0;
-            gridy = 0;
-            weightx = 0.8;
-            weighty = 1.0;
-            insets = new Insets(5, 5, 5, 5);
-            anchor = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.HORIZONTAL;
-        }});
-
-        JComboBox<String> cbSortBy = new JComboBox<>();
-        cbSortBy.addItem("Kürzlich hinzugefügt");
-        cbSortBy.addItem("Alphabetisch");
-        cbSortBy.addItem("Künstler");
-        panSearchSort.add(cbSortBy, new GridBagConstraints() {{
-            gridx = 1;
-            gridy = 0;
-            weightx = 0.2;
-            weighty = 1.0;
-            insets = new Insets(5, 0, 5, 5);
-            anchor = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.HORIZONTAL;
-        }});
-
-        this.add(panSearchSort, BorderLayout.NORTH);
-       
-        // JPanel with albums
-        panAlbums = new JPanel(new WrapLayout(FlowLayout.LEFT, 10, 10)) {
-            @Override
-            public Dimension getPreferredSize() {
-                Dimension d = super.getPreferredSize();
-                d.width = getParent() != null ? getParent().getWidth() : d.width;
-                return d;
-            }
-        };
-
-        // Add albums from JSON save file
-        LinkedList<Album> llAlbums = PMT.getAlbumList();
-        for (int i = llAlbums.size() - 1; i >= 0; i--) {
-            Album idxAlbum = llAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT));
-        }
-
-        // JScrollPane for scrollable album display
-        JScrollPane scrollPane = new JScrollPane(panAlbums);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getViewport().addChangeListener(_ -> {
-            panAlbums.revalidate();
-        });
-        
-        this.add(scrollPane);
-
-        this.setVisible(true);
-    }
-
-    /**
-     * Removes all AlbumComponents from albums panel and adds them again
-     * Called when changes have been made
-     */
-    public void updateAlbums() {
-        panAlbums.removeAll();
-        LinkedList<Album> llAlbums = PMT.getAlbumList();
-        for (int i = llAlbums.size() - 1; i >= 0; i--) {
-            Album idxAlbum = llAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT));
-        }
-        panAlbums.revalidate();
-        System.out.println("GUI updated."); // DEBUG
-    }
-
-    /**
-     * Opens the frame where the user can add a new album to the list
-     */
-    private void openAddAlbumFrame() {
-        // Local objects
-        LinkedList<NewTrackEntry> llTrackEntries = new LinkedList<>();
-        Image[] albumCover = {null}; // Array so local object can be accessed in action listener
-
-        JFrame fNewAlbum = new JFrame();
-        fNewAlbum.setTitle("Neues Album");
-        fNewAlbum.setSize(500, 480);
-        fNewAlbum.setLocationRelativeTo(null);
-        fNewAlbum.setLayout(new BorderLayout());
 
         // Main panel where user inserts all information
         JPanel panMain = new JPanel();
@@ -150,8 +46,8 @@ public class Gui extends JFrame {
         JPanel panUpper = new JPanel();
         panUpper.setLayout(new GridBagLayout());
 
-        // JButton where cover can be uploaded
-        JButton bCover = new JButton("Cover hinzufügen");
+        // JButton where cover can be changed
+        JButton bCover = new JButton();
         bCover.setOpaque(true);
         bCover.setBackground(new Color(200, 200, 200));
         bCover.setForeground(new Color(150, 150, 150));
@@ -166,6 +62,9 @@ public class Gui extends JFrame {
                 bCover.setText("");
             }
         });
+        ImageIcon icon = new ImageIcon(album.getCoverPath());
+        Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        bCover.setIcon(new ImageIcon(scaledImage));
         panUpper.add(bCover, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
@@ -178,6 +77,7 @@ public class Gui extends JFrame {
 
         // Album name
         PlaceholderTextField tfName = new PlaceholderTextField("Name");
+        tfName.setText(album.getAlbumName());
         panUpper.add(tfName, new GridBagConstraints() {{
             gridx = 1;
             gridy = 0;
@@ -189,6 +89,7 @@ public class Gui extends JFrame {
 
         // Album artist
         PlaceholderTextField tfArtist = new PlaceholderTextField("Künstler");
+        tfArtist.setText(album.getAlbumArtist());
         panUpper.add(tfArtist, new GridBagConstraints() {{
             gridx = 1;
             gridy = 1;
@@ -200,6 +101,7 @@ public class Gui extends JFrame {
 
         // Release Year
         PlaceholderTextField tfRelease = new PlaceholderTextField("Erscheinungsjahr");
+        tfRelease.setText(album.getReleaseYear() + "");
         panUpper.add(tfRelease, new GridBagConstraints() {{
             gridx = 1;
             gridy = 2;
@@ -211,9 +113,9 @@ public class Gui extends JFrame {
 
         // Type of media
         JLabel lTypeOfMedia = new JLabel("Tonträger:");
-        JCheckBox cbVinyl = new JCheckBox("Vinyl");
-        JCheckBox cbCd = new JCheckBox("CD");
-        JCheckBox cbCassette = new JCheckBox("Kassette");
+        JCheckBox cbVinyl = new JCheckBox("Vinyl", album.isOnVinyl());
+        JCheckBox cbCd = new JCheckBox("CD", album.isOnCd());
+        JCheckBox cbCassette = new JCheckBox("Kassette", album.isOnCassette());
 
         panUpper.add(lTypeOfMedia, new GridBagConstraints() {{
             gridx = 1;
@@ -253,6 +155,7 @@ public class Gui extends JFrame {
 
         // Where bought?
         PlaceholderTextField tfWhereBought = new PlaceholderTextField("Woher?");
+        tfWhereBought.setText(album.getWhereBought());
         panUpper.add(tfWhereBought, new GridBagConstraints() {{
             gridx = 1;
             gridy = 7;
@@ -272,15 +175,15 @@ public class Gui extends JFrame {
         int[] latestIndex = {1}; // Must be array to be changable in ActionListener class
 
         // CheckBox for Nulltracks
-        JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack"); // If checked, index will start at 0
+        JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack", album.containsNulltrack()); // If checked, index will start at 0
         cbNulltrack.addActionListener(_ -> {
             if(cbNulltrack.isSelected()) {
-                for(int i = 0; i < llTrackEntries.size(); i++) {
-                    llTrackEntries.get(i).setIndex(llTrackEntries.get(i).getIndex() - 1);
+                for(int i = 0; i < llTracks.size(); i++) {
+                    llTracks.get(i).setIndex(llTracks.get(i).getIndex() - 1);
                 }
             } else {
-                for(int i = 0; i < llTrackEntries.size(); i++) {
-                    llTrackEntries.get(i).setIndex(llTrackEntries.get(i).getIndex() + 1);
+                for(int i = 0; i < llTracks.size(); i++) {
+                    llTracks.get(i).setIndex(llTracks.get(i).getIndex() + 1);
                 }
             }
         });
@@ -318,34 +221,35 @@ public class Gui extends JFrame {
         gbcDelete.anchor = GridBagConstraints.CENTER;
         gbcDelete.fill = GridBagConstraints.NONE;
 
-        // Add five blank entries as placeholder
-        for(int i = 0; i < 5; i++) {
-            llTrackEntries.addLast(new NewTrackEntry(latestIndex[0], new JTextField())); // Add new entry to LinkedList so index and JTextField can easily be accessed
+        // Add all tracks from album
+        if (album.containsNulltrack()) latestIndex[0] = 0;
+        for(int i = 0; i < album.getTrackList().size(); i++) {
+            llTracks.addLast(new NewTrackEntry(latestIndex[0], new JTextField(album.getTrackList().get(i).getTrackName())));
 
-            panTracks.add(llTrackEntries.getLast().getIndexLabel(), gbcIndex);
+            panTracks.add(llTracks.getLast().getIndexLabel(), gbcIndex);
             gbcIndex.gridy++;
 
-            panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
+            panTracks.add(llTracks.getLast().getTextField(), gbcTextField);
             gbcTextField.gridy++;
 
-            panTracks.add(llTrackEntries.getLast().getDeleteButton(), gbcDelete);
+            panTracks.add(llTracks.getLast().getDeleteButton(), gbcDelete);
             gbcDelete.gridy++;
 
-            final NewTrackEntry DELETE = llTrackEntries.getLast();
+            final NewTrackEntry DELETE = llTracks.getLast();
 
             // Add action listener to delete button
-            llTrackEntries.getLast().getDeleteButton().addActionListener(_ -> {
+            llTracks.getLast().getDeleteButton().addActionListener(_ -> {
                 final int DELETEIDX = DELETE.getIndex() - 1;
 
                 // Change name of tracks to the one that are next and remove last track 
-                for (int j = DELETEIDX; j < llTrackEntries.size() - 1; j++) {
-                    llTrackEntries.get(j).getTextField().setText(llTrackEntries.get(j + 1).getTextField().getText());
-                    llTrackEntries.get(j).setIndex(j + 1);
+                for (int j = DELETEIDX; j < llTracks.size() - 1; j++) {
+                    llTracks.get(j).getTextField().setText(llTracks.get(j + 1).getTextField().getText());
+                    llTracks.get(j).setIndex(j + 1);
                 }
-                llTrackEntries.getLast().getIndexLabel().setVisible(false);
-                llTrackEntries.getLast().getTextField().setVisible(false);
-                llTrackEntries.getLast().getDeleteButton().setVisible(false);
-                llTrackEntries.removeLast();
+                llTracks.getLast().getIndexLabel().setVisible(false);
+                llTracks.getLast().getTextField().setVisible(false);
+                llTracks.getLast().getDeleteButton().setVisible(false);
+                llTracks.removeLast();
                 gbcIndex.gridy--;
                 gbcTextField.gridy--;
                 gbcDelete.gridy--;
@@ -379,39 +283,39 @@ public class Gui extends JFrame {
         JButton bAddTrack = new JButton("+");
         bAddTrack.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bAddTrack.addActionListener(_ -> {
-            llTrackEntries.addLast(new NewTrackEntry(latestIndex[0], new JTextField()));
+            llTracks.addLast(new NewTrackEntry(latestIndex[0], new JTextField()));
 
-            panTracks.add(llTrackEntries.getLast().getIndexLabel(), gbcIndex);
+            panTracks.add(llTracks.getLast().getIndexLabel(), gbcIndex);
             gbcIndex.gridy++;
 
-            panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
+            panTracks.add(llTracks.getLast().getTextField(), gbcTextField);
             gbcTextField.gridy++;
 
-            panTracks.add(llTrackEntries.getLast().getDeleteButton(), gbcDelete);
+            panTracks.add(llTracks.getLast().getDeleteButton(), gbcDelete);
             gbcDelete.gridy++;
 
-            final NewTrackEntry DELETE = llTrackEntries.getLast();
+            final NewTrackEntry DELETE = llTracks.getLast();
 
             // Add action listener to delete button
-            llTrackEntries.getLast().getDeleteButton().addActionListener(_ -> {
+            llTracks.getLast().getDeleteButton().addActionListener(_ -> {
                 final int DELETEIDX = DELETE.getIndex() - 1;
 
                 // Change name of tracks to the one that are next and remove last track 
-                for (int i = DELETEIDX; i < llTrackEntries.size() - 1; i++) {
-                    llTrackEntries.get(i).getTextField().setText(llTrackEntries.get(i + 1).getTextField().getText());
-                    llTrackEntries.get(i).setIndex(i + 1);
+                for (int i = DELETEIDX; i < llTracks.size() - 1; i++) {
+                    llTracks.get(i).getTextField().setText(llTracks.get(i + 1).getTextField().getText());
+                    llTracks.get(i).setIndex(i + 1);
                 }
-                llTrackEntries.getLast().getIndexLabel().setVisible(false);
-                llTrackEntries.getLast().getTextField().setVisible(false);
-                llTrackEntries.getLast().getDeleteButton().setVisible(false);
-                llTrackEntries.removeLast();
+                llTracks.getLast().getIndexLabel().setVisible(false);
+                llTracks.getLast().getTextField().setVisible(false);
+                llTracks.getLast().getDeleteButton().setVisible(false);
+                llTracks.removeLast();
                 gbcIndex.gridy--;
                 gbcTextField.gridy--;
                 gbcDelete.gridy--;
                 latestIndex[0]--;
             });
 
-            fNewAlbum.revalidate();
+            this.revalidate();
             latestIndex[0]++;
         });
         panLower.add(bAddTrack, new GridBagConstraints() {{
@@ -443,7 +347,7 @@ public class Gui extends JFrame {
         }});
 
         // Add main panel to frame
-        fNewAlbum.add(panMain, BorderLayout.CENTER);
+        this.add(panMain, BorderLayout.CENTER);
 
         // Confirm & Return buttons
         JPanel panButtons = new JPanel();
@@ -452,7 +356,7 @@ public class Gui extends JFrame {
         JButton bReturn = new JButton("X");
         bReturn.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bReturn.addActionListener(_ -> {
-            fNewAlbum.dispose();
+            this.dispose();
         });
         panButtons.add(bReturn, new GridBagConstraints() {{
             gridy = 0;
@@ -468,25 +372,34 @@ public class Gui extends JFrame {
         bConfirm.addActionListener(_ -> {
             // Add new album to control class
             LinkedList<Track> llNewTracks = new LinkedList<>(); // Read tracks
-            for(int i = 0; i < llTrackEntries.size(); i++) {
-                llNewTracks.addLast(new Track(llTrackEntries.get(i).getTextField().getText(), llTrackEntries.get(i).getIndex()));
+            for(int i = 0; i < llTracks.size(); i++) {
+                llNewTracks.addLast(new Track(llTracks.get(i).getTextField().getText(), llTracks.get(i).getIndex()));
             }
             try {
-                // Save album cover as image
-                BufferedImage bImage = new BufferedImage(albumCover[0].getWidth(null), albumCover[0].getHeight(null), BufferedImage.TYPE_INT_ARGB); // Als PNG
-                Graphics2D g2d = bImage.createGraphics();
-                g2d.drawImage(albumCover[0], 0, 0, null);
-                g2d.dispose();
-                String path = "media\\albumCovers\\" + tfArtist.getText().toLowerCase().replace(" ", "") + "_" + tfName.getText().toLowerCase().replace(" ", "") + ".png";
-                File outputFile = new File(path);
-                ImageIO.write(bImage, "png", outputFile);
+                // Save album cover as image and remove old one from files if cover was changed
+                String path;
+                if (albumCover[0] != null) { 
+                    // Delete old cover
+                    Files.delete(Paths.get(album.getCoverPath()));
 
-                // Save album in control class
+                    // Save new cover
+                    BufferedImage bImage = new BufferedImage(albumCover[0].getWidth(null), albumCover[0].getHeight(null), BufferedImage.TYPE_INT_ARGB); // Als PNG
+                    Graphics2D g2d = bImage.createGraphics();
+                    g2d.drawImage(albumCover[0], 0, 0, null);
+                    g2d.dispose();
+                    path = "media\\albumCovers\\" + tfArtist.getText().toLowerCase().replace(" ", "") + "_" + tfName.getText().toLowerCase().replace(" ", "") + ".png";
+                    File outputFile = new File(path);
+                    ImageIO.write(bImage, "png", outputFile);
+                } else {
+                    path = album.getCoverPath();
+                }
+                
+
+                // Change album in control class
                 Album newAlbum = new Album(llNewTracks, tfName.getText(), tfArtist.getText(), Integer.parseInt(tfRelease.getText()), path,
                 tfWhereBought.getText(), cbNulltrack.isSelected(), cbVinyl.isSelected(), cbCd.isSelected(), cbCassette.isSelected());
-                PMT.addAlbum(newAlbum);
-                updateAlbums();
-                fNewAlbum.dispose();
+                pmt.editAlbum(album, newAlbum);
+                this.dispose();
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -502,9 +415,9 @@ public class Gui extends JFrame {
             fill = GridBagConstraints.NONE;
         }});
 
-        fNewAlbum.add(panButtons, BorderLayout.SOUTH);
+        this.add(panButtons, BorderLayout.SOUTH);
 
-        fNewAlbum.setVisible(true);
+        this.setVisible(true);
     }
 
     private Image iconFromUpload(int pWidth, int pHeight) {
@@ -524,53 +437,4 @@ public class Gui extends JFrame {
             return null;
         }
     }
-}
-
-class NewTrackEntry {
-    private int index;
-    private JLabel lIndex;
-    private JTextField tfName;
-    private JButton bDelete;
-
-    NewTrackEntry() {
-        // Empty constructor
-    }
-
-    NewTrackEntry(int index, JTextField tfName) {
-        this.index = index;
-        this.tfName = tfName;
-        lIndex = new JLabel(index + "");
-
-        // Delete button
-        ImageIcon icon = new ImageIcon("media\\icons\\delete.png");
-        Image img = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-        bDelete = new JButton(new ImageIcon(img));
-        bDelete.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-        lIndex.setText(index + "");
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setTextField(JTextField tfName) {
-        this.tfName = tfName;
-    }
-
-    public JTextField getTextField() {
-        return tfName;
-    }
-
-    public JLabel getIndexLabel() {
-        return lIndex;
-    }
-
-    public JButton getDeleteButton() {
-        return bDelete;
-    }
-
 }

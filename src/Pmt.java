@@ -43,19 +43,60 @@ public class Pmt {
     public void addAlbum(Album pAlbum) {
         albumList.addLast(pAlbum);
 
-        // DEBUG
-        for(int i = 0; i < pAlbum.getTrackList().size(); i++) {
-            System.out.println(pAlbum.getTrackList().get(i).getTrackNumber() + ": " + pAlbum.getTrackList().get(i).getTrackName());
-        }
-        System.out.println("Name: " + pAlbum.getAlbumName());
-        System.out.println("Artist: " + pAlbum.getAlbumArtist());
-        System.out.println("Release: " + pAlbum.getReleaseYear());
-        System.out.println("Cover: " + pAlbum.getCoverPath());
-        System.out.println("Where: " + pAlbum.getWhereBought());
-        System.out.println("Nulltrack: " + pAlbum.containsNulltrack());
-
         // Save as JSON file
         addAlbumToJson(pAlbum, "saveData\\data.json");
+
+        System.out.println("Added album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " to JSON."); // DEBUG
+        GUI.updateAlbums();
+    }
+
+    /**
+     * Replaced an Album object in local LinkedList<Album> with a new one and saves the changes inside JSON save file
+     * @param pAlbumBefore Album object to replace in List and JSON
+     * @param pAlbumAfter Replacement Album object
+     */
+    public void editAlbum(Album pAlbumBefore, Album pAlbumAfter) {
+        // Search for album in albumList
+        for (int i = 0; i < albumList.size(); i++) {
+            if (albumList.get(i).getAlbumName().equals(pAlbumBefore.getAlbumName()) & albumList.get(i).getAlbumArtist().equals(pAlbumBefore.getAlbumArtist())) {
+                // Override album
+                albumList.set(i, pAlbumAfter);
+
+                // Override in JSON file
+                overrideAlbumsInJson(albumList, "saveData\\data.json");
+                System.out.println("Changed album " + pAlbumAfter.getAlbumName() + " by " + pAlbumAfter.getAlbumArtist() + " in JSON."); // DEBUG
+                
+                GUI.updateAlbums();
+                return;
+            }
+        }
+
+        // If no matching album was found
+        System.out.println("No matching album found to change.");
+    }
+
+    /**
+     * Removes an Album object from local LinkedList<Album> and JSON save file
+     * @param pAlbum Album object to remove from List and JSON
+     */
+    public void deleteAlbum(Album pAlbum) {
+        // Search for album in albumList
+        for (int i = 0; i < albumList.size(); i++) {
+            if (albumList.get(i).getAlbumName().equals(pAlbum.getAlbumName()) & albumList.get(i).getAlbumArtist().equals(pAlbum.getAlbumArtist())) {
+                // Remove from LinkedList
+                albumList.remove(i);
+
+                // Remove from JSON file
+                overrideAlbumsInJson(albumList, "savaData\\data.json");
+                System.out.println("Removed album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " from JSON."); // DEBUG
+                
+                GUI.updateAlbums();
+                return;
+            }
+        }
+
+        // If no matching album was found
+        System.out.println("No matching album found to delete.");
     }
 
     //** METHODS TO SAVE AND LOAD ALBUM OBJECTS FROM A JSON FILE*/

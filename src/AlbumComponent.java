@@ -1,0 +1,135 @@
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+
+class AlbumComponent extends JPanel {
+
+    public AlbumComponent() {
+        // Empty constructor
+    }
+
+    public AlbumComponent(Album album, Pmt pmt) {
+        LinkedList<String> llMedia = new LinkedList<>();
+        if (album.isOnVinyl()) llMedia.add("Vinyl");
+        if (album.isOnCd()) llMedia.add("CD");
+        if (album.isOnCassette()) llMedia.add("Kassette");
+
+        String typeOfMedia = null;
+        for(int i = 0; i < llMedia.size(); i++) {
+            if (typeOfMedia == null) {
+                typeOfMedia = llMedia.get(i);
+            } else {
+                typeOfMedia += ", " + llMedia.get(i);
+            }
+        }
+
+        // Popup Menu, opens when clicking on AlbumComponent
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem menuView = new JMenuItem("Ansehen");
+        JMenuItem menuEdit = new JMenuItem("Bearbeiten");
+        JMenuItem menuDelete = new JMenuItem("Löschen");
+
+        menuView.addActionListener(_ -> {
+
+        });
+        menuEdit.addActionListener(_ -> {
+            new AlbumEditFrame(album, pmt);
+        });
+        menuDelete.addActionListener(_ -> {
+
+        });
+
+        popupMenu.add(menuView);
+        popupMenu.add(menuEdit);
+        popupMenu.add(menuDelete);
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                popupMenu.show(e.getComponent(), e.getX(), e.getY()); // Menu opens where user clicks
+            }
+        });
+
+        this.setLayout(new GridBagLayout());
+        this.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
+
+        // Cover
+        ImageIcon icon = new ImageIcon(album.getCoverPath());
+        Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        JLabel lImg = new JLabel(new ImageIcon(img));
+        this.add(lImg, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 0;
+            weightx = 1.0;
+            weighty = 1.0;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Name
+        JLabel lName = new JLabel(album.getAlbumName());
+        lName.setBackground(new Color(200, 200, 200));
+        lName.setOpaque(true);
+        lName.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        this.add(lName, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 1;
+            weightx = 1.0;
+            weighty = 1.0;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Artist
+        JLabel lArtist = new JLabel(album.getAlbumArtist());
+        lArtist.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        this.add(lArtist, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 2;
+            weightx = 1;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Release Year
+        JLabel lRelease = new JLabel(album.getReleaseYear() + "");
+        lRelease.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        lRelease.setBackground(new Color(200, 200, 200));
+        lRelease.setOpaque(true);
+        this.add(lRelease, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 3;
+            weightx = 1;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Type of media
+        JLabel lMedia = new JLabel(typeOfMedia);
+        lMedia.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        this.add(lMedia, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 4;
+            weightx = 1;
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        this.setMaximumSize(new Dimension(150, getPreferredSize().height));
+        this.setMinimumSize(new Dimension(150, getPreferredSize().height));
+        this.setPreferredSize(new Dimension(150, getMaximumSize().height));
+    }
+}
