@@ -167,8 +167,7 @@ public class AlbumCreateFrame extends JFrame {
         panLower.setLayout(new GridBagLayout());
 
         // Track List
-        JPanel panTracks = new JPanel();
-        panTracks.setLayout(new GridBagLayout());
+        JPanel panTracks = new JPanel(new GridBagLayout());
         int[] latestIndex = {1}; // Must be array to be changable in ActionListener class
 
         // CheckBox for Nulltracks

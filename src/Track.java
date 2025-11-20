@@ -1,6 +1,7 @@
 public class Track {
     private String trackName;
     private int trackNumber;
+    private int listenCount;
 
     public Track() {
         // Empty constructor
@@ -41,5 +42,20 @@ public class Track {
      */
     public int getTrackNumber() {
         return trackNumber;
+    }
+
+    /**
+     * Increases the listen count by one
+     */
+    public void incraseListenCount() {
+        listenCount++;
+    }
+
+    /**
+     * Gets the current listen count of the track and returns it
+     * @return listen count of the track
+     */
+    public int getListenCount() {
+        return listenCount;
     }
 }

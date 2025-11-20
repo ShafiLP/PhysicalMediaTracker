@@ -34,22 +34,17 @@ class AlbumComponent extends JPanel {
         if (album.isOnCd()) llMedia.add("CD");
         if (album.isOnCassette()) llMedia.add("Kassette");
 
-        String typeOfMedia = null;
-        for(int i = 0; i < llMedia.size(); i++) {
-            if (typeOfMedia == null) {
-                typeOfMedia = llMedia.get(i);
-            } else {
-                typeOfMedia += ", " + llMedia.get(i);
-            }
-        }
-
         // Popup Menu, opens when clicking on AlbumComponent
         JPopupMenu popupMenu = new JPopupMenu();
 
+        JMenuItem menuListen = new JMenuItem("Gehört");
         JMenuItem menuView = new JMenuItem("Ansehen");
         JMenuItem menuEdit = new JMenuItem("Bearbeiten");
         JMenuItem menuDelete = new JMenuItem("Löschen");
 
+        menuListen.addActionListener(_ -> {
+            new AddListenSessionFrame(pmt, album);
+        });
         menuView.addActionListener(_ -> {
             new AlbumViewFrame(album, pmt);
         });
@@ -75,6 +70,7 @@ class AlbumComponent extends JPanel {
             }
         });
 
+        popupMenu.add(menuListen);
         popupMenu.add(menuView);
         popupMenu.add(menuEdit);
         popupMenu.add(menuDelete);
@@ -83,7 +79,7 @@ class AlbumComponent extends JPanel {
             // Open menu when clicked
             @Override
             public void mouseClicked(MouseEvent e) {
-                popupMenu.show(e.getComponent(), e.getX(), e.getY()); // Menu opens where user clicks
+                popupMenu.show(e.getComponent(), AlbumComponent.this.getWidth()/2, AlbumComponent.this.getHeight()/2);
             }
 
             // Change border to accent color when hovering
@@ -153,10 +149,10 @@ class AlbumComponent extends JPanel {
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
-        // Type of media
-        JLabel lMedia = new JLabel(typeOfMedia);
-        lMedia.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        this.add(lMedia, new GridBagConstraints() {{
+        // Listen counter
+        JLabel lListens = new JLabel(album.getListenCount() + " Mal gehört");
+        lListens.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        this.add(lListens, new GridBagConstraints() {{
             gridx = 0;
             gridy = 4;
             weightx = 1;

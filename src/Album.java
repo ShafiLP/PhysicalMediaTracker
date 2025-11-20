@@ -13,6 +13,8 @@ public class Album {
     private boolean onCd;
     private boolean onCassette;
 
+    private int listenCount;
+
     public Album() {
         // Empty constructor
     }
@@ -165,5 +167,20 @@ public class Album {
 
     public boolean isOnCassette() {
         return onCassette;
+    }
+
+    /**
+     * Increases the listen count by one
+     */
+    public void incraseListenCount() {
+        listenCount++;
+    }
+
+    /**
+     * Gets the listen count of the album and returns it
+     * @return Listen count of the album
+     */
+    public int getListenCount() {
+        return listenCount;
     }
 }
