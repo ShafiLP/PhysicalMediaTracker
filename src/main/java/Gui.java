@@ -12,6 +12,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.LinkedList;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
+
 import com.formdev.flatlaf.FlatLightLaf;
 
 public class Gui extends JFrame {
@@ -32,9 +39,11 @@ public class Gui extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
+        initializeJMenuBar();
+
         // JButton for adding new album
         JButton bAddAlbum = new JButton("Album hinzufügen");
-        bAddAlbum.addActionListener(_ -> {
+        bAddAlbum.addActionListener(e -> {
             new AlbumCreateFrame(PMT);
         });
         this.add(bAddAlbum, BorderLayout.SOUTH);
@@ -43,7 +52,7 @@ public class Gui extends JFrame {
         JPanel panSearchSort = new JPanel(new GridBagLayout());
 
         PlaceholderTextField tfSearchBar = new PlaceholderTextField("Suchen");
-        tfSearchBar.addActionListener(_ -> {
+        tfSearchBar.addActionListener(e -> {
             // Search for matches when changes are made
             displayAlbumList(PMT.searchForAlbum(tfSearchBar.getText()));
         });
@@ -62,26 +71,15 @@ public class Gui extends JFrame {
         cbSortBy.addItem("Name");
         cbSortBy.addItem("Künstler");
         cbSortBy.addItem("Erscheinungsjahr");
-        cbSortBy.addActionListener(_ -> {
+        cbSortBy.addActionListener(e -> {
             String selected = (String) cbSortBy.getSelectedItem();
 
             switch (selected) {
-                case "Kürzlich hinzugefügt":
-                    updateAlbums();
-                    break;
-                case "Name":
-                    displayAlbumList(PMT.sortByName());
-                    break;
-                case "Künstler":
-                    displayAlbumList(PMT.sortByArtist());
-                    break;
-                case "Erscheinungsjahr":
-                    displayAlbumList(PMT.sortByRelease());
-                    break;
-                default:
-                    // Error
-                    System.out.println("Items couldn't be sorted.");
-                    break;
+                case "Kürzlich hinzugefügt" -> updateAlbums();
+                case "Name" -> displayAlbumList(PMT.sortByName());
+                case "Künstler" -> displayAlbumList(PMT.sortByArtist());
+                case "Erscheinungsjahr" -> displayAlbumList(PMT.sortByRelease());
+                default -> System.out.println("Items couldn't be sorted."); // Error
             }
         });
         panSearchSort.add(cbSortBy, new GridBagConstraints() {{
@@ -118,7 +116,7 @@ public class Gui extends JFrame {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.getViewport().addChangeListener(_ -> {
+        scrollPane.getViewport().addChangeListener(e -> {
             panAlbums.revalidate();
         });
         
@@ -152,5 +150,75 @@ public class Gui extends JFrame {
         panAlbums.revalidate();
         panAlbums.repaint();
         System.out.println("GUI updated."); // DEBUG
+    }
+
+    /**
+     * Adds JMenuBar to JFrame
+     */
+    private void initializeJMenuBar() {
+        // Menu bar at the top
+        JMenuBar menuBar = new JMenuBar();
+
+        // * File options
+        JMenu menuFile = new JMenu("Datei");
+
+        // Item to create a new save file
+        JMenuItem itemNewFile = new JMenuItem("Neue Datei");
+        itemNewFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.SHIFT_MASK));
+        itemNewFile.addActionListener(e -> {
+            // TODO
+        });
+        menuFile.add(itemNewFile);
+
+        // Item to open a save file
+        JMenuItem itemOpenFile = new JMenuItem("Öffnen");
+        itemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
+        itemOpenFile.addActionListener(e -> {
+            // TODO
+        });
+        menuFile.add(itemOpenFile);
+
+        // Item to save current file
+        JMenuItem itemSaveFile = new JMenuItem("Speichern");
+        itemSaveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK));
+        itemSaveFile.addActionListener(e -> {
+            // TODO
+        });
+        menuFile.add(itemSaveFile);
+        
+        // Item to save file as given path
+        JMenuItem itemSaveFileAs = new JMenuItem("Speichern unter...");
+        // itemSaveFileAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK));
+        itemSaveFileAs.addActionListener(e -> {
+            // TODO
+        });
+        menuFile.add(itemSaveFileAs);
+
+        menuBar.add(menuFile);
+
+        // * Settings
+        JMenu menuSettings = new JMenu("Anzeige");
+
+        // Item to open display settings
+        JMenuItem itemDisplay = new JMenuItem("Anzeige");
+        itemDisplay.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.SHIFT_MASK));
+        itemDisplay.addActionListener(e -> {
+            // TODO
+        });
+        menuSettings.add(itemDisplay);
+
+        // Item to open general settings
+        JMenuItem itemSettings = new JMenuItem("Einstellungen");
+        itemSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
+        itemSettings.addActionListener(e -> {
+            // TODO
+        });
+        menuSettings.add(itemSettings);
+
+
+        menuBar.add(menuSettings);
+
+        // Add JMenuBar to JFrame
+        this.setJMenuBar(menuBar);
     }
 }

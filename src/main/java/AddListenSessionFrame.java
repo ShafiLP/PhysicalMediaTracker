@@ -157,7 +157,7 @@ public class AddListenSessionFrame extends JFrame {
 
         JButton bReturn = new JButton("X");
         bReturn.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-        bReturn.addActionListener(_ -> {
+        bReturn.addActionListener(e -> {
             this.dispose();
         });
         panButtons.add(bReturn, new GridBagConstraints() {{
@@ -171,7 +171,7 @@ public class AddListenSessionFrame extends JFrame {
 
         JButton bConfirm = new JButton("✓");
         bConfirm.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-        bConfirm.addActionListener(_ -> {
+        bConfirm.addActionListener(e -> {
             Album editedAlbum = pAlbum;
             editedAlbum.incraseListenCount();
             for (int i = 0; i < editedAlbum.getTrackList().size(); i++) {

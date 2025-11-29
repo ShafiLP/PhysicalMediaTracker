@@ -42,16 +42,16 @@ class AlbumComponent extends JPanel {
         JMenuItem menuEdit = new JMenuItem("Bearbeiten");
         JMenuItem menuDelete = new JMenuItem("Löschen");
 
-        menuListen.addActionListener(_ -> {
+        menuListen.addActionListener(e -> {
             new AddListenSessionFrame(pmt, album);
         });
-        menuView.addActionListener(_ -> {
+        menuView.addActionListener(e -> {
             new AlbumViewFrame(album, pmt);
         });
-        menuEdit.addActionListener(_ -> {
+        menuEdit.addActionListener(e -> {
             new AlbumEditFrame(album, pmt);
         });
-        menuDelete.addActionListener(_ -> {
+        menuDelete.addActionListener(e -> {
             int n = JOptionPane.showConfirmDialog(
                 null,
                 "Wirklich " + album.getAlbumName() + " löschen?",

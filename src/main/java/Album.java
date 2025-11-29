@@ -51,7 +51,7 @@ public class Album {
 
     /**
      * Sets/Overrides the album name
-     * @param pTrackList New album name
+     * @param pAlbumName New album name
      */
     public void setAlbumName(String pAlbumName) {
         albumName = pAlbumName;
@@ -67,7 +67,7 @@ public class Album {
 
     /**
      * Sets/Overrides the album's artist
-     * @param pTrackList New artist of the album
+     * @param pAlbumArtist New artist of the album
      */
     public void setAlbumArtist(String pAlbumArtist) {
         albumArtist = pAlbumArtist;
@@ -83,7 +83,7 @@ public class Album {
 
     /**
      * Sets/Overrides the album's release year
-     * @param pTrackList New release year
+     * @param pReleaseYear New release year
      */
     public void setReleaseYear(int pReleaseYear) {
         releaseYear = pReleaseYear;
@@ -99,7 +99,7 @@ public class Album {
 
     /**
      * Sets/Overrides where the physical medium was bought
-     * @param pTrackList New place where the album was bought
+     * @param pWhereBought New place where the album was bought
      */
     public void setWhereBought(String pWhereBought) {
         whereBought = pWhereBought;
@@ -115,7 +115,7 @@ public class Album {
 
     /**
      * Sets/Overrides if album contains a nulltrack
-     * @param pTrackList New boolean if album contains a nulltrack
+     * @param pNulltrack New boolean if album contains a nulltrack
      */
     public void setContainsNulltrack(boolean pNulltrack) {
         containsNulltrack = pNulltrack;
@@ -131,7 +131,7 @@ public class Album {
 
     /**
      * Sets/Overrides path to the album's cover
-     * @param pTrackList New path to album's cover
+     * @param pPath New path to album's cover
      */
     public void setCoverPath(String pPath) {
         albumCoverPath = pPath;
