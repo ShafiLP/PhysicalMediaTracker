@@ -2,7 +2,7 @@
  * Main class
  * 
  * @author ShafiLP
- * @version 0.0.9
+ * @version 0.1.0
  */
 public class Main {
     public static void main(String[] args) {
@@ -14,7 +14,6 @@ public class Main {
  * TODO:
  * * Listen Counter
  * * Grey background every second entry
- * * Move Add Album Button to MenuBar
  * * Display settings
  * * General settings
  * * Automatically search for cover

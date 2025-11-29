@@ -6,18 +6,31 @@ import java.awt.Insets;
 
 import javax.swing.JTextField;
 
+/**
+ * Class of PlaceholderTextField
+ * Extended object of JTextField that displays a grey placeholder text when content is empty
+ */
 public class PlaceholderTextField extends JTextField {
     private String placeholder;
 
+    /**
+     * Creates a new JTextField that displays a placeholder text when empty
+     * @param pPlaceholder Text to display when text field contains no user input
+     */
     public PlaceholderTextField(String pPlaceholder) {
         placeholder = pPlaceholder;
     }
 
+    /**
+     * Changes placeholder text of text field
+     * @param pPlaceholder New placeholder text to display when text field contains no user input
+     */
     public void setPlaceholder(String pPlaceholder) {
         placeholder = pPlaceholder;
         repaint();
     }
 
+    // Override paintComponent() so text field displays the placeholder text automatically
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

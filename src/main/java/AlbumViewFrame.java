@@ -24,7 +24,7 @@ public class AlbumViewFrame extends JFrame {
     private LinkedList<TrackEntry> llTracks = new LinkedList<>();
 
     /**
-     * Opens a JFrame where all of the album's information can be seen
+     * Opens a JFrame where all the album's information can be seen
      * @param pAlbum Album object to view
      * @param pPmt Object of control class
      */
@@ -113,15 +113,15 @@ public class AlbumViewFrame extends JFrame {
         if (pAlbum.isOnCd()) llMedia.add("CD");
         if (pAlbum.isOnCassette()) llMedia.add("Kassette");
 
-        String typeOfMedia = null;
-        for(int i = 0; i < llMedia.size(); i++) {
+        StringBuilder typeOfMedia = null;
+        for (String s : llMedia) {
             if (typeOfMedia == null) {
-                typeOfMedia = llMedia.get(i);
+                typeOfMedia = new StringBuilder(s);
             } else {
-                typeOfMedia += ", " + llMedia.get(i);
+                typeOfMedia.append(", ").append(s);
             }
         }
-        panMedia.add(new JLabel(typeOfMedia));
+        panMedia.add(new JLabel(typeOfMedia.toString()));
 
         panUpper.add(panMedia, new GridBagConstraints() {{
             gridx = 1;

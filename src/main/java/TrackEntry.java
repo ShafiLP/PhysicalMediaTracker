@@ -23,7 +23,6 @@ public class TrackEntry {
         this.tfName = tfName;
         lIndex = new JLabel(index + "");
 
-
         // Delete button
         ImageIcon icon = new ImageIcon("media\\icons\\delete.png");
         Image img = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);

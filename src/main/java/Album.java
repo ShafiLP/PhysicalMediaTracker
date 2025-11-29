@@ -14,6 +14,7 @@ public class Album {
     private boolean onCassette;
 
     private int listenCount;
+    private LinkedList<DateTime> llListeningTimes = new LinkedList<>();
 
     public Album() {
         // Empty constructor
@@ -182,5 +183,9 @@ public class Album {
      */
     public int getListenCount() {
         return listenCount;
+    }
+
+    public void addListenTime(String pDate, String pTime) {
+        llListeningTimes.add(new DateTime(pDate, pTime));
     }
 }

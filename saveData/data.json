@@ -3,51 +3,63 @@
     "trackList": [
       {
         "trackName": "Dumpweed",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 0
       },
       {
         "trackName": "Don\u0027t Leave Me",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 0
       },
       {
         "trackName": "Aliens Exist",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 0
       },
       {
         "trackName": "Going Away To College",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 0
       },
       {
         "trackName": "What\u0027s My Age Again?",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 0
       },
       {
         "trackName": "Dysentery Gary",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 0
       },
       {
         "trackName": "Adam\u0027s Song",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 0
       },
       {
         "trackName": "All The Small Things",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 0
       },
       {
         "trackName": "The Party Song",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 0
       },
       {
         "trackName": "Mutt",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 0
       },
       {
         "trackName": "Wendy Clear",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 0
       },
       {
         "trackName": "Anthem",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 0
       }
     ],
     "albumName": "Enema Of The State",
@@ -58,77 +70,96 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   },
   {
     "trackList": [
       {
         "trackName": "Abominable Dr. Phibes",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 0
       },
       {
         "trackName": "American Psycho",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 0
       },
       {
         "trackName": "Speak Of The Devil",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 0
       },
       {
         "trackName": "Walk Among Us",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 0
       },
       {
         "trackName": "The Hunger",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 0
       },
       {
         "trackName": "From Hell They Came",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 0
       },
       {
         "trackName": "Dig Up Her Bones",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 0
       },
       {
         "trackName": "Blacklight",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 0
       },
       {
         "trackName": "Resurrection",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 0
       },
       {
         "trackName": "This Island Earth",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 0
       },
       {
         "trackName": "Crimson Ghost",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 0
       },
       {
         "trackName": "Day Of The Dead",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 0
       },
       {
         "trackName": "The Haunting",
-        "trackNumber": 13
+        "trackNumber": 13,
+        "listenCount": 0
       },
       {
         "trackName": "Mars Attacks",
-        "trackNumber": 14
+        "trackNumber": 14,
+        "listenCount": 0
       },
       {
         "trackName": "Hate The Living, Love The Dead",
-        "trackNumber": 15
+        "trackNumber": 15,
+        "listenCount": 0
       },
       {
         "trackName": "Shining",
-        "trackNumber": 16
+        "trackNumber": 16,
+        "listenCount": 0
       },
       {
         "trackName": "Don\u0027t Open \u0027Til Doomsday",
-        "trackNumber": 17
+        "trackNumber": 17,
+        "listenCount": 0
       }
     ],
     "albumName": "American Psycho",
@@ -139,61 +170,76 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   },
   {
     "trackList": [
       {
         "trackName": "Holy Wars...The Punishment Due",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 0
       },
       {
         "trackName": "Hangar 18",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 0
       },
       {
         "trackName": "Take No Prisoners",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 0
       },
       {
         "trackName": "Five Magics",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 0
       },
       {
         "trackName": "Poision Was The Cure",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 0
       },
       {
         "trackName": "Lucretia",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 0
       },
       {
         "trackName": "Tornado Of Souls",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 0
       },
       {
         "trackName": "Dawn Patrol",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 0
       },
       {
         "trackName": "Rust in Peace...Polaris",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 0
       },
       {
         "trackName": "My Creation",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 0
       },
       {
         "trackName": "Rust in Peace... Polaris (Demo)",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 0
       },
       {
         "trackName": "Holy Wars...The Punishment Due (Demo)",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 0
       },
       {
         "trackName": "Take No Prisoners (Demo)",
-        "trackNumber": 13
+        "trackNumber": 13,
+        "listenCount": 0
       }
     ],
     "albumName": "Rust In Peace",
@@ -204,65 +250,81 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   },
   {
     "trackList": [
       {
         "trackName": "Ohne Dich",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 0
       },
       {
         "trackName": "Baby ich tu\u0027s",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 0
       },
       {
         "trackName": "Komm zurück",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 0
       },
       {
         "trackName": "Wilde Welt",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 0
       },
       {
         "trackName": "Westerland",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 0
       },
       {
         "trackName": "Ich will dich",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 0
       },
       {
         "trackName": "Elke",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 0
       },
       {
         "trackName": "Blumen",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 0
       },
       {
         "trackName": "Ausserirdische",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 0
       },
       {
         "trackName": "Siegerin",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 0
       },
       {
         "trackName": "Bitte, Bitte",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 0
       },
       {
         "trackName": "Popstar",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 0
       },
       {
         "trackName": "Gute Zeit",
-        "trackNumber": 13
+        "trackNumber": 13,
+        "listenCount": 0
       },
       {
         "trackName": "Schwanz ab",
-        "trackNumber": 14
+        "trackNumber": 14,
+        "listenCount": 0
       }
     ],
     "albumName": "Das Ist Nicht Die Ganze Wahrheit...",
@@ -273,77 +335,96 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   },
   {
     "trackList": [
       {
         "trackName": "Counterfeit",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 0
       },
       {
         "trackName": "Faith",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 0
       },
       {
         "trackName": "Nookie",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 0
       },
       {
         "trackName": "Break Stuff",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 0
       },
       {
         "trackName": "Re-Arranged",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 0
       },
       {
         "trackName": "N 2 Gether Now",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 0
       },
       {
         "trackName": "Take A Look Around",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 0
       },
       {
         "trackName": "My Generation",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 0
       },
       {
         "trackName": "Rollin\u0027 (Air Raid Vehicle)",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 0
       },
       {
         "trackName": "My Way",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 0
       },
       {
         "trackName": "Boiler",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 0
       },
       {
         "trackName": "Eat You Alive",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 0
       },
       {
         "trackName": "Behind Blue Eyes",
-        "trackNumber": 13
+        "trackNumber": 13,
+        "listenCount": 0
       },
       {
         "trackName": "Build A Bridge",
-        "trackNumber": 14
+        "trackNumber": 14,
+        "listenCount": 0
       },
       {
         "trackName": "Why",
-        "trackNumber": 15
+        "trackNumber": 15,
+        "listenCount": 0
       },
       {
         "trackName": "Lean On Me",
-        "trackNumber": 16
+        "trackNumber": 16,
+        "listenCount": 0
       },
       {
         "trackName": "Home Sweet Home / Bittersweet Symphony",
-        "trackNumber": 17
+        "trackNumber": 17,
+        "listenCount": 0
       }
     ],
     "albumName": "Greatest Hitz",
@@ -354,65 +435,81 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   },
   {
     "trackList": [
       {
         "trackName": "Collapse (Post-Amerika)",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 1
       },
       {
         "trackName": "Long Forgotten Sons",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 1
       },
       {
         "trackName": "Re-Education (Through Labor)",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 1
       },
       {
         "trackName": "The Dirt Whispered",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 1
       },
       {
         "trackName": "Kotov Syndrome",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 1
       },
       {
         "trackName": "From Heads Unworthy",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 1
       },
       {
         "trackName": "The Strength To Go On",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 1
       },
       {
         "trackName": "Audience of One",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 1
       },
       {
         "trackName": "Entertainment",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 1
       },
       {
         "trackName": "Hero Of War",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 1
       },
       {
         "trackName": "Savior",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 1
       },
       {
         "trackName": "Hairline Fracture",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 1
       },
       {
         "trackName": "Whereabouts Unknown",
-        "trackNumber": 13
+        "trackNumber": 13,
+        "listenCount": 1
       },
       {
         "trackName": "Historia Calamitatum",
-        "trackNumber": 14
+        "trackNumber": 14,
+        "listenCount": 1
       }
     ],
     "albumName": "Appeal To Reason",
@@ -423,61 +520,76 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   },
   {
     "trackList": [
       {
         "trackName": "Intro (feat. Apocalyptica)",
-        "trackNumber": 1
+        "trackNumber": 1,
+        "listenCount": 0
       },
       {
         "trackName": "Her Voice Resides",
-        "trackNumber": 2
+        "trackNumber": 2,
+        "listenCount": 0
       },
       {
         "trackName": "4 Words (To Choke Upon)",
-        "trackNumber": 3
+        "trackNumber": 3,
+        "listenCount": 0
       },
       {
         "trackName": "Tears Don\u0027t Fall",
-        "trackNumber": 4
+        "trackNumber": 4,
+        "listenCount": 0
       },
       {
         "trackName": "Suffocating Under Words Of Sorrow (What Can I Do)",
-        "trackNumber": 5
+        "trackNumber": 5,
+        "listenCount": 0
       },
       {
         "trackName": "Hit The Floor",
-        "trackNumber": 6
+        "trackNumber": 6,
+        "listenCount": 0
       },
       {
         "trackName": "All These Things I Hate (Revolve Around Me)",
-        "trackNumber": 7
+        "trackNumber": 7,
+        "listenCount": 0
       },
       {
         "trackName": "Hand Of Blood",
-        "trackNumber": 8
+        "trackNumber": 8,
+        "listenCount": 0
       },
       {
         "trackName": "Room 409",
-        "trackNumber": 9
+        "trackNumber": 9,
+        "listenCount": 0
       },
       {
         "trackName": "The Poison",
-        "trackNumber": 10
+        "trackNumber": 10,
+        "listenCount": 0
       },
       {
         "trackName": "10 Years Today",
-        "trackNumber": 11
+        "trackNumber": 11,
+        "listenCount": 0
       },
       {
         "trackName": "Cries In Vain",
-        "trackNumber": 12
+        "trackNumber": 12,
+        "listenCount": 0
       },
       {
         "trackName": "The End",
-        "trackNumber": 13
+        "trackNumber": 13,
+        "listenCount": 0
       }
     ],
     "albumName": "The Poison",
@@ -488,6 +600,8 @@
     "containsNulltrack": false,
     "onVinyl": false,
     "onCd": true,
-    "onCassette": false
+    "onCassette": false,
+    "listenCount": 0,
+    "llListeningTimes": []
   }
 ]

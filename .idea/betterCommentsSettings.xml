@@ -13,12 +13,13 @@
           <option name="type" value="?" />
         </CustomTag>
         <CustomTag>
-          <option name="color" value="#00CC33" />
+          <option name="backgroundColor" value="#006633" />
+          <option name="color" value="#999999" />
           <option name="hasStrikethrough" value="true" />
           <option name="type" value="//" />
         </CustomTag>
         <CustomTag>
-          <option name="color" value="#FF8C00" />
+          <option name="color" value="#FF9900" />
           <option name="type" value="todo" />
         </CustomTag>
         <CustomTag>

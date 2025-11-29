@@ -4,16 +4,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -71,6 +66,15 @@ public class AddListenSessionFrame extends JFrame {
 
             currentIdx[0]++;
         }
+        //! TEST: WITH JTABLE INSTEAD OF MULTIPLE SWING OBJECTS
+        /*
+        String[] columnNames = {"Nr.", "Trackname", "Gehört"};
+        Object[][] data = {
+                {1, "Track Eins", 3},
+                {2, "Track Zwei", 3},
+                {3, "Track Drei", 4}
+        };
+        JTable table = new JTable(data, columnNames);*/
 
         // Wrap panTracks so its content stays top-aligned inside the scroll pane
         JPanel panTracksWrapper = new JPanel(new BorderLayout());
@@ -84,13 +88,13 @@ public class AddListenSessionFrame extends JFrame {
         JCheckBox cbFullListen = new JCheckBox("Komplett angehört", true);
         cbFullListen.addActionListener(_ -> {
             if (cbFullListen.isSelected()) {
-                for (int i = 0; i < llCheckBoxes.size(); i++) {
-                    llCheckBoxes.get(i).setSelected(true);
-                    llCheckBoxes.get(i).setEnabled(false);
+                for (JCheckBox llCheckBox : llCheckBoxes) {
+                    llCheckBox.setSelected(true);
+                    llCheckBox.setEnabled(false);
                 }
             } else {
-                for (int i = 0; i < llCheckBoxes.size(); i++) {
-                    llCheckBoxes.get(i).setEnabled(true);
+                for (JCheckBox llCheckBox : llCheckBoxes) {
+                    llCheckBox.setEnabled(true);
                 }
             }
         });
@@ -119,19 +123,20 @@ public class AddListenSessionFrame extends JFrame {
             gridx = 0;
             gridy = 0;
             weightx = 1.0;
-            anchor = GridBagConstraints.NORTH;
-            fill = GridBagConstraints.HORIZONTAL;
+            weighty = 1.0;
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.BOTH;
         }});
 
-        // Information about time
-        // TODO: open calendar
+        // Information about date
         JPanel panDate = new JPanel(new GridLayout(2, 1));
-        JTextField tfDate = new JTextField(LocalDate.now().toString());
+        PlaceholderTextField tfDate = new PlaceholderTextField("DD.MM.YYYY");
+        tfDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         tfDate.setEnabled(false);
         JCheckBox cbUseLocalDate = new JCheckBox("Aktuelles Datum", true);
         cbUseLocalDate.addActionListener(_ -> {
             if (cbUseLocalDate.isSelected()) {
-                tfDate.setText(LocalDate.now().toString());
+                tfDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
                 tfDate.setEnabled(false);
             } else {
                 tfDate.setText("");
@@ -145,7 +150,32 @@ public class AddListenSessionFrame extends JFrame {
             gridy = 1;
             weightx = 1.0;
             anchor  = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.HORIZONTAL;
+            fill = GridBagConstraints.NONE;
+        }});
+
+        // Information about time
+        JPanel panTime = new  JPanel(new GridLayout(2, 1));
+        PlaceholderTextField tfTime = new PlaceholderTextField("hh:mm");
+        tfTime.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        tfTime.setEnabled(false);
+        JCheckBox cbUseLocalTime = new JCheckBox("Aktuelle Uhrzeit", true);
+        cbUseLocalTime.addActionListener(_ -> {
+            if (cbUseLocalTime.isSelected()) {
+                tfTime.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+                tfTime.setEnabled(false);
+            } else {
+                tfTime.setText("");
+                tfTime.setEnabled(true);
+            }
+        });
+        panTime.add(tfTime);
+        panTime.add(cbUseLocalTime);
+        panCenter.add(panTime, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 2;
+            weightx = 1.0;
+            anchor  = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.NONE;
         }});
 
         // Add tracks to frame
@@ -177,6 +207,7 @@ public class AddListenSessionFrame extends JFrame {
             for (int i = 0; i < editedAlbum.getTrackList().size(); i++) {
                 if (llCheckBoxes.get(i).isSelected()) editedAlbum.getTrackList().get(i).incraseListenCount();
             }
+            editedAlbum.addListenTime(tfDate.getText(), tfTime.getText());
             pPmt.editAlbum(pAlbum, editedAlbum);
             this.dispose();
         });

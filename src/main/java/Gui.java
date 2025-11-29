@@ -39,14 +39,8 @@ public class Gui extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
+        // Add JMenuBar
         initializeJMenuBar();
-
-        // JButton for adding new album
-        JButton bAddAlbum = new JButton("Album hinzufügen");
-        bAddAlbum.addActionListener(e -> {
-            new AlbumCreateFrame(PMT);
-        });
-        this.add(bAddAlbum, BorderLayout.SOUTH);
 
         // JPanel with search bar and sorter
         JPanel panSearchSort = new JPanel(new GridBagLayout());
@@ -79,7 +73,7 @@ public class Gui extends JFrame {
                 case "Name" -> displayAlbumList(PMT.sortByName());
                 case "Künstler" -> displayAlbumList(PMT.sortByArtist());
                 case "Erscheinungsjahr" -> displayAlbumList(PMT.sortByRelease());
-                default -> System.out.println("Items couldn't be sorted."); // Error
+                default -> System.out.println("Items couldn't be sorted."); //! Error
             }
         });
         panSearchSort.add(cbSortBy, new GridBagConstraints() {{
@@ -196,6 +190,26 @@ public class Gui extends JFrame {
 
         menuBar.add(menuFile);
 
+        // * Album options
+        JMenu menuAlbum = new JMenu("Album");
+
+        // Item to create new album
+        JMenuItem itemNewAlbum = new JMenuItem("Neues Album");
+        itemNewAlbum.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.SHIFT_MASK));
+        itemNewAlbum.addActionListener(e -> {
+            new AlbumCreateFrame(PMT);
+        });
+        menuAlbum.add(itemNewAlbum);
+
+        // Item to sort albums
+        JMenuItem itemSort = new JMenuItem("Sortieren");
+        itemSort.addActionListener(e -> {
+           // TODO
+        });
+        menuAlbum.add(itemSort);
+
+        menuBar.add(menuAlbum);
+
         // * Settings
         JMenu menuSettings = new JMenu("Anzeige");
 
@@ -220,5 +234,9 @@ public class Gui extends JFrame {
 
         // Add JMenuBar to JFrame
         this.setJMenuBar(menuBar);
+    }
+
+    private void changeAccentColor(String pColor) {
+        // TODO
     }
 }
