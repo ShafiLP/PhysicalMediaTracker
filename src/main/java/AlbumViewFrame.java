@@ -60,9 +60,9 @@ public class AlbumViewFrame extends JFrame {
             gridy = 0;
             weightx = 0;
             weighty = 0;
-            gridheight = 5;
+            gridheight = 6;
             anchor = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.BOTH;
+            fill = GridBagConstraints.NONE;
         }});
 
         // Album name
@@ -140,8 +140,25 @@ public class AlbumViewFrame extends JFrame {
             gridx = 1;
             gridy = 4;
             weightx = 0.7;
-            insets = new Insets(0, 5, 0, 0);
-            anchor = GridBagConstraints.NORTH;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Last time listened
+        JPanel panLastListen = new  JPanel(new GridLayout(2, 1));
+        panLastListen.add(new JLabel("Letztes Mal gehört:"));
+        if (!pAlbum.getListeningTimes().isEmpty()) {
+            panLastListen.add(new JLabel(pAlbum.getListeningTimes().getLast().getDate() + ", " + pAlbum.getListeningTimes().getLast().getTime() + " Uhr."));
+        } else {
+            panLastListen.add(new JLabel("Noch nicht gehört."));
+        }
+        panUpper.add(panLastListen, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 5;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
@@ -154,53 +171,69 @@ public class AlbumViewFrame extends JFrame {
         panTracks.setLayout(new GridBagLayout());
         int latestIndex = 1;
 
-        GridBagConstraints gbcIndex = new GridBagConstraints();
-        gbcIndex.gridx = 0;
-        gbcIndex.gridy = 0;
-        gbcIndex.weightx = 0.1;
-        gbcIndex.insets = new Insets(0, 0, 5, 0);
-        gbcIndex.anchor = GridBagConstraints.CENTER;
-        gbcIndex.fill = GridBagConstraints.NONE;
-
-        GridBagConstraints gbcTextField = new GridBagConstraints();
-        gbcTextField.gridx = 1;
-        gbcTextField.gridy = 0;
-        gbcTextField.weightx = 0.8;
-        gbcTextField.insets = new Insets(0, 0, 5, 0);
-        gbcTextField.anchor = GridBagConstraints.CENTER;
-        gbcTextField.fill = GridBagConstraints.HORIZONTAL;
-
-        GridBagConstraints gbcTimesListened = new GridBagConstraints();
-        gbcTimesListened.gridx = 2;
-        gbcTimesListened.gridy = 0;
-        gbcTimesListened.weightx = 0.1;
-        gbcTimesListened.insets = new Insets(0, 0, 5, 0);
-        gbcTimesListened.anchor = GridBagConstraints.CENTER;
-        gbcTimesListened.fill = GridBagConstraints.HORIZONTAL;
-
         // Add category names for table
-        panTracks.add(new JLabel("Nr.", SwingConstants.CENTER), gbcIndex);
-        panTracks.add(new JLabel("Trackname", SwingConstants.CENTER), gbcTextField);
-        panTracks.add(new JLabel("Gehört", SwingConstants.CENTER), gbcTimesListened);
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(4, 8, 4, 8);
+        c.gridx = 0;
+        c.weightx = 0;
 
-        gbcIndex.gridy++;
-        gbcTextField.gridy++;
-        gbcTimesListened.gridy++;
+        JLabel lNr = new JLabel("Nr.", SwingConstants.CENTER);
+        lNr.setPreferredSize(new Dimension(20, lNr.getPreferredSize().height));
+        panTracks.add(lNr, c);
+
+        c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+
+        JLabel lName = new JLabel("Trackname", SwingConstants.CENTER);
+        lNr.setPreferredSize(new Dimension(20, lName.getPreferredSize().height));
+        panTracks.add(lName, c);
+
+        c.gridx = 2;
+        c.weightx = 0;
+        c.fill = GridBagConstraints.NONE;
+
+        JLabel lListen = new JLabel("Gehört", SwingConstants.CENTER);
+        panTracks.add(lListen, c);
 
         // Add all tracks from album
         if (pAlbum.containsNulltrack()) latestIndex = 0;
         for(int i = 0; i < pAlbum.getTrackList().size(); i++) {
-            llTracks.addLast(new TrackEntry(latestIndex, new JTextField(pAlbum.getTrackList().get(i).getTrackName())));
+            JPanel newRow = new JPanel(new GridBagLayout());
+            if (i % 2 == 0) newRow.setBackground(new Color(200, 200, 200));
 
-            panTracks.add(llTracks.getLast().getIndexLabel(), gbcIndex);
-            gbcIndex.gridy++;
+            GridBagConstraints gbcNewRow = new GridBagConstraints();
+            gbcNewRow.insets = new Insets(4, 8, 4, 8);
+            gbcNewRow.weightx = 0;
 
-            panTracks.add(new JLabel(llTracks.getLast().getTextField().getText()), gbcTextField);
-            gbcTextField.gridy++;
+            // Track number
+            JLabel newRowLabel = new JLabel(String.valueOf(latestIndex), SwingConstants.CENTER);
+            newRowLabel.setPreferredSize(new Dimension(20, newRowLabel.getPreferredSize().height));
+            gbcNewRow.gridx = 0;
+            newRow.add(newRowLabel, gbcNewRow);
 
-            panTracks.add(new JLabel("0", SwingConstants.CENTER), gbcTimesListened); // TODO change when implemented
-            gbcTimesListened.gridy++;
+            // Track name
+            gbcNewRow.gridx = 1;
+            gbcNewRow.fill = GridBagConstraints.HORIZONTAL;
+            gbcNewRow.weightx = 1.0;
+            newRow.add(new JLabel(pAlbum.getTrackList().get(i).getTrackName(), SwingConstants.LEFT), gbcNewRow);
 
+            // Listen counter
+            gbcNewRow.gridx = 2;
+            gbcNewRow.weightx = 0;
+            gbcNewRow.fill = GridBagConstraints.NONE;
+            JLabel newRowListen = new JLabel(String.valueOf(pAlbum.getTrackList().get(i).getListenCount()), SwingConstants.CENTER);
+            newRowListen.setPreferredSize(new Dimension(lListen.getPreferredSize().width, newRowListen.getPreferredSize().height));
+            newRow.add(newRowListen, gbcNewRow);
+
+            // Add row to tracks panel
+            GridBagConstraints gbcTrack = new GridBagConstraints();
+            gbcTrack.gridx = 0;
+            gbcTrack.gridy = i + 1;
+            gbcTrack.gridwidth = 3;
+            gbcTrack.fill = GridBagConstraints.HORIZONTAL;
+
+            panTracks.add(newRow, gbcTrack);
             latestIndex++;
         }
 

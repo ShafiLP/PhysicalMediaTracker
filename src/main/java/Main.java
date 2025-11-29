@@ -2,7 +2,7 @@
  * Main class
  * 
  * @author ShafiLP
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class Main {
     public static void main(String[] args) {
@@ -12,8 +12,6 @@ public class Main {
 
 /**
  * TODO:
- * * Listen Counter
- * * Grey background every second entry
  * * Display settings
  * * General settings
  * * Automatically search for cover

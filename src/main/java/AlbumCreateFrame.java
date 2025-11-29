@@ -1,14 +1,5 @@
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,7 +24,7 @@ public class AlbumCreateFrame extends JFrame {
      */
     public AlbumCreateFrame(Pmt pPmt) {
         // Local objects
-        LinkedList<TrackEntry> llTrackEntries = new LinkedList<>();
+        LinkedList<TrackEntry> llTracks = new LinkedList<>();
         Image[] albumCover = {null}; // Array so local object can be accessed in action listener
 
         this.setTitle("Neues Album");
@@ -172,17 +163,19 @@ public class AlbumCreateFrame extends JFrame {
 
         // CheckBox for Nulltracks
         JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack"); // If checked, index will start at 0
+        cbNulltrack.setBackground(new Color(200, 200, 200));
         cbNulltrack.addActionListener(_ -> {
             if(cbNulltrack.isSelected()) {
-                for(int i = 0; i < llTrackEntries.size(); i++) {
-                    llTrackEntries.get(i).setIndex(llTrackEntries.get(i).getIndex() - 1);
+                for (TrackEntry llTrack : llTracks) {
+                    llTrack.setIndex(llTrack.getIndex() - 1);
                 }
             } else {
-                for(int i = 0; i < llTrackEntries.size(); i++) {
-                    llTrackEntries.get(i).setIndex(llTrackEntries.get(i).getIndex() + 1);
+                for (TrackEntry llTrack : llTracks) {
+                    llTrack.setIndex(llTrack.getIndex() + 1);
                 }
             }
         });
+
         panTracks.add(cbNulltrack, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
@@ -193,64 +186,87 @@ public class AlbumCreateFrame extends JFrame {
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
-        GridBagConstraints gbcIndex = new GridBagConstraints();
-        gbcIndex.gridx = 0;
-        gbcIndex.gridy = 1;
-        gbcIndex.weightx = 0.1;
-        gbcIndex.insets = new Insets(0, 0, 5, 0);
-        gbcIndex.anchor = GridBagConstraints.CENTER;
-        gbcIndex.fill = GridBagConstraints.NONE;
+        // Add category names for table
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(4, 8, 4, 8);
+        c.gridx = 0;
+        c.weightx = 0;
+        c.gridy = 1;
 
-        GridBagConstraints gbcTextField = new GridBagConstraints();
-        gbcTextField.gridx = 1;
-        gbcTextField.gridy = 1;
-        gbcTextField.weightx = 0.8;
-        gbcTextField.insets = new Insets(0, 0, 5, 0);
-        gbcTextField.anchor = GridBagConstraints.CENTER;
-        gbcTextField.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lNr = new JLabel("Nr.", SwingConstants.CENTER);
+        lNr.setPreferredSize(new Dimension(20, lNr.getPreferredSize().height));
+        panTracks.add(lNr, c);
 
-        GridBagConstraints gbcDelete = new GridBagConstraints();
-        gbcDelete.gridx = 2;
-        gbcDelete.gridy = 1;
-        gbcDelete.weightx = 0.1;
-        gbcDelete.insets = new Insets(0, 0, 5, 5);
-        gbcDelete.anchor = GridBagConstraints.CENTER;
-        gbcDelete.fill = GridBagConstraints.NONE;
+        c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+
+        JLabel lName = new JLabel("Trackname", SwingConstants.CENTER);
+        lNr.setPreferredSize(new Dimension(20, lName.getPreferredSize().height));
+        panTracks.add(lName, c);
+
+        c.gridx = 2;
+        c.weightx = 0;
+        c.fill = GridBagConstraints.NONE;
+
+        JLabel lDelete = new JLabel("Löschen", SwingConstants.CENTER);
+        panTracks.add(lDelete, c);
 
         // Add five blank entries as placeholder
         for(int i = 0; i < 5; i++) {
-            llTrackEntries.addLast(new TrackEntry(latestIndex[0], new JTextField())); // Add new entry to LinkedList so index and JTextField can easily be accessed
+            llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField())); // Add new entry to LinkedList so index and JTextField can easily be accessed
 
-            panTracks.add(llTrackEntries.getLast().getIndexLabel(), gbcIndex);
-            gbcIndex.gridy++;
+            JPanel newRow = new JPanel(new GridBagLayout());
+            if (latestIndex[0] % 2 == 0) newRow.setBackground(new Color(200, 200, 200));
 
-            panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
-            gbcTextField.gridy++;
+            GridBagConstraints gbcNewRow = new GridBagConstraints();
+            gbcNewRow.insets = new Insets(4, 8, 4, 8);
+            gbcNewRow.weightx = 0;
 
-            panTracks.add(llTrackEntries.getLast().getDeleteButton(), gbcDelete);
-            gbcDelete.gridy++;
+            // Track number
+            gbcNewRow.gridx = 0;
+            newRow.add(llTracks.getLast().getIndexLabel(), gbcNewRow);
 
-            final TrackEntry DELETE = llTrackEntries.getLast();
+            // Track name
+            gbcNewRow.gridx = 1;
+            gbcNewRow.fill = GridBagConstraints.HORIZONTAL;
+            gbcNewRow.weightx = 1.0;
+            newRow.add(llTracks.getLast().getTextField(), gbcNewRow);
+
+            // Delete button
+            gbcNewRow.gridx = 2;
+            gbcNewRow.weightx = 0;
+            gbcNewRow.fill = GridBagConstraints.NONE;
+            JButton bDelete = llTracks.getLast().getDeleteButton();
+            bDelete.setPreferredSize(new Dimension(lDelete.getPreferredSize().width, bDelete.getPreferredSize().height));
+            newRow.add(bDelete, gbcNewRow);
+
+            final TrackEntry DELETE = llTracks.getLast();
 
             // Add action listener to delete button
-            llTrackEntries.getLast().getDeleteButton().addActionListener(_ -> {
+            llTracks.getLast().getDeleteButton().addActionListener(_ -> {
                 final int DELETEIDX = DELETE.getIndex() - 1;
 
                 // Change name of tracks to the one that are next and remove last track 
-                for (int j = DELETEIDX; j < llTrackEntries.size() - 1; j++) {
-                    llTrackEntries.get(j).getTextField().setText(llTrackEntries.get(j + 1).getTextField().getText());
-                    llTrackEntries.get(j).setIndex(j + 1);
+                for (int j = DELETEIDX; j < llTracks.size() - 1; j++) {
+                    llTracks.get(j).getTextField().setText(llTracks.get(j + 1).getTextField().getText());
+                    llTracks.get(j).setIndex(j + 1);
                 }
-                llTrackEntries.getLast().getIndexLabel().setVisible(false);
-                llTrackEntries.getLast().getTextField().setVisible(false);
-                llTrackEntries.getLast().getDeleteButton().setVisible(false);
-                llTrackEntries.removeLast();
-                gbcIndex.gridy--;
-                gbcTextField.gridy--;
-                gbcDelete.gridy--;
+                llTracks.getLast().getIndexLabel().setVisible(false);
+                llTracks.getLast().getTextField().setVisible(false);
+                llTracks.getLast().getDeleteButton().setVisible(false);
+                llTracks.removeLast();
                 latestIndex[0]--;
             });
 
+            // Add row to tracks panel
+            GridBagConstraints gbcTrack = new GridBagConstraints();
+            gbcTrack.gridx = 0;
+            gbcTrack.gridy = i + 2;
+            gbcTrack.gridwidth = 3;
+            gbcTrack.fill = GridBagConstraints.HORIZONTAL;
+
+            panTracks.add(newRow, gbcTrack);
             latestIndex[0]++;
         }
 
@@ -279,38 +295,61 @@ public class AlbumCreateFrame extends JFrame {
         JButton bAddTrack = new JButton("+");
         bAddTrack.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bAddTrack.addActionListener(_ -> {
-            llTrackEntries.addLast(new TrackEntry(latestIndex[0], new JTextField()));
+            llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField()));
 
-            panTracks.add(llTrackEntries.getLast().getIndexLabel(), gbcIndex);
-            gbcIndex.gridy++;
+            JPanel newRow = new JPanel(new GridBagLayout());
+            if (latestIndex[0] % 2 == 0) newRow.setBackground(new Color(200, 200, 200));
 
-            panTracks.add(llTrackEntries.getLast().getTextField(), gbcTextField);
-            gbcTextField.gridy++;
+            GridBagConstraints gbcNewRow = new GridBagConstraints();
+            gbcNewRow.insets = new Insets(4, 8, 4, 8);
+            gbcNewRow.weightx = 0;
 
-            panTracks.add(llTrackEntries.getLast().getDeleteButton(), gbcDelete);
-            gbcDelete.gridy++;
+            // Track number
+            JLabel newRowLabel = new JLabel(String.valueOf(latestIndex[0]), SwingConstants.CENTER);
+            newRowLabel.setPreferredSize(new Dimension(20, newRowLabel.getPreferredSize().height));
+            gbcNewRow.gridx = 0;
+            newRow.add(newRowLabel, gbcNewRow);
 
-            final TrackEntry DELETE = llTrackEntries.getLast();
+            // Track name
+            gbcNewRow.gridx = 1;
+            gbcNewRow.fill = GridBagConstraints.HORIZONTAL;
+            gbcNewRow.weightx = 1.0;
+            newRow.add(llTracks.getLast().getTextField(), gbcNewRow);
+
+            // Delete button
+            gbcNewRow.gridx = 2;
+            gbcNewRow.weightx = 0;
+            gbcNewRow.fill = GridBagConstraints.NONE;
+            JButton bDelete = llTracks.getLast().getDeleteButton();
+            bDelete.setPreferredSize(new Dimension(lDelete.getPreferredSize().width, bDelete.getPreferredSize().height));
+            newRow.add(bDelete, gbcNewRow);
+
+            final TrackEntry DELETE = llTracks.getLast();
 
             // Add action listener to delete button
-            llTrackEntries.getLast().getDeleteButton().addActionListener(_ -> {
+            llTracks.getLast().getDeleteButton().addActionListener(_ -> {
                 final int DELETEIDX = DELETE.getIndex() - 1;
 
                 // Change name of tracks to the one that are next and remove last track 
-                for (int i = DELETEIDX; i < llTrackEntries.size() - 1; i++) {
-                    llTrackEntries.get(i).getTextField().setText(llTrackEntries.get(i + 1).getTextField().getText());
-                    llTrackEntries.get(i).setIndex(i + 1);
+                for (int i = DELETEIDX; i < llTracks.size() - 1; i++) {
+                    llTracks.get(i).getTextField().setText(llTracks.get(i + 1).getTextField().getText());
+                    llTracks.get(i).setIndex(i + 1);
                 }
-                llTrackEntries.getLast().getIndexLabel().setVisible(false);
-                llTrackEntries.getLast().getTextField().setVisible(false);
-                llTrackEntries.getLast().getDeleteButton().setVisible(false);
-                llTrackEntries.removeLast();
-                gbcIndex.gridy--;
-                gbcTextField.gridy--;
-                gbcDelete.gridy--;
+                llTracks.getLast().getIndexLabel().setVisible(false);
+                llTracks.getLast().getTextField().setVisible(false);
+                llTracks.getLast().getDeleteButton().setVisible(false);
+                llTracks.removeLast();
                 latestIndex[0]--;
             });
 
+            // Add row to tracks panel
+            GridBagConstraints gbcTrack = new GridBagConstraints();
+            gbcTrack.gridx = 0;
+            gbcTrack.gridy = latestIndex[0] + 2;
+            gbcTrack.gridwidth = 3;
+            gbcTrack.fill = GridBagConstraints.HORIZONTAL;
+
+            panTracks.add(newRow, gbcTrack);
             this.revalidate();
             latestIndex[0]++;
         });
@@ -368,8 +407,8 @@ public class AlbumCreateFrame extends JFrame {
         bConfirm.addActionListener(_ -> {
             // Add new album to control class
             LinkedList<Track> llNewTracks = new LinkedList<>(); // Read tracks
-            for(int i = 0; i < llTrackEntries.size(); i++) {
-                llNewTracks.addLast(new Track(llTrackEntries.get(i).getTextField().getText(), llTrackEntries.get(i).getIndex()));
+            for(int i = 0; i < llTracks.size(); i++) {
+                llNewTracks.addLast(new Track(llTracks.get(i).getTextField().getText(), llTracks.get(i).getIndex()));
             }
             try {
                 // Save album cover as image

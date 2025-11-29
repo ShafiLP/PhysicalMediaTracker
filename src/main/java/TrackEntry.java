@@ -1,9 +1,6 @@
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-import java.awt.Image;
+import java.awt.*;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -21,7 +18,8 @@ public class TrackEntry {
     TrackEntry(int index, JTextField tfName) {
         this.index = index;
         this.tfName = tfName;
-        lIndex = new JLabel(index + "");
+        lIndex = new JLabel(String.valueOf(index), SwingConstants.CENTER);
+        lIndex.setPreferredSize(new Dimension(20, lIndex.getPreferredSize().height));
 
         // Delete button
         ImageIcon icon = new ImageIcon("media\\icons\\delete.png");

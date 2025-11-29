@@ -185,7 +185,20 @@ public class Album {
         return listenCount;
     }
 
+    /**
+     * Adds a date and a time when a user listened to the album to the album data
+     * @param pDate Date when album was listened to
+     * @param pTime Time when album was listened to
+     */
     public void addListenTime(String pDate, String pTime) {
         llListeningTimes.add(new DateTime(pDate, pTime));
+    }
+
+    /**
+     * Gets the LinkedList that contains the data of when the user listened to the album and returns it
+     * @return LinkedList<DateTime> with dates and times of when the user listened to the album
+     */
+    public LinkedList<DateTime> getListeningTimes() {
+        return  llListeningTimes;
     }
 }
