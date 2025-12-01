@@ -23,11 +23,11 @@ public class AlbumEditFrame extends JFrame {
     private Image[] albumCover = {null};
 
     /**
-     * Opens a JFrame where all of the album's information can be edited
-     * @param pAlbum Album object to edit
-     * @param pPmt Object of control class
+     * Opens a JFrame where all the album's information can be edited
+     * @param album Album object to edit
+     * @param pmt Object of control class
      */
-    public AlbumEditFrame(Album album, Pmt pmt) {
+    public AlbumEditFrame(Album album, Pmt pmt, Settings settings) {
         this.setTitle(album.getAlbumName());
         this.setSize(500, 480);
         this.setLocationRelativeTo(null);
@@ -45,7 +45,7 @@ public class AlbumEditFrame extends JFrame {
         // JButton where cover can be changed
         JButton bCover = new JButton();
         bCover.setOpaque(true);
-        bCover.setBackground(new Color(200, 200, 200));
+        bCover.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         bCover.setForeground(new Color(150, 150, 150));
         bCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         bCover.setPreferredSize(new Dimension(200, 200));
@@ -172,7 +172,7 @@ public class AlbumEditFrame extends JFrame {
 
         // CheckBox for Nulltracks
         JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack", album.containsNulltrack()); // If checked, index will start at 0
-        cbNulltrack.setBackground(new Color(200, 200, 200));
+        cbNulltrack.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         cbNulltrack.addActionListener(_ -> {
             if(cbNulltrack.isSelected()) {
                 for (TrackEntry llTrack : llTracks) {
@@ -227,7 +227,7 @@ public class AlbumEditFrame extends JFrame {
             llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField(album.getTrackList().get(i).getTrackName())));
 
             JPanel newRow = new JPanel(new GridBagLayout());
-            if (latestIndex[0] % 2 == 0) newRow.setBackground(new Color(200, 200, 200));
+            if (latestIndex[0] % 2 == 0 & settings.getRowContrast()) newRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
             GridBagConstraints gbcNewRow = new GridBagConstraints();
             gbcNewRow.insets = new Insets(4, 8, 4, 8);
@@ -308,7 +308,7 @@ public class AlbumEditFrame extends JFrame {
             llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField()));
 
             JPanel newRow = new JPanel(new GridBagLayout());
-            if (latestIndex[0] % 2 == 0) newRow.setBackground(new Color(200, 200, 200));
+            if (latestIndex[0] % 2 == 0 & settings.getRowContrast()) newRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
             GridBagConstraints gbcNewRow = new GridBagConstraints();
             gbcNewRow.insets = new Insets(4, 8, 4, 8);

@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
 class AlbumComponent extends JPanel {
+    private Settings settings;
     private JLabel lName;
     private JLabel lRelease;
 
@@ -31,6 +32,8 @@ class AlbumComponent extends JPanel {
      * @param pmt Object of control class
      */
     public AlbumComponent(Album album, Pmt pmt, Settings settings) {
+        this.settings = settings;
+
         LinkedList<String> llMedia = new LinkedList<>();
         if (album.isOnVinyl()) llMedia.add("Vinyl");
         if (album.isOnCd()) llMedia.add("CD");
@@ -48,10 +51,10 @@ class AlbumComponent extends JPanel {
             new AddListenSessionFrame(pmt, album);
         });
         menuView.addActionListener(e -> {
-            new AlbumViewFrame(album, pmt);
+            new AlbumViewFrame(album, pmt, settings);
         });
         menuEdit.addActionListener(e -> {
-            new AlbumEditFrame(album, pmt);
+            new AlbumEditFrame(album, pmt, settings);
         });
         menuDelete.addActionListener(e -> {
             int n = JOptionPane.showConfirmDialog(
@@ -115,7 +118,8 @@ class AlbumComponent extends JPanel {
 
         // Name
         lName = new JLabel(album.getAlbumName());
-        lName.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
+        lName.setFont(settings.getFont());
+        if (settings.getRowContrast()) lName.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         lName.setOpaque(true);
         lName.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         this.add(lName, new GridBagConstraints() {{
@@ -129,6 +133,7 @@ class AlbumComponent extends JPanel {
 
         // Artist
         JLabel lArtist = new JLabel(album.getAlbumArtist());
+        lArtist.setFont(settings.getFont());
         lArtist.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         this.add(lArtist, new GridBagConstraints() {{
             gridx = 0;
@@ -140,8 +145,9 @@ class AlbumComponent extends JPanel {
 
         // Release Year
         lRelease = new JLabel(album.getReleaseYear() + "");
+        lRelease.setFont(settings.getFont());
         lRelease.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        lRelease.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
+        if (settings.getRowContrast()) lRelease.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         lRelease.setOpaque(true);
         this.add(lRelease, new GridBagConstraints() {{
             gridx = 0;
@@ -153,6 +159,7 @@ class AlbumComponent extends JPanel {
 
         // Listen counter
         JLabel lListens = new JLabel(album.getListenCount() + " Mal gehört");
+        lListens.setFont(settings.getFont());
         lListens.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         this.add(lListens, new GridBagConstraints() {{
             gridx = 0;
@@ -172,7 +179,19 @@ class AlbumComponent extends JPanel {
      * Changes the contrast rows' background colours to a darker grey
      */
     public void applyDarkmode() {
-        lName.setBackground(new Color(75, 75, 75));
-        lRelease.setBackground(new Color(75, 75, 75));
+        if (settings.getRowContrast()) {
+            lName.setBackground(new Color(75, 75, 75));
+            lRelease.setBackground(new Color(75, 75, 75));
+        }
+    }
+
+    /**
+     * Changes the contrast rows' background colours to a lighter grey
+     */
+    public void applyLightmode() {
+        if (settings.getRowContrast()) {
+            lName.setBackground(new Color(200, 200, 200));
+            lRelease.setBackground(new Color(200, 200, 200));
+        }
     }
 }

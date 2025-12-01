@@ -162,6 +162,12 @@ public class Gui extends JFrame {
         }
     }
 
+    public void applyLightmode() {
+        for (Component c : panAlbums.getComponents()) {
+            if (c instanceof AlbumComponent) ((AlbumComponent) c).applyLightmode();
+        }
+    }
+
     /**
      * Adds JMenuBar to JFrame
      */
@@ -212,7 +218,7 @@ public class Gui extends JFrame {
         JMenuItem itemNewAlbum = new JMenuItem("Neues Album");
         itemNewAlbum.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.SHIFT_MASK));
         itemNewAlbum.addActionListener(e -> {
-            new AlbumCreateFrame(PMT);
+            new AlbumCreateFrame(PMT, settings);
         });
         menuAlbum.add(itemNewAlbum);
 

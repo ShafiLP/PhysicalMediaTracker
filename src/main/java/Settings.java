@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 
+import java.awt.*;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,14 +8,19 @@ import java.io.IOException;
 public class Settings {
     private String accentColor = "#6c6cffff";
     private boolean isDarkmode = false;
+    private String fontType = "Arial";
+    private int fontSize = 12;
+    private boolean rowContrast = true;
 
     public Settings() {
         // Keep default settings
     }
 
-    public Settings(String accentColor, boolean isDarkmode) {
+    public Settings(String accentColor, boolean isDarkmode,  Font font) {
         this.accentColor = accentColor;
         this.isDarkmode = isDarkmode;
+        this.fontType = font.getFontName();
+        this.fontSize = font.getSize();
     }
 
     public String getAccentColor() {
@@ -31,6 +37,23 @@ public class Settings {
 
     public void setDarkmode(boolean darkmode) {
         isDarkmode = darkmode;
+    }
+
+    public Font getFont() {
+        return new Font(fontType, Font.PLAIN, fontSize);
+    }
+
+    public void setFont(Font font) {
+        this.fontType = font.getFontName();
+        this.fontSize = font.getSize();
+    }
+
+    public boolean getRowContrast() {
+        return rowContrast;
+    }
+
+    public void setRowContrast(boolean rowContrast) {
+        this.rowContrast = rowContrast;
     }
 
     public static Settings readSettings(){

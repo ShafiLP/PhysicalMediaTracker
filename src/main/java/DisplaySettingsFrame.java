@@ -32,7 +32,7 @@ public class DisplaySettingsFrame extends JFrame {
         JPanel panColors  = new JPanel(new GridBagLayout());
         JButton[] bColors = {
                 new JButton() {{
-                    setBackground(new Color(108, 108, 255));
+                    setBackground(new Color(136, 136, 255));
                 }},
                 new JButton() {{
                     setBackground(new Color(255, 108, 108));
@@ -74,15 +74,18 @@ public class DisplaySettingsFrame extends JFrame {
         cbFontType.addItem("Arial");
         cbFontType.addItem("Comic Sans MS");
         // TODO load all system fonts
+        cbFontType.setSelectedItem(settings.getFont().getFontName());
         panFontType.add(cbFontType);
         panSettings.add(panFontType);
 
         // Font size settings
         JPanel panFontSize = new JPanel(new GridLayout(2, 1));
         panFontSize.add(new JLabel("Schriftgröße"));
-        JTextField tfFontSize = new JTextField();
-        // TODO replace with bar
-        panFontSize.add(tfFontSize);
+        JSlider slFontSize = new JSlider(8, 15, settings.getFont().getSize());
+        slFontSize.setPaintLabels(true);
+        slFontSize.setLabelTable(slFontSize.createStandardLabels(1));
+        slFontSize.setSnapToTicks(true);
+        panFontSize.add(slFontSize);
         panSettings.add(panFontSize);
 
         // AlbumComponent size settings
@@ -94,7 +97,7 @@ public class DisplaySettingsFrame extends JFrame {
         panSettings.add(panAlbumSize);
 
         // Row contrast settings
-        JCheckBox cbRowContrast = new JCheckBox("Kontrast zwischen Reihen");
+        JCheckBox cbRowContrast = new JCheckBox("Kontrast zwischen Reihen", settings.getRowContrast());
         panSettings.add(cbRowContrast);
 
         // Apply and cancel buttons
@@ -118,13 +121,18 @@ public class DisplaySettingsFrame extends JFrame {
         bConfirm.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bConfirm.addActionListener(e -> {
             // * Apply settings
-            // Darkmode
             if (cbDarkmode.isSelected()) {
                 FlatDarkLaf.setup();
                 FlatLaf.updateUI();
                 gui.applyDarkmode();
+            } else {
+                FlatLightLaf.setup();
+                FlatLaf.updateUI();
+                gui.applyLightmode();
             }
-            settings.setDarkmode(cbDarkmode.isSelected());
+            settings.setDarkmode(cbDarkmode.isSelected()); // Darkmode
+            settings.setFont(new Font(cbFontType.getSelectedItem().toString(), Font.PLAIN, slFontSize.getValue())); // Font
+            settings.setRowContrast(cbRowContrast.isSelected()); // Contrast rows
             Settings.writeSettings(settings);
             this.dispose();
         });

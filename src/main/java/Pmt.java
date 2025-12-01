@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 
 public class Pmt {
@@ -18,7 +19,13 @@ public class Pmt {
      */
     public Pmt() {
         albumList = readAlbumsFromJson("saveData\\data.json");
-        settings = Settings.readSettings();
+        try {
+            settings = Settings.readSettings();
+        } catch (JsonIOException e) {
+            e.printStackTrace();
+        }
+        if (settings == null) settings = new Settings(); // Default settings
+
         GUI = new Gui(this, settings);
     }
 
@@ -44,10 +51,7 @@ public class Pmt {
      * @return LinkedList<Album> with all albums, sorted by album name
      */
     public LinkedList<Album> sortByName() {
-        LinkedList<Album> llSorted = new LinkedList<>();
-        for (int i = 0; i < albumList.size(); i++) {
-            llSorted.add(albumList.get(i));
-        }
+        LinkedList<Album> llSorted = new LinkedList<>(albumList);
         llSorted.sort(Comparator.comparing(Album::getAlbumName));
         return llSorted;
     }
@@ -57,10 +61,7 @@ public class Pmt {
      * @return LinkedList<Album> with all albums, sorted by album artists
      */
     public LinkedList<Album> sortByArtist() {
-        LinkedList<Album> llSorted = new LinkedList<>();
-        for (int i = 0; i < albumList.size(); i++) {
-            llSorted.add(albumList.get(i));
-        }
+        LinkedList<Album> llSorted = new LinkedList<>(albumList);
         llSorted.sort(Comparator.comparing(Album::getAlbumArtist, String.CASE_INSENSITIVE_ORDER));
         return llSorted;
     }
@@ -70,10 +71,7 @@ public class Pmt {
      * @return LinkedList<Album> with all albums, sorted by release years
      */
     public LinkedList<Album> sortByRelease() {
-        LinkedList<Album> llSorted = new LinkedList<>();
-        for (int i = 0; i < albumList.size(); i++) {
-            llSorted.add(albumList.get(i));
-        }
+        LinkedList<Album> llSorted = new LinkedList<>(albumList);
         llSorted.sort(Comparator.comparing(Album::getReleaseYear));
         return llSorted;
     }

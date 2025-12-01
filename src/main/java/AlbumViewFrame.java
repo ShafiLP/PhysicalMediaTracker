@@ -28,7 +28,7 @@ public class AlbumViewFrame extends JFrame {
      * @param pAlbum Album object to view
      * @param pPmt Object of control class
      */
-    public AlbumViewFrame(Album pAlbum, Pmt pPmt) {
+    public AlbumViewFrame(Album pAlbum, Pmt pPmt, Settings settings) {
         this.setTitle(pAlbum.getAlbumName());
         this.setSize(500, 480);
         this.setLocationRelativeTo(null);
@@ -46,7 +46,7 @@ public class AlbumViewFrame extends JFrame {
         // JPanel with album cover
         JLabel lCover = new JLabel();
         lCover.setOpaque(true);
-        lCover.setBackground(new Color(200, 200, 200));
+        lCover.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         lCover.setForeground(new Color(150, 150, 150));
         lCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         lCover.setPreferredSize(new Dimension(200, 200));
@@ -200,7 +200,7 @@ public class AlbumViewFrame extends JFrame {
         if (pAlbum.containsNulltrack()) latestIndex = 0;
         for(int i = 0; i < pAlbum.getTrackList().size(); i++) {
             JPanel newRow = new JPanel(new GridBagLayout());
-            if (i % 2 == 0) newRow.setBackground(new Color(200, 200, 200));
+            if (i % 2 == 0 & settings.getRowContrast()) newRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
             GridBagConstraints gbcNewRow = new GridBagConstraints();
             gbcNewRow.insets = new Insets(4, 8, 4, 8);
