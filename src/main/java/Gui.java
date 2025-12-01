@@ -4,12 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import java.awt.event.ActionEvent;
@@ -19,18 +15,28 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 public class Gui extends JFrame {
     private final Pmt PMT;
+    private Settings settings;
     private JPanel panAlbums;
 
-    public Gui(Pmt pPmt) {
+    public Gui(Pmt pPmt, Settings pSettings) {
         PMT = pPmt;
+        settings = pSettings;
 
         // Setup FlatLaf
-        FlatLightLaf.setup();
-        com.formdev.flatlaf.FlatLightLaf.updateUI();
+        FlatLaf.setGlobalExtraDefaults(Collections.singletonMap("@accentColor", settings.getAccentColor()));
+        if(!settings.isDarkmode()) {
+            FlatLightLaf.setup();
+            FlatLightLaf.updateUI();
+        } else {
+            FlatDarkLaf.setup();
+            FlatDarkLaf.updateUI();
+        }
 
         // Setup JFrame
         this.setTitle("Physical Media Tracker");
@@ -102,7 +108,7 @@ public class Gui extends JFrame {
         LinkedList<Album> llAlbums = PMT.getAlbumList();
         for (int i = llAlbums.size() - 1; i >= 0; i--) {
             Album idxAlbum = llAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT));
+            panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
         }
 
         // JScrollPane for scrollable album display
@@ -128,22 +134,32 @@ public class Gui extends JFrame {
         LinkedList<Album> llAlbums = PMT.getAlbumList();
         for (int i = llAlbums.size() - 1; i >= 0; i--) {
             Album idxAlbum = llAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT));
+            panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
         }
         panAlbums.revalidate();
         panAlbums.repaint();
         System.out.println("GUI updated."); // DEBUG
     }
 
+    /**
+     * Removes all AlbumComponents from albums panel and adds another list of albums instead
+     * Called when sorting albums
+     * @param pAlbums New list of albums to display on GUI
+     */
     public void displayAlbumList(LinkedList<Album> pAlbums) {
         panAlbums.removeAll();
-        for (int i = 0; i < pAlbums.size(); i++) {
-            Album idxAlbum = pAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT));
+        for (Album idxAlbum : pAlbums) {
+            panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
         }
         panAlbums.revalidate();
         panAlbums.repaint();
         System.out.println("GUI updated."); // DEBUG
+    }
+
+    public void applyDarkmode() {
+        for (Component c : panAlbums.getComponents()) {
+            if (c instanceof AlbumComponent) ((AlbumComponent) c).applyDarkmode();
+        }
     }
 
     /**
@@ -182,7 +198,6 @@ public class Gui extends JFrame {
         
         // Item to save file as given path
         JMenuItem itemSaveFileAs = new JMenuItem("Speichern unter...");
-        // itemSaveFileAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK));
         itemSaveFileAs.addActionListener(e -> {
             // TODO
         });
@@ -211,13 +226,13 @@ public class Gui extends JFrame {
         menuBar.add(menuAlbum);
 
         // * Settings
-        JMenu menuSettings = new JMenu("Anzeige");
+        JMenu menuSettings = new JMenu("Einstellungen");
 
         // Item to open display settings
         JMenuItem itemDisplay = new JMenuItem("Anzeige");
         itemDisplay.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.SHIFT_MASK));
         itemDisplay.addActionListener(e -> {
-            // TODO
+            new DisplaySettingsFrame(this, settings);
         });
         menuSettings.add(itemDisplay);
 
@@ -229,14 +244,9 @@ public class Gui extends JFrame {
         });
         menuSettings.add(itemSettings);
 
-
         menuBar.add(menuSettings);
 
         // Add JMenuBar to JFrame
         this.setJMenuBar(menuBar);
-    }
-
-    private void changeAccentColor(String pColor) {
-        // TODO
     }
 }

@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class Pmt {
     private final Gui GUI;
+    private Settings settings;
     private LinkedList<Album> albumList;
 
     /**
@@ -17,7 +18,8 @@ public class Pmt {
      */
     public Pmt() {
         albumList = readAlbumsFromJson("saveData\\data.json");
-        GUI = new Gui(this);
+        settings = Settings.readSettings();
+        GUI = new Gui(this, settings);
     }
 
     /**
@@ -149,8 +151,9 @@ public class Pmt {
         pSearch = pSearch.trim().toLowerCase();
         LinkedList<Album> llResults = new LinkedList<>();
 
-        for (int i = 0; i < albumList.size(); i++) {
-            if (albumList.get(i).getAlbumName().trim().toLowerCase().contains(pSearch) || albumList.get(i).getAlbumArtist().trim().toLowerCase().contains(pSearch)) llResults.add(albumList.get(i));
+        for (Album album : albumList) {
+            if (album.getAlbumName().trim().toLowerCase().contains(pSearch) || album.getAlbumArtist().trim().toLowerCase().contains(pSearch))
+                llResults.add(album);
         }
 
         return llResults;
@@ -160,7 +163,7 @@ public class Pmt {
 
     /**
      * Adds an Album object to the data of an already existing JSON file
-     * @param pAlbum Album object to be added to exisitng file
+     * @param pAlbum Album object to be added to existing file
      * @param pPath Path to JSON file that contains data
      */
     private void addAlbumToJson(Album pAlbum, String pPath) {

@@ -2,7 +2,7 @@
  * Main class
  * 
  * @author ShafiLP
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class Main {
     public static void main(String[] args) {
@@ -12,7 +12,6 @@ public class Main {
 
 /**
  * TODO:
- * * Display settings
  * * General settings
  * * Automatically search for cover
  * * Search for updates

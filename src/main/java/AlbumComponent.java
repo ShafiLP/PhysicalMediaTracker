@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
 class AlbumComponent extends JPanel {
+    private JLabel lName;
+    private JLabel lRelease;
 
     /**
      * Empty constructor
@@ -28,7 +30,7 @@ class AlbumComponent extends JPanel {
      * @param album Album object with all album information
      * @param pmt Object of control class
      */
-    public AlbumComponent(Album album, Pmt pmt) {
+    public AlbumComponent(Album album, Pmt pmt, Settings settings) {
         LinkedList<String> llMedia = new LinkedList<>();
         if (album.isOnVinyl()) llMedia.add("Vinyl");
         if (album.isOnCd()) llMedia.add("CD");
@@ -112,8 +114,8 @@ class AlbumComponent extends JPanel {
         }});
 
         // Name
-        JLabel lName = new JLabel(album.getAlbumName());
-        lName.setBackground(new Color(200, 200, 200));
+        lName = new JLabel(album.getAlbumName());
+        lName.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         lName.setOpaque(true);
         lName.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         this.add(lName, new GridBagConstraints() {{
@@ -137,9 +139,9 @@ class AlbumComponent extends JPanel {
         }});
 
         // Release Year
-        JLabel lRelease = new JLabel(album.getReleaseYear() + "");
+        lRelease = new JLabel(album.getReleaseYear() + "");
         lRelease.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        lRelease.setBackground(new Color(200, 200, 200));
+        lRelease.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         lRelease.setOpaque(true);
         this.add(lRelease, new GridBagConstraints() {{
             gridx = 0;
@@ -164,5 +166,13 @@ class AlbumComponent extends JPanel {
         this.setMaximumSize(new Dimension(150, getPreferredSize().height));
         this.setMinimumSize(new Dimension(150, getPreferredSize().height));
         this.setPreferredSize(new Dimension(150, getMaximumSize().height));
+    }
+
+    /**
+     * Changes the contrast rows' background colours to a darker grey
+     */
+    public void applyDarkmode() {
+        lName.setBackground(new Color(75, 75, 75));
+        lRelease.setBackground(new Color(75, 75, 75));
     }
 }
