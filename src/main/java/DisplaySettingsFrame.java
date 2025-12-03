@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.Collections;
 
 public class DisplaySettingsFrame extends JFrame {
-    private Settings settings;
+    private final Settings settings;
 
     public DisplaySettingsFrame(Gui gui, Settings settings) {
         this.settings = settings;
@@ -16,7 +16,8 @@ public class DisplaySettingsFrame extends JFrame {
         // JFrame settings
         this.setTitle("Einstellungen");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(800, 200);
+        this.setLocationRelativeTo(gui);
+        this.setSize(400, 250);
         this.setLayout(new BorderLayout());
 
         // Settings panel containing all settings
@@ -32,7 +33,7 @@ public class DisplaySettingsFrame extends JFrame {
         JPanel panColors  = new JPanel(new GridBagLayout());
         JButton[] bColors = {
                 new JButton() {{
-                    setBackground(new Color(136, 136, 255));
+                    setBackground(new Color(136, 160, 255));
                 }},
                 new JButton() {{
                     setBackground(new Color(255, 108, 108));
@@ -44,7 +45,7 @@ public class DisplaySettingsFrame extends JFrame {
                     setBackground(new Color(255, 248, 108));
                 }},
                 new JButton() {{
-                    setBackground(new Color(189, 108, 255));
+                    setBackground(new Color(201, 108, 255));
                 }}
         };
         for (int i = 0; i < bColors.length; i++) {
@@ -71,9 +72,12 @@ public class DisplaySettingsFrame extends JFrame {
         JPanel panFontType = new JPanel(new GridLayout(2, 1));
         panFontType.add(new JLabel("Schriftart"));
         JComboBox<String> cbFontType = new JComboBox<>();
-        cbFontType.addItem("Arial");
-        cbFontType.addItem("Comic Sans MS");
-        // TODO load all system fonts
+        // Load all fonts from system
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        String[] fontFamilies  = ge.getAvailableFontFamilyNames();
+        for (String f : fontFamilies) {
+            cbFontType.addItem(f);
+        }
         cbFontType.setSelectedItem(settings.getFont().getFontName());
         panFontType.add(cbFontType);
         panSettings.add(panFontType);
@@ -88,13 +92,15 @@ public class DisplaySettingsFrame extends JFrame {
         panFontSize.add(slFontSize);
         panSettings.add(panFontSize);
 
-        // AlbumComponent size settings
-        JPanel panAlbumSize = new JPanel(new GridLayout(2, 1));
-        panAlbumSize.add(new JLabel("Größe der Albumkomponenten"));
-        JTextField tfAlbumSize = new JTextField();
-        // TODO replace with bar
-        panAlbumSize.add(tfAlbumSize);
-        panSettings.add(panAlbumSize);
+        // UI scale / AlbumComponent size settings
+        JPanel panUiScale = new JPanel(new GridLayout(2, 1));
+        panUiScale.add(new JLabel("Größe der Benutzeroberfläche"));
+        JSlider slUiScale = new JSlider(1, 5, settings.getUiScale());
+        slUiScale.setPaintLabels(true);
+        slUiScale.setLabelTable(slUiScale.createStandardLabels(1));
+        slUiScale.setSnapToTicks(true);
+        panUiScale.add(slUiScale);
+        panSettings.add(panUiScale);
 
         // Row contrast settings
         JCheckBox cbRowContrast = new JCheckBox("Kontrast zwischen Reihen", settings.getRowContrast());
@@ -130,10 +136,14 @@ public class DisplaySettingsFrame extends JFrame {
                 FlatLaf.updateUI();
                 gui.applyLightmode();
             }
+            gui.setUiScale(slUiScale.getValue());
+
+            // Save settings
             settings.setDarkmode(cbDarkmode.isSelected()); // Darkmode
             settings.setFont(new Font(cbFontType.getSelectedItem().toString(), Font.PLAIN, slFontSize.getValue())); // Font
             settings.setRowContrast(cbRowContrast.isSelected()); // Contrast rows
-            Settings.writeSettings(settings);
+            settings.setUiScale(slUiScale.getValue()); // UI scale
+            Settings.writeSettings(settings); // * Save settings to JSON
             this.dispose();
         });
         panButtons.add(bConfirm, new GridBagConstraints() {{

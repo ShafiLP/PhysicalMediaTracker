@@ -12,11 +12,24 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class AlbumCreateFrame extends JFrame {
+    private JButton bCover;
+    private Image[] albumCover = {null}; // Array so local object can be accessed in action listener
 
     /**
      * Opens a JFrame where a new Album object can be created
@@ -25,7 +38,6 @@ public class AlbumCreateFrame extends JFrame {
     public AlbumCreateFrame(Pmt pPmt, Settings pSettings) {
         // Local objects
         LinkedList<TrackEntry> llTracks = new LinkedList<>();
-        Image[] albumCover = {null}; // Array so local object can be accessed in action listener
 
         this.setTitle("Neues Album");
         this.setSize(500, 480);
@@ -42,7 +54,7 @@ public class AlbumCreateFrame extends JFrame {
         panUpper.setLayout(new GridBagLayout());
 
         // JButton where cover can be uploaded
-        JButton bCover = new JButton("Cover hinzufügen");
+        bCover = new JButton("Cover hinzufügen");
         bCover.setOpaque(true);
         bCover.setBackground(pSettings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         bCover.setForeground(new Color(150, 150, 150));
@@ -61,11 +73,12 @@ public class AlbumCreateFrame extends JFrame {
             gridx = 0;
             gridy = 0;
             weightx = 0;
-            weighty = 0;
-            gridheight = 8;
+            weighty = 1.0;
+            gridheight = 7;
             anchor = GridBagConstraints.CENTER;
-            fill = GridBagConstraints.BOTH;
+            fill = GridBagConstraints.NONE;
         }});
+
 
         // Album name
         PlaceholderTextField tfName = new PlaceholderTextField("Name");
@@ -138,7 +151,7 @@ public class AlbumCreateFrame extends JFrame {
             gridy = 6;
             weightx = 0.7;
             insets = new Insets(0, 5, 5, 0);
-            anchor = GridBagConstraints.CENTER;
+            anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
@@ -153,6 +166,26 @@ public class AlbumCreateFrame extends JFrame {
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
+        // Button to search for cover in web
+        JButton bSearchForCover = new JButton("Nach Cover suchen");
+        bSearchForCover.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
+        bSearchForCover.addActionListener(e -> {
+            try {
+                AlbumCoverSearcher.searchCover(this, tfName.getText(), tfArtist.getText());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        panUpper.add(bSearchForCover, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 7;
+            weightx = 0.3;
+            weighty = 0;
+            insets = new Insets(5, 5, 0, 5);
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.NONE;
+        }});
+
         // Lower panel for track list
         JPanel panLower = new JPanel();
         panLower.setLayout(new GridBagLayout());
@@ -163,7 +196,6 @@ public class AlbumCreateFrame extends JFrame {
 
         // CheckBox for Nulltracks
         JCheckBox cbNulltrack = new JCheckBox("Beinhaltet Nulltrack"); // If checked, index will start at 0
-        if (pSettings.getRowContrast()) cbNulltrack.setBackground(pSettings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         cbNulltrack.addActionListener(_ -> {
             if(cbNulltrack.isSelected()) {
                 for (TrackEntry llTrack : llTracks) {
@@ -182,8 +214,8 @@ public class AlbumCreateFrame extends JFrame {
             gridwidth = 2;
             weightx = 1.0;
             insets = new Insets(0, 5, 5, 0);
-            anchor = GridBagConstraints.NORTH;
-            fill = GridBagConstraints.HORIZONTAL;
+            anchor = GridBagConstraints.WEST;
+            fill = GridBagConstraints.NONE;
         }});
 
         // Add category names for table
@@ -305,10 +337,8 @@ public class AlbumCreateFrame extends JFrame {
             gbcNewRow.weightx = 0;
 
             // Track number
-            JLabel newRowLabel = new JLabel(String.valueOf(latestIndex[0]), SwingConstants.CENTER);
-            newRowLabel.setPreferredSize(new Dimension(20, newRowLabel.getPreferredSize().height));
             gbcNewRow.gridx = 0;
-            newRow.add(newRowLabel, gbcNewRow);
+            newRow.add(llTracks.getLast().getIndexLabel(), gbcNewRow);
 
             // Track name
             gbcNewRow.gridx = 1;
@@ -407,8 +437,8 @@ public class AlbumCreateFrame extends JFrame {
         bConfirm.addActionListener(_ -> {
             // Add new album to control class
             LinkedList<Track> llNewTracks = new LinkedList<>(); // Read tracks
-            for(int i = 0; i < llTracks.size(); i++) {
-                llNewTracks.addLast(new Track(llTracks.get(i).getTextField().getText(), llTracks.get(i).getIndex()));
+            for (TrackEntry llTrack : llTracks) {
+                llNewTracks.addLast(new Track(llTrack.getTextField().getText(), llTrack.getIndex()));
             }
             try {
                 // Save album cover as image
@@ -443,6 +473,13 @@ public class AlbumCreateFrame extends JFrame {
         this.add(panButtons, BorderLayout.SOUTH);
 
         this.setVisible(true);
+    }
+
+    public void setImageFromUrl(String pUrl) throws IOException {
+        BufferedImage loadedImg = ImageIO.read(new URL(pUrl));
+        albumCover[0] = loadedImg.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        bCover.setIcon(new ImageIcon(albumCover[0]));
+        bCover.setText("");
     }
 
     private Image iconFromUpload(int pWidth, int pHeight) {

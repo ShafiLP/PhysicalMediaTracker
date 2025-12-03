@@ -18,6 +18,8 @@ import java.util.LinkedList;
 
 class AlbumComponent extends JPanel {
     private Settings settings;
+    private Album album;
+    private JLabel lImg;
     private JLabel lName;
     private JLabel lRelease;
 
@@ -33,6 +35,7 @@ class AlbumComponent extends JPanel {
      */
     public AlbumComponent(Album album, Pmt pmt, Settings settings) {
         this.settings = settings;
+        this.album = album;
 
         LinkedList<String> llMedia = new LinkedList<>();
         if (album.isOnVinyl()) llMedia.add("Vinyl");
@@ -64,14 +67,11 @@ class AlbumComponent extends JPanel {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
             );
-            
-            switch (n) {
-                case 0:
-                    pmt.deleteAlbum(album);
-                    break;
-                default:
-                    System.out.println("Deletion cancelled"); // DEBUG
-                    break;
+
+            if (n == 0) {
+                pmt.deleteAlbum(album);
+            } else {
+                System.out.println("Deletion cancelled"); // DEBUG
             }
         });
 
@@ -105,15 +105,15 @@ class AlbumComponent extends JPanel {
 
         // Cover
         ImageIcon icon = new ImageIcon(album.getCoverPath());
-        Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-        JLabel lImg = new JLabel(new ImageIcon(img));
+        Image img = icon.getImage().getScaledInstance(settings.getUiScale() * 50, settings.getUiScale() * 50, Image.SCALE_SMOOTH);
+        lImg = new JLabel(new ImageIcon(img));
         this.add(lImg, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
             weightx = 1.0;
             weighty = 1.0;
             anchor = GridBagConstraints.NORTH;
-            fill = GridBagConstraints.HORIZONTAL;
+            fill = GridBagConstraints.BOTH;
         }});
 
         // Name
@@ -126,7 +126,7 @@ class AlbumComponent extends JPanel {
             gridx = 0;
             gridy = 1;
             weightx = 1.0;
-            weighty = 1.0;
+            weighty = 0.0001;
             anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
@@ -139,6 +139,7 @@ class AlbumComponent extends JPanel {
             gridx = 0;
             gridy = 2;
             weightx = 1;
+            weighty = 0;
             anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
@@ -153,6 +154,7 @@ class AlbumComponent extends JPanel {
             gridx = 0;
             gridy = 3;
             weightx = 1;
+            weighty = 0;
             anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
@@ -165,14 +167,35 @@ class AlbumComponent extends JPanel {
             gridx = 0;
             gridy = 4;
             weightx = 1;
+            weighty = 0;
             anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
         // Set size
-        this.setMaximumSize(new Dimension(150, getPreferredSize().height));
-        this.setMinimumSize(new Dimension(150, getPreferredSize().height));
-        this.setPreferredSize(new Dimension(150, getMaximumSize().height));
+        this.setMaximumSize(new Dimension(settings.getUiScale() * 50, getPreferredSize().height));
+        this.setMinimumSize(new Dimension(settings.getUiScale() * 50, getPreferredSize().height));
+        this.setPreferredSize(new Dimension(settings.getUiScale() * 50, getMaximumSize().height));
+    }
+
+    public void setUiScale(int pScale) {
+        int width = pScale * 50;
+
+        // Change size of image icon
+        ImageIcon icon = new ImageIcon(album.getCoverPath());
+        Image img = icon.getImage().getScaledInstance(width, width, Image.SCALE_SMOOTH);
+        lImg.setPreferredSize(new Dimension(width, width));
+        lImg.setIcon(new ImageIcon(img));
+
+        // Calculate new height
+        int height = width + lName.getPreferredSize().height * 4 + getInsets().top + getInsets().bottom;
+
+        // Set maximum size
+        this.setPreferredSize(new Dimension(width, height));
+
+        // Revalidate and repaint
+        this.revalidate();
+        this.repaint();
     }
 
     /**

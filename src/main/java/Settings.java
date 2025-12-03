@@ -11,6 +11,7 @@ public class Settings {
     private String fontType = "Arial";
     private int fontSize = 12;
     private boolean rowContrast = true;
+    private int uiScale = 3;
 
     public Settings() {
         // Keep default settings
@@ -54,6 +55,14 @@ public class Settings {
 
     public void setRowContrast(boolean rowContrast) {
         this.rowContrast = rowContrast;
+    }
+
+    public int getUiScale() {
+        return uiScale;
+    }
+
+    public void setUiScale(int uiScale) {
+        this.uiScale = uiScale;
     }
 
     public static Settings readSettings(){

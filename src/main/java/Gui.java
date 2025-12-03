@@ -156,6 +156,14 @@ public class Gui extends JFrame {
         System.out.println("GUI updated."); // DEBUG
     }
 
+    public void setUiScale(int pUiScale) {
+        for (Component c : panAlbums.getComponents()) {
+            if (c instanceof AlbumComponent) ((AlbumComponent) c).setUiScale(pUiScale);
+        }
+        this.revalidate();
+        this.repaint();
+    }
+
     public void applyDarkmode() {
         for (Component c : panAlbums.getComponents()) {
             if (c instanceof AlbumComponent) ((AlbumComponent) c).applyDarkmode();
