@@ -12,6 +12,10 @@ public class Settings {
     private int fontSize = 12;
     private boolean rowContrast = true;
     private int uiScale = 3;
+    private int coverResolution = 200;
+    private boolean autoSave = true;
+
+    private String pathToData = "saveData/data.json";
 
     public Settings() {
         // Keep default settings
@@ -63,6 +67,30 @@ public class Settings {
 
     public void setUiScale(int uiScale) {
         this.uiScale = uiScale;
+    }
+
+    public int getCoverResolution() {
+        return coverResolution;
+    }
+
+    public void setCoverResolution(int coverResolution) {
+        this.coverResolution = coverResolution;
+    }
+
+    public boolean getAutoSave() {
+        return autoSave;
+    }
+
+    public void setAutoSave(boolean autoSave) {
+        this.autoSave = autoSave;
+    }
+
+    public String getDataPath() {
+        return pathToData;
+    }
+
+    public void setDataPath(String pathToData) {
+        this.pathToData = pathToData;
     }
 
     public static Settings readSettings(){

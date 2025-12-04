@@ -254,7 +254,7 @@ public class Gui extends JFrame {
         JMenuItem itemSettings = new JMenuItem("Einstellungen");
         itemSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
         itemSettings.addActionListener(e -> {
-            // TODO
+            new GeneralSettingsFrame(this, settings);
         });
         menuSettings.add(itemSettings);
 

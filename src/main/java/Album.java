@@ -8,6 +8,7 @@ public class Album {
     private String albumCoverPath;
     private String whereBought;
     private boolean containsNulltrack;
+    private LinkedList<String> genre;
 
     private boolean onVinyl;
     private boolean onCd;
@@ -183,6 +184,14 @@ public class Album {
      */
     public int getListenCount() {
         return listenCount;
+    }
+
+    public void setGenre(LinkedList<String> pGenre) {
+        genre = pGenre;
+    }
+
+    public LinkedList<String> getGenre() {
+        return genre;
     }
 
     /**

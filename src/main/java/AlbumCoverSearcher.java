@@ -18,7 +18,7 @@ public class AlbumCoverSearcher extends Thread {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(query))
-                .header("User-Agent", "PhysicalMediaTracker/0.1.4 ( https://github.com/ShafiLP )")
+                .header("User-Agent", "PhysicalMediaTracker/0.1.5 ( https://github.com/ShafiLP )")
                 .header("Accept", "application/json")
                 .build();
         HttpResponse<String> response = null;
