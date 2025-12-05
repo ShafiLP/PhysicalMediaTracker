@@ -77,6 +77,16 @@ public class Pmt {
     }
 
     /**
+     * Gets the local LinkedList<Album>, sorts it by when the albums where listened last time and returns it
+     * @return LinkedList<Album> with all albums, sorted by last listened
+     */
+    public LinkedList<Album> sortByLastListened() {
+        LinkedList<Album> llSorted = new LinkedList<>(albumList);
+        llSorted.sort(Comparator.comparing((Album a) -> a.getListeningTimes().getLast().getDate()).thenComparing(a -> a.getListeningTimes().getLast().getDate()));
+        return llSorted;
+    }
+
+    /**
      * Adds an Album object to local LinkedList<Album> and adds it to the saved ones inside JSON save file
      * @param pAlbum Album object to add to List and save to JSON
      */

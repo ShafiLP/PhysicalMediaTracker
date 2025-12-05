@@ -2,6 +2,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -11,14 +12,14 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 public class AlbumCoverSearcher extends Thread {
-    public static void searchCover(AlbumCreateFrame pFrame, String pAlbumName, String pArtist) throws IOException {
+    public static void searchCover(CoverSearcher pFrame, String pAlbumName, String pArtist) throws IOException {
         String queryString = "artist:" + pArtist + " AND release:" + pAlbumName;
         String query = "https://musicbrainz.org/ws/2/release-group/?query=" + URLEncoder.encode(queryString, StandardCharsets.UTF_8) + "&fmt=json";
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(query))
-                .header("User-Agent", "PhysicalMediaTracker/0.1.5 ( https://github.com/ShafiLP )")
+                .header("User-Agent", "PhysicalMediaTracker/0.1.6 ( https://github.com/ShafiLP )")
                 .header("Accept", "application/json")
                 .build();
         HttpResponse<String> response = null;
@@ -37,6 +38,6 @@ public class AlbumCoverSearcher extends Thread {
         String coverUrl = "https://coverartarchive.org/release-group/" + releaseGroupId + "/front"; // Final URL to the album cover
         System.out.println("Cover URL: " + coverUrl);
 
-        pFrame.setImageFromUrl(coverUrl);
+        pFrame.setCoverFromUrl(coverUrl);
     }
 }

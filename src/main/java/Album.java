@@ -8,7 +8,7 @@ public class Album {
     private String albumCoverPath;
     private String whereBought;
     private boolean containsNulltrack;
-    private LinkedList<String> genre;
+    private String[] genre;
 
     private boolean onVinyl;
     private boolean onCd;
@@ -22,7 +22,7 @@ public class Album {
     }
 
     public Album(LinkedList<Track> pTrackList, String pAlbumName, String pAlbumArtist, int pReleaseYear, String pCoverPath,
-    String pWhereBought, boolean pContainsNulltrack, boolean pOnVinyl, boolean pOnCd, boolean pOnCassette) {
+    String pWhereBought, boolean pContainsNulltrack, boolean pOnVinyl, boolean pOnCd, boolean pOnCassette, String[] pGenre) {
         trackList = pTrackList;
         albumName = pAlbumName;
         albumArtist = pAlbumArtist;
@@ -33,6 +33,7 @@ public class Album {
         onVinyl = pOnVinyl;
         onCd = pOnCd;
         onCassette = pOnCassette;
+        genre = pGenre;
     }
 
     /**
@@ -186,12 +187,12 @@ public class Album {
         return listenCount;
     }
 
-    public void setGenre(LinkedList<String> pGenre) {
-        genre = pGenre;
+    public String[] getGenres() {
+        return genre;
     }
 
-    public LinkedList<String> getGenre() {
-        return genre;
+    public void setGenres(String[] genre) {
+        this.genre = genre;
     }
 
     /**

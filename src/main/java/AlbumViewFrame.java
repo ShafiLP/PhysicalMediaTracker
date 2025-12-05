@@ -60,7 +60,7 @@ public class AlbumViewFrame extends JFrame {
             gridy = 0;
             weightx = 0;
             weighty = 0;
-            gridheight = 6;
+            gridheight = 7;
             anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.NONE;
         }});
@@ -132,13 +132,31 @@ public class AlbumViewFrame extends JFrame {
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
+        // Genre(s)
+        JPanel panGenre = new JPanel(new GridLayout(2, 1));
+        panGenre.add(new JLabel("Genre:"));
+        if (pAlbum.getGenres() != null) {
+            String genre = String.join(", ", pAlbum.getGenres());
+            panGenre.add(new JLabel(genre));
+        } else {
+            panGenre.add(new JLabel("Keine"));
+        }
+        panUpper.add(panGenre, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 4;
+            weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
         // Where bought?
         JPanel panFromWhere = new JPanel(new GridLayout(2, 1));
         panFromWhere.add(new JLabel("Erhalten von/bei:"));
         panFromWhere.add(new JLabel(pAlbum.getWhereBought()));
         panUpper.add(panFromWhere, new GridBagConstraints() {{
             gridx = 1;
-            gridy = 4;
+            gridy = 5;
             weightx = 0.7;
             insets = new Insets(0, 5, 5, 0);
             anchor = GridBagConstraints.CENTER;
@@ -155,7 +173,7 @@ public class AlbumViewFrame extends JFrame {
         }
         panUpper.add(panLastListen, new GridBagConstraints() {{
             gridx = 1;
-            gridy = 5;
+            gridy = 6;
             weightx = 0.7;
             insets = new Insets(0, 5, 5, 0);
             anchor = GridBagConstraints.CENTER;

@@ -678,6 +678,10 @@
     "albumCoverPath": "media\\albumCovers\\greenday_americanidiot.png",
     "whereBought": "Müller Heidelberg",
     "containsNulltrack": false,
+    "genre": [
+      "Rock",
+      "Punk"
+    ],
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,

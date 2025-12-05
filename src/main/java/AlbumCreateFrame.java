@@ -19,7 +19,7 @@ import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-public class AlbumCreateFrame extends JFrame {
+public class AlbumCreateFrame extends JFrame implements CoverSearcher {
     private Settings settings;
     private JButton bCover;
     private Image[] albumCover = {null}; // Array so local object can be accessed in action listener
@@ -60,7 +60,7 @@ public class AlbumCreateFrame extends JFrame {
         bCover.setPreferredSize(new Dimension(200, 200));
         bCover.setMinimumSize(new Dimension(200, 200));
         bCover.setMaximumSize(new Dimension(200, 200));
-        bCover.addActionListener(_ -> {
+        bCover.addActionListener(e -> {
             albumCover[0] = iconFromUpload(bCover.getWidth(), bCover.getHeight());
             if(albumCover[0] != null) {
                 bCover.setIcon(new ImageIcon(albumCover[0]));
@@ -321,7 +321,7 @@ public class AlbumCreateFrame extends JFrame {
 
         JButton bReturn = new JButton("X");
         bReturn.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-        bReturn.addActionListener(_ -> {
+        bReturn.addActionListener(e -> {
             this.dispose();
         });
         panButtons.add(bReturn, new GridBagConstraints() {{
@@ -352,8 +352,9 @@ public class AlbumCreateFrame extends JFrame {
                 ImageIO.write(bImage, "png", outputFile);
 
                 // Save album in control class
+                String[] genre = tfGenre.getText().replace(" ", "").split(",");
                 Album newAlbum = new Album(llNewTracks, tfName.getText(), tfArtist.getText(), Integer.parseInt(tfRelease.getText()), path,
-                tfWhereBought.getText(), cbNulltrack.isSelected(), cbVinyl.isSelected(), cbCd.isSelected(), cbCassette.isSelected());
+                tfWhereBought.getText(), cbNulltrack.isSelected(), cbVinyl.isSelected(), cbCd.isSelected(), cbCassette.isSelected(), genre);
                 pPmt.addAlbum(newAlbum);
                 this.dispose();
             } catch (NumberFormatException | IOException e) {
@@ -456,8 +457,14 @@ public class AlbumCreateFrame extends JFrame {
         latestIndex[0]++;
     }
 
-    public void setImageFromUrl(String pUrl) throws IOException {
-        BufferedImage loadedImg = ImageIO.read(new URL(pUrl));
+    public void setCoverFromUrl(String pUrl) {
+        BufferedImage loadedImg;
+        try {
+            loadedImg = ImageIO.read(new URL(pUrl));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         albumCover[0] = loadedImg.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         bCover.setIcon(new ImageIcon(albumCover[0]));
         bCover.setText("");

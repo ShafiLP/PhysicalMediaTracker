@@ -71,6 +71,7 @@ public class Gui extends JFrame {
         cbSortBy.addItem("Name");
         cbSortBy.addItem("Künstler");
         cbSortBy.addItem("Erscheinungsjahr");
+        cbSortBy.addItem("Zuletzt gehört");
         cbSortBy.addActionListener(e -> {
             String selected = (String) cbSortBy.getSelectedItem();
 
@@ -79,6 +80,7 @@ public class Gui extends JFrame {
                 case "Name" -> displayAlbumList(PMT.sortByName());
                 case "Künstler" -> displayAlbumList(PMT.sortByArtist());
                 case "Erscheinungsjahr" -> displayAlbumList(PMT.sortByRelease());
+                case "Zuletzt gehört" -> displayAlbumList(PMT.sortByLastListened());
                 default -> System.out.println("Items couldn't be sorted."); //! Error
             }
         });
