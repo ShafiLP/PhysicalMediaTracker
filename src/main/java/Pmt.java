@@ -13,12 +13,14 @@ public class Pmt {
     private final Gui GUI;
     private Settings settings;
     private LinkedList<Album> albumList;
+    private SortType sortType = SortType.LAST_ADDED;
+    private SortOrder sortOrder = SortOrder.DESCENDING;
 
     /**
      * Constructor of Pmt (Physical Media Tracker) class
      */
     public Pmt() {
-        albumList = readAlbumsFromJson("saveData\\data.json");
+        albumList = readAlbumsFromJson("data\\saveData\\data.json");
         try {
             settings = Settings.readSettings();
         } catch (JsonIOException e) {
@@ -47,43 +49,91 @@ public class Pmt {
     }
 
     /**
-     * Gets the local LinkedList<Album>, sorts it by album name alphabetically and returns it
-     * @return LinkedList<Album> with all albums, sorted by album name
+     * Gets the local LinkedList<Album>, sorts it by local parameters sortType & sortOrder and returns it
+     * @return LinkedList<Album> with all albums, sorted by local parameters sortType & sortOrder
      */
-    public LinkedList<Album> sortByName() {
-        LinkedList<Album> llSorted = new LinkedList<>(albumList);
-        llSorted.sort(Comparator.comparing(Album::getAlbumName));
-        return llSorted;
+    public LinkedList<Album> sortAlbums() {
+        switch (sortType) {
+            case SortType.NAME -> {
+                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                llSorted.sort(Comparator.comparing(Album::getAlbumName));
+                if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
+                return llSorted;
+            }
+            case SortType.ARTIST ->  {
+                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                llSorted.sort(Comparator.comparing(Album::getAlbumArtist, String.CASE_INSENSITIVE_ORDER));
+                if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
+                return llSorted;
+            }
+            case SortType.YEAR -> {
+                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                llSorted.sort(Comparator.comparing(Album::getReleaseYear));
+                if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
+                return llSorted;
+            }
+            case SortType.LAST_LISTENED -> {
+                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                llSorted.sort(
+                        Comparator.comparing((Album a) -> a.getListeningTimes().isEmpty()
+                                                ? null
+                                                : a.getListeningTimes().getLast().getDate(),
+                                        Comparator.nullsLast(Comparator.naturalOrder())
+                                )
+                                .thenComparing(
+                                        (Album a) -> a.getListeningTimes().isEmpty()
+                                                ? null
+                                                : a.getListeningTimes().getLast().getTime(),
+                                        Comparator.nullsLast(Comparator.naturalOrder())
+                                )
+                );
+                if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
+                return llSorted;
+            }
+            case SortType.LAST_ADDED ->  {
+                if (sortOrder == SortOrder.DESCENDING) return albumList.reversed();
+                return albumList;
+            }
+            case null, default -> {
+                return albumList;
+            }
+        }
+
     }
 
     /**
-     * Gets the local LinkedList<Album>, sorts it by album artists alphabetically and returns it
-     * @return LinkedList<Album> with all albums, sorted by album artists
+     * Gets the local LinkedList<Album>, sorts it by given parameters sortType & sortOrder and returns it
+     * @param sortType Type of what the list should be sorted by
+     * @param sortOrder Order of the sorted album (ascending or descending)
+     * @return LinkedList<Album> with all albums, sorted by given parameters sortType & sortOrder
      */
-    public LinkedList<Album> sortByArtist() {
-        LinkedList<Album> llSorted = new LinkedList<>(albumList);
-        llSorted.sort(Comparator.comparing(Album::getAlbumArtist, String.CASE_INSENSITIVE_ORDER));
-        return llSorted;
+    public LinkedList<Album> sortAlbums(SortType sortType, SortOrder sortOrder) {
+        this.sortType = sortType;
+        this.sortOrder = sortOrder;
+
+        return sortAlbums();
     }
 
     /**
-     * Gets the local LinkedList<Album>, sorts it by album release years and returns it
-     * @return LinkedList<Album> with all albums, sorted by release years
+     * Gets the local LinkedList<Album>, sorts it by given parameter sortType & local parameter sortOrder and returns it
+     * @param sortType Type of what the list should be sorted by
+     * @return LinkedList<Album> with all albums, sorted by given parameter sortType & local parameter sortOrder
      */
-    public LinkedList<Album> sortByRelease() {
-        LinkedList<Album> llSorted = new LinkedList<>(albumList);
-        llSorted.sort(Comparator.comparing(Album::getReleaseYear));
-        return llSorted;
+    public LinkedList<Album> sortAlbums(SortType sortType) {
+        this.sortType = sortType;
+
+        return sortAlbums();
     }
 
     /**
-     * Gets the local LinkedList<Album>, sorts it by when the albums where listened last time and returns it
-     * @return LinkedList<Album> with all albums, sorted by last listened
+     * Gets the local LinkedList<Album>, sorts it by local parameter sortType & given parameter sortOrder and returns it
+     * @param sortOrder Order of the sorted album (ascending or descending)
+     * @return LinkedList<Album> with all albums, sorted by local parameter sortType & given parameter sortOrder
      */
-    public LinkedList<Album> sortByLastListened() {
-        LinkedList<Album> llSorted = new LinkedList<>(albumList);
-        llSorted.sort(Comparator.comparing((Album a) -> a.getListeningTimes().getLast().getDate()).thenComparing(a -> a.getListeningTimes().getLast().getDate()));
-        return llSorted;
+    public LinkedList<Album> sortAlbums(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
+
+        return sortAlbums();
     }
 
     /**
@@ -94,7 +144,7 @@ public class Pmt {
         albumList.addLast(pAlbum);
 
         // Save as JSON file
-        addAlbumToJson(pAlbum, "saveData\\data.json");
+        addAlbumToJson(pAlbum, "data\\saveData\\data.json");
 
         System.out.println("Added album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " to JSON."); // DEBUG
         GUI.updateAlbums();
@@ -113,7 +163,7 @@ public class Pmt {
                 albumList.set(i, pAlbumAfter);
 
                 // Override in JSON file
-                overrideAlbumsInJson(albumList, "saveData\\data.json");
+                overrideAlbumsInJson(albumList, "data\\saveData\\data.json");
                 System.out.println("Changed album " + pAlbumAfter.getAlbumName() + " by " + pAlbumAfter.getAlbumArtist() + " in JSON."); // DEBUG
                 
                 GUI.updateAlbums();

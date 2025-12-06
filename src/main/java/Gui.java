@@ -21,8 +21,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 
 public class Gui extends JFrame {
     private final Pmt PMT;
-    private Settings settings;
-    private JPanel panAlbums;
+    private final Settings settings;
+    private final JPanel panAlbums;
 
     public Gui(Pmt pPmt, Settings pSettings) {
         PMT = pPmt;
@@ -51,6 +51,7 @@ public class Gui extends JFrame {
         // JPanel with search bar and sorter
         JPanel panSearchSort = new JPanel(new GridBagLayout());
 
+        // Search bar
         PlaceholderTextField tfSearchBar = new PlaceholderTextField("Suchen");
         tfSearchBar.addActionListener(e -> {
             // Search for matches when changes are made
@@ -59,14 +60,16 @@ public class Gui extends JFrame {
         panSearchSort.add(tfSearchBar, new GridBagConstraints() {{
             gridx = 0;
             gridy = 0;
-            weightx = 0.8;
+            weightx = 0.6;
             weighty = 1.0;
             insets = new Insets(5, 5, 5, 5);
             anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
+        // Sorter
         JComboBox<String> cbSortBy = new JComboBox<>();
+        JButton bSortOrder = new JButton("↑");
         cbSortBy.addItem("Kürzlich hinzugefügt");
         cbSortBy.addItem("Name");
         cbSortBy.addItem("Künstler");
@@ -76,12 +79,12 @@ public class Gui extends JFrame {
             String selected = (String) cbSortBy.getSelectedItem();
 
             switch (selected) {
-                case "Kürzlich hinzugefügt" -> updateAlbums();
-                case "Name" -> displayAlbumList(PMT.sortByName());
-                case "Künstler" -> displayAlbumList(PMT.sortByArtist());
-                case "Erscheinungsjahr" -> displayAlbumList(PMT.sortByRelease());
-                case "Zuletzt gehört" -> displayAlbumList(PMT.sortByLastListened());
-                default -> System.out.println("Items couldn't be sorted."); //! Error
+                case "Kürzlich hinzugefügt" -> displayAlbumList(PMT.sortAlbums(SortType.LAST_ADDED));
+                case "Name" -> displayAlbumList(PMT.sortAlbums(SortType.NAME));
+                case "Künstler" -> displayAlbumList(PMT.sortAlbums(SortType.ARTIST));
+                case "Erscheinungsjahr" -> displayAlbumList(PMT.sortAlbums(SortType.YEAR));
+                case "Zuletzt gehört" -> displayAlbumList(PMT.sortAlbums(SortType.LAST_LISTENED));
+                case null, default -> System.out.println("Items couldn't be sorted."); //! Error
             }
         });
         panSearchSort.add(cbSortBy, new GridBagConstraints() {{
@@ -89,10 +92,31 @@ public class Gui extends JFrame {
             gridy = 0;
             weightx = 0.2;
             weighty = 1.0;
+            insets = new Insets(5, 0, 5, 0);
+            anchor = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Sort order
+        bSortOrder.addActionListener(_ -> {
+            if (bSortOrder.getText().equals("↑")) {
+                bSortOrder.setText("↓");
+                displayAlbumList(PMT.sortAlbums(SortOrder.DESCENDING));
+            } else {
+                bSortOrder.setText("↑");
+                displayAlbumList(PMT.sortAlbums(SortOrder.ASCENDING));
+            }
+        });
+        panSearchSort.add(bSortOrder, new GridBagConstraints() {{
+            gridx = 2;
+            gridy = 0;
+            weightx = 0.2;
+            weighty = 1.0;
             insets = new Insets(5, 0, 5, 5);
             anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.HORIZONTAL;
         }});
+
 
         this.add(panSearchSort, BorderLayout.NORTH);
        
@@ -107,7 +131,7 @@ public class Gui extends JFrame {
         };
 
         // Add albums from JSON save file
-        LinkedList<Album> llAlbums = PMT.getAlbumList();
+        LinkedList<Album> llAlbums = PMT.getAlbumList().reversed();
         for (int i = llAlbums.size() - 1; i >= 0; i--) {
             Album idxAlbum = llAlbums.get(i);
             panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
@@ -185,11 +209,11 @@ public class Gui extends JFrame {
         // Menu bar at the top
         JMenuBar menuBar = new JMenuBar();
 
-        // * File options
-        JMenu menuFile = new JMenu("Datei");
+        // * Profile options
+        JMenu menuFile = new JMenu("Profil");
 
         // Item to create a new save file
-        JMenuItem itemNewFile = new JMenuItem("Neue Datei");
+        JMenuItem itemNewFile = new JMenuItem("Neues Profil");
         itemNewFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.SHIFT_MASK));
         itemNewFile.addActionListener(e -> {
             // TODO
@@ -197,27 +221,20 @@ public class Gui extends JFrame {
         menuFile.add(itemNewFile);
 
         // Item to open a save file
-        JMenuItem itemOpenFile = new JMenuItem("Öffnen");
+        JMenuItem itemOpenFile = new JMenuItem("Profil öffnen");
         itemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
         itemOpenFile.addActionListener(e -> {
-            // TODO
+            new ProfileSelectionFrame(settings);
         });
         menuFile.add(itemOpenFile);
 
         // Item to save current file
-        JMenuItem itemSaveFile = new JMenuItem("Speichern");
+        JMenuItem itemSaveFile = new JMenuItem("Profil speichern");
         itemSaveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK));
         itemSaveFile.addActionListener(e -> {
             // TODO
         });
         menuFile.add(itemSaveFile);
-        
-        // Item to save file as given path
-        JMenuItem itemSaveFileAs = new JMenuItem("Speichern unter...");
-        itemSaveFileAs.addActionListener(e -> {
-            // TODO
-        });
-        menuFile.add(itemSaveFileAs);
 
         menuBar.add(menuFile);
 

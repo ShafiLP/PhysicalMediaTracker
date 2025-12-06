@@ -2,7 +2,7 @@
  * Main class
  * 
  * @author ShafiLP
- * @version 0.1.6
+ * @version 0.1.7
  */
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +13,6 @@ public class Main {
 /**
  * TODO:
  * * Search for updates
- * * Add Genres
  * * Deactivate GUIs when new one opens
  * * Port to Android
  * * Saves export & import

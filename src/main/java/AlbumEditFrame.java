@@ -28,7 +28,7 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
     private JButton bCover;
     private JCheckBox cbNulltrack;
     private JLabel lDelete;
-    private int[] latestIndex = {1}; // Must be array to be changable in ActionListener class
+    private int[] latestIndex = {1}; // Must be an array to be changeable in ActionListener class
     private JPanel panTracks;
 
     /**
@@ -214,7 +214,6 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
 
         // CheckBox for Nulltracks
         cbNulltrack = new JCheckBox("Beinhaltet Nulltrack", album.containsNulltrack()); // If checked, index will start at 0
-        cbNulltrack.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         cbNulltrack.addActionListener(_ -> {
             if(cbNulltrack.isSelected()) {
                 for (TrackEntry llTrack : llTracks) {
@@ -237,31 +236,34 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
             fill = GridBagConstraints.HORIZONTAL;
         }});
 
-        // Add category names for table
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(4, 8, 4, 8);
-        c.gridx = 0;
-        c.weightx = 0;
-        c.gridy = 1;
+        // Head row with category names to make it look like a table
+        JPanel headRow = new JPanel(new GridBagLayout());
+        if (settings.getRowContrast()) headRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
-        JLabel lNr = new JLabel("Nr.", SwingConstants.CENTER);
-        lNr.setPreferredSize(new Dimension(20, lNr.getPreferredSize().height));
-        panTracks.add(lNr, c);
+        GridBagConstraints gbcHeadRow = new GridBagConstraints() {{
+            gridx = 0;
+            weightx = 0;
+            insets = new Insets(4, 8, 4, 8);
+        }};
+        headRow.add(new JLabel("Nr.", SwingConstants.CENTER), gbcHeadRow); // Track number
 
-        c.gridx = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1.0;
+        gbcHeadRow.gridx = 1;
+        gbcHeadRow.fill = GridBagConstraints.HORIZONTAL;
+        gbcHeadRow.weightx = 1.0;
+        headRow.add(new JLabel("Trackname", SwingConstants.CENTER), gbcHeadRow); // Track name
 
-        JLabel lName = new JLabel("Trackname", SwingConstants.CENTER);
-        lNr.setPreferredSize(new Dimension(20, lName.getPreferredSize().height));
-        panTracks.add(lName, c);
-
-        c.gridx = 2;
-        c.weightx = 0;
-        c.fill = GridBagConstraints.NONE;
-
+        gbcHeadRow.gridx = 2;
+        gbcHeadRow.weightx = 0;
+        gbcHeadRow.fill = GridBagConstraints.NONE;
         lDelete = new JLabel("Löschen", SwingConstants.CENTER);
-        panTracks.add(lDelete, c);
+        headRow.add(lDelete, gbcHeadRow); // Delete button
+
+        panTracks.add(headRow, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 1;
+            gridwidth = 3;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
 
         // Add all tracks from album
         if (album.containsNulltrack()) latestIndex[0] = 0;

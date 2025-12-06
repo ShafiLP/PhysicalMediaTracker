@@ -7,11 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -90,18 +86,20 @@ class AlbumComponent extends JPanel {
             // Change border to accent color when hovering
             @Override
             public void mouseEntered(MouseEvent e) {
+                AlbumComponent.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 AlbumComponent.this.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.focusColor"), 2));
             }
 
             // Change border back to default when hover exit
             @Override
             public void mouseExited(MouseEvent e) {
-                AlbumComponent.this.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
+                AlbumComponent.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                AlbumComponent.this.setBorder(BorderFactory.createLineBorder(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200)));
             }
         });
 
         this.setLayout(new GridBagLayout());
-        this.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
+        this.setBorder(BorderFactory.createLineBorder(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200)));
 
         // Cover
         ImageIcon icon = new ImageIcon(album.getCoverPath());
@@ -199,22 +197,24 @@ class AlbumComponent extends JPanel {
     }
 
     /**
-     * Changes the contrast rows' background colours to a darker grey
+     * Changes the contrast rows' background colours and the border to a darker grey
      */
     public void applyDarkmode() {
         if (settings.getRowContrast()) {
             lName.setBackground(new Color(75, 75, 75));
             lRelease.setBackground(new Color(75, 75, 75));
         }
+        this.setBorder(BorderFactory.createLineBorder(new Color(75, 75, 75)));
     }
 
     /**
-     * Changes the contrast rows' background colours to a lighter grey
+     * Changes the contrast rows' background colours and the border to a lighter grey
      */
     public void applyLightmode() {
         if (settings.getRowContrast()) {
             lName.setBackground(new Color(200, 200, 200));
             lRelease.setBackground(new Color(200, 200, 200));
         }
+        this.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
     }
 }
