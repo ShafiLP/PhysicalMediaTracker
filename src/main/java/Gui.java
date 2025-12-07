@@ -53,7 +53,7 @@ public class Gui extends JFrame {
 
         // Search bar
         PlaceholderTextField tfSearchBar = new PlaceholderTextField("Suchen");
-        tfSearchBar.addActionListener(e -> {
+        tfSearchBar.addActionListener(_ -> {
             // Search for matches when changes are made
             displayAlbumList(PMT.searchForAlbum(tfSearchBar.getText()));
         });
@@ -75,7 +75,7 @@ public class Gui extends JFrame {
         cbSortBy.addItem("Künstler");
         cbSortBy.addItem("Erscheinungsjahr");
         cbSortBy.addItem("Zuletzt gehört");
-        cbSortBy.addActionListener(e -> {
+        cbSortBy.addActionListener(_ -> {
             String selected = (String) cbSortBy.getSelectedItem();
 
             switch (selected) {
@@ -134,7 +134,7 @@ public class Gui extends JFrame {
         LinkedList<Album> llAlbums = PMT.getAlbumList().reversed();
         for (int i = llAlbums.size() - 1; i >= 0; i--) {
             Album idxAlbum = llAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
+            panAlbums.add(new AlbumComponent(this, PMT, idxAlbum, settings));
         }
 
         // JScrollPane for scrollable album display
@@ -157,10 +157,10 @@ public class Gui extends JFrame {
      */
     public void updateAlbums() {
         panAlbums.removeAll();
-        LinkedList<Album> llAlbums = PMT.getAlbumList();
+        LinkedList<Album> llAlbums = PMT.sortAlbums();
         for (int i = llAlbums.size() - 1; i >= 0; i--) {
             Album idxAlbum = llAlbums.get(i);
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
+            panAlbums.add(new AlbumComponent(this, PMT, idxAlbum, settings));
         }
         panAlbums.revalidate();
         panAlbums.repaint();
@@ -175,7 +175,7 @@ public class Gui extends JFrame {
     public void displayAlbumList(LinkedList<Album> pAlbums) {
         panAlbums.removeAll();
         for (Album idxAlbum : pAlbums) {
-            panAlbums.add(new AlbumComponent(idxAlbum, PMT, settings));
+            panAlbums.add(new AlbumComponent(this, PMT, idxAlbum, settings));
         }
         panAlbums.revalidate();
         panAlbums.repaint();
@@ -245,7 +245,7 @@ public class Gui extends JFrame {
         JMenuItem itemNewAlbum = new JMenuItem("Neues Album");
         itemNewAlbum.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.SHIFT_MASK));
         itemNewAlbum.addActionListener(e -> {
-            new AlbumCreateFrame(PMT, settings);
+            new AlbumCreateFrame(this, PMT, settings);
         });
         menuAlbum.add(itemNewAlbum);
 

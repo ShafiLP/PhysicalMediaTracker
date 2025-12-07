@@ -17,12 +17,20 @@ public class DateTime {
         this.time = time;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     /**
      * Gets the date String and returns it
      * @return date
      */
     public String getDate() {
         return date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     /**

@@ -75,15 +75,15 @@ public class Pmt {
             case SortType.LAST_LISTENED -> {
                 LinkedList<Album> llSorted = new LinkedList<>(albumList);
                 llSorted.sort(
-                        Comparator.comparing((Album a) -> a.getListeningTimes().isEmpty()
+                        Comparator.comparing((Album a) -> a.getSessions().isEmpty()
                                                 ? null
-                                                : a.getListeningTimes().getLast().getDate(),
+                                                : a.getSessions().getLast().getDate(),
                                         Comparator.nullsLast(Comparator.naturalOrder())
                                 )
                                 .thenComparing(
-                                        (Album a) -> a.getListeningTimes().isEmpty()
+                                        (Album a) -> a.getSessions().isEmpty()
                                                 ? null
-                                                : a.getListeningTimes().getLast().getTime(),
+                                                : a.getSessions().getLast().getTime(),
                                         Comparator.nullsLast(Comparator.naturalOrder())
                                 )
                 );

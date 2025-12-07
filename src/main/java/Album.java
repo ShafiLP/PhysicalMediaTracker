@@ -14,8 +14,7 @@ public class Album {
     private boolean onCd;
     private boolean onCassette;
 
-    private int listenCount;
-    private LinkedList<DateTime> llListeningTimes = new LinkedList<>();
+    private LinkedList<Session> llSessions = new LinkedList<>();
 
     public Album() {
         // Empty constructor
@@ -173,18 +172,11 @@ public class Album {
     }
 
     /**
-     * Increases the listen count by one
-     */
-    public void incraseListenCount() {
-        listenCount++;
-    }
-
-    /**
      * Gets the listen count of the album and returns it
      * @return Listen count of the album
      */
     public int getListenCount() {
-        return listenCount;
+        return llSessions.size();
     }
 
     public String[] getGenres() {
@@ -196,19 +188,35 @@ public class Album {
     }
 
     /**
-     * Adds a date and a time when a user listened to the album to the album data
-     * @param pDate Date when album was listened to
-     * @param pTime Time when album was listened to
+     * Adds a session when a user listened to the album to the album data
+     * @param pSession Session object to add at the end of sessions LinkedList
      */
-    public void addListenTime(String pDate, String pTime) {
-        llListeningTimes.add(new DateTime(pDate, pTime));
+    public void addSession(Session pSession) {
+        llSessions.add(pSession);
+    }
+
+    public void setSessions(LinkedList<Session> pSessions) {
+        llSessions = pSessions;
     }
 
     /**
-     * Gets the LinkedList that contains the data of when the user listened to the album and returns it
-     * @return LinkedList<DateTime> with dates and times of when the user listened to the album
+     * Gets the LinkedList that contains the session data and returns it
+     * @return LinkedList with all album's session objects, containing date, time and listened tracks
      */
-    public LinkedList<DateTime> getListeningTimes() {
-        return  llListeningTimes;
+    public LinkedList<Session> getSessions() {
+        return  llSessions;
+    }
+
+    /**
+     * Removes a Session object from the album's data
+     * @param pIdx Index of the Session object to remove
+     */
+    public void removeSession(int pIdx) {
+        // Remove listen count from each track
+        for (int i = 0; i < llSessions.get(pIdx).getListenedTracks().size(); i++) {
+            if (llSessions.get(pIdx).getListenedTracks().get(i)) trackList.get(i).decreaseListenCount();
+        }
+        // Remove listen count from album
+        llSessions.remove(pIdx);
     }
 }

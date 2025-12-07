@@ -18,6 +18,7 @@ class AlbumComponent extends JPanel {
     private JLabel lImg;
     private JLabel lName;
     private JLabel lRelease;
+    private boolean mouseListenerEnabled = true;
 
     /**
      * Empty constructor
@@ -29,7 +30,7 @@ class AlbumComponent extends JPanel {
      * @param album Album object with all album information
      * @param pmt Object of control class
      */
-    public AlbumComponent(Album album, Pmt pmt, Settings settings) {
+    public AlbumComponent(Gui gui, Pmt pmt, Album album, Settings settings) {
         this.settings = settings;
         this.album = album;
 
@@ -47,13 +48,13 @@ class AlbumComponent extends JPanel {
         JMenuItem menuDelete = new JMenuItem("Löschen");
 
         menuListen.addActionListener(e -> {
-            new AddListenSessionFrame(pmt, album);
+            new AddSessionFrame(pmt, album);
         });
         menuView.addActionListener(e -> {
-            new AlbumViewFrame(album, pmt, settings);
+            new AlbumViewFrame(gui, pmt, album, settings);
         });
         menuEdit.addActionListener(e -> {
-            new AlbumEditFrame(album, pmt, settings);
+            new AlbumEditFrame(gui, pmt, album, settings);
         });
         menuDelete.addActionListener(e -> {
             int n = JOptionPane.showConfirmDialog(
@@ -80,21 +81,25 @@ class AlbumComponent extends JPanel {
             // Open menu when clicked
             @Override
             public void mouseClicked(MouseEvent e) {
-                popupMenu.show(e.getComponent(), AlbumComponent.this.getWidth()/2, AlbumComponent.this.getHeight()/2);
+                if (mouseListenerEnabled) popupMenu.show(e.getComponent(), AlbumComponent.this.getWidth()/2, AlbumComponent.this.getHeight()/2);
             }
 
             // Change border to accent color when hovering
             @Override
             public void mouseEntered(MouseEvent e) {
-                AlbumComponent.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                AlbumComponent.this.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.focusColor"), 2));
+                if (mouseListenerEnabled) {
+                    AlbumComponent.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    AlbumComponent.this.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.focusColor"), 2));
+                }
             }
 
             // Change border back to default when hover exit
             @Override
             public void mouseExited(MouseEvent e) {
-                AlbumComponent.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                AlbumComponent.this.setBorder(BorderFactory.createLineBorder(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200)));
+                if (mouseListenerEnabled) {
+                    AlbumComponent.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    AlbumComponent.this.setBorder(BorderFactory.createLineBorder(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200)));
+                }
             }
         });
 
@@ -174,6 +179,10 @@ class AlbumComponent extends JPanel {
         this.setMaximumSize(new Dimension(settings.getUiScale() * 50, getPreferredSize().height));
         this.setMinimumSize(new Dimension(settings.getUiScale() * 50, getPreferredSize().height));
         this.setPreferredSize(new Dimension(settings.getUiScale() * 50, getMaximumSize().height));
+    }
+
+    public void setMouseListenerEnabled(boolean mouseListenerEnabled) {
+        this.mouseListenerEnabled = mouseListenerEnabled;
     }
 
     public void setUiScale(int pScale) {

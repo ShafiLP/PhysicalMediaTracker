@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import com.formdev.flatlaf.FlatClientProperties;
 
 public class AlbumViewFrame extends JFrame {
+    private Gui gui;
     private LinkedList<TrackEntry> llTracks = new LinkedList<>();
 
     /**
@@ -28,11 +29,15 @@ public class AlbumViewFrame extends JFrame {
      * @param pAlbum Album object to view
      * @param pPmt Object of control class
      */
-    public AlbumViewFrame(Album pAlbum, Pmt pPmt, Settings settings) {
+    public AlbumViewFrame(Gui gui, Pmt pPmt, Album pAlbum, Settings settings) {
+        this.gui = gui;
+        gui.setEnabled(false);
+
         this.setTitle(pAlbum.getAlbumName());
         this.setSize(500, 480);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Main panel that contains upper and lower panels
         JPanel panMain = new JPanel();
@@ -166,8 +171,8 @@ public class AlbumViewFrame extends JFrame {
         // Last time listened
         JPanel panLastListen = new  JPanel(new GridLayout(2, 1));
         panLastListen.add(new JLabel("Letztes Mal gehört:"));
-        if (!pAlbum.getListeningTimes().isEmpty()) {
-            panLastListen.add(new JLabel(pAlbum.getListeningTimes().getLast().getDate() + ", " + pAlbum.getListeningTimes().getLast().getTime() + " Uhr."));
+        if (!pAlbum.getSessions().isEmpty()) {
+            panLastListen.add(new JLabel(pAlbum.getSessions().getLast().getDate() + ", " + pAlbum.getSessions().getLast().getTime() + " Uhr."));
         } else {
             panLastListen.add(new JLabel("Noch nicht gehört."));
         }
@@ -318,5 +323,12 @@ public class AlbumViewFrame extends JFrame {
         this.add(panButtons, BorderLayout.SOUTH);
 
         this.setVisible(true);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        gui.setEnabled(true);
+        gui.requestFocus();
     }
 }

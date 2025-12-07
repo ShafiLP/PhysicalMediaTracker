@@ -28,19 +28,23 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
     private JLabel lDelete;
     private JPanel panTracks;
     private JCheckBox cbNulltrack;
+    private Gui gui;
 
     /**
      * Opens a JFrame where a new Album object can be created
      * @param pPmt Object of control class
      */
-    public AlbumCreateFrame(Pmt pPmt, Settings settings) {
+    public AlbumCreateFrame(Gui gui, Pmt pPmt, Settings settings) {
         this.settings = settings;
+        this.gui = gui;
+        gui.setEnabled(false);
 
         // Frame settings
         this.setTitle("Neues Album");
         this.setSize(500, 480);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Main panel where user inserts all information
         JPanel panMain = new JPanel();
@@ -488,5 +492,12 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        gui.setEnabled(true);
+        gui.requestFocus();
     }
 }

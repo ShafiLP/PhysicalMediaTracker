@@ -12,8 +12,8 @@ import javax.swing.*;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-public class AddListenSessionFrame extends JFrame {
-    public AddListenSessionFrame(Pmt pPmt, Album pAlbum) {
+public class AddSessionFrame extends JFrame {
+    public AddSessionFrame(Pmt pPmt, Album pAlbum) {
         this.setTitle("Hör-Session hinzufügen");
         this.setSize(500, 400);
         this.setLocationRelativeTo(null);
@@ -139,7 +139,6 @@ public class AddListenSessionFrame extends JFrame {
                 tfDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
                 tfDate.setEnabled(false);
             } else {
-                tfDate.setText("");
                 tfDate.setEnabled(true);
             }
         });
@@ -164,7 +163,6 @@ public class AddListenSessionFrame extends JFrame {
                 tfTime.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
                 tfTime.setEnabled(false);
             } else {
-                tfTime.setText("");
                 tfTime.setEnabled(true);
             }
         });
@@ -203,11 +201,14 @@ public class AddListenSessionFrame extends JFrame {
         bConfirm.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bConfirm.addActionListener(e -> {
             Album editedAlbum = pAlbum;
-            editedAlbum.incraseListenCount();
             for (int i = 0; i < editedAlbum.getTrackList().size(); i++) {
                 if (llCheckBoxes.get(i).isSelected()) editedAlbum.getTrackList().get(i).incraseListenCount();
             }
-            editedAlbum.addListenTime(tfDate.getText(), tfTime.getText());
+            LinkedList<Boolean> llListenedTracks = new LinkedList<>();
+            for (JCheckBox llCheckBox : llCheckBoxes) {
+                llListenedTracks.add(llCheckBox.isSelected());
+            }
+            editedAlbum.addSession(new Session(llListenedTracks, new DateTime(tfDate.getText(), tfTime.getText())));
             pPmt.editAlbum(pAlbum, editedAlbum);
             this.dispose();
         });

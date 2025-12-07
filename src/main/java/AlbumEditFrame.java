@@ -23,6 +23,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 
 public class AlbumEditFrame extends JFrame implements CoverSearcher {
     private Settings settings;
+    private Gui gui;
     private LinkedList<TrackEntry> llTracks = new LinkedList<>();
     private Image[] albumCover = {null};
     private JButton bCover;
@@ -36,13 +37,16 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
      * @param album Album object to edit
      * @param pmt Object of control class
      */
-    public AlbumEditFrame(Album album, Pmt pmt, Settings settings) {
+    public AlbumEditFrame(Gui gui, Pmt pmt, Album album, Settings settings) {
         this.settings = settings;
+        this.gui = gui;
+        gui.setEnabled(false);
 
         this.setTitle(album.getAlbumName());
         this.setSize(500, 480);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Main panel where user inserts all information
         JPanel panMain = new JPanel();
@@ -77,7 +81,7 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
             gridy = 0;
             weightx = 0;
             weighty = 0;
-            gridheight = 8;
+            gridheight = 9;
             anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.NONE;
         }});
@@ -179,6 +183,20 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
             gridx = 1;
             gridy = 7;
             weightx = 0.7;
+            insets = new Insets(0, 5, 5, 0);
+            anchor = GridBagConstraints.NORTH;
+            fill = GridBagConstraints.HORIZONTAL;
+        }});
+
+        // Edit sessions
+        JButton bSessions = new  JButton("Sessions bearbeiten");
+        bSessions.addActionListener(_ -> {
+            new EditListeningSessionsFrame(settings, pmt, this, album);
+        });
+        panUpper.add(bSessions, new GridBagConstraints() {{
+            gridx = 1;
+            gridy = 8;
+            weightx = 0.7;
             insets = new Insets(0, 5, 0, 0);
             anchor = GridBagConstraints.NORTH;
             fill = GridBagConstraints.HORIZONTAL;
@@ -196,7 +214,7 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
         });
         panUpper.add(bSearchForCover, new GridBagConstraints() {{
             gridx = 0;
-            gridy = 8;
+            gridy = 9;
             weightx = 0.3;
             weighty = 0;
             insets = new Insets(5, 5, 0, 5);
@@ -446,12 +464,13 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
                 } else {
                     path = album.getCoverPath();
                 }
-                
 
                 // Change album in control class
                 String[] genre = tfGenre.getText().replace(" ", "").split(",");
                 Album newAlbum = new Album(llNewTracks, tfName.getText(), tfArtist.getText(), Integer.parseInt(tfRelease.getText()), path,
                 tfWhereBought.getText(), cbNulltrack.isSelected(), cbVinyl.isSelected(), cbCd.isSelected(), cbCassette.isSelected(), genre);
+                newAlbum.setSessions(album.getSessions());
+                newAlbum.setTrackList(album.getTrackList());
                 pmt.editAlbum(album, newAlbum);
                 this.dispose();
             } catch (NumberFormatException e) {
@@ -582,5 +601,12 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        gui.setEnabled(true);
+        gui.requestFocus();
     }
 }

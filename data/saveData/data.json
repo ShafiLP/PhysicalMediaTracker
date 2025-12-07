@@ -68,11 +68,13 @@
     "albumCoverPath": "media\\albumCovers\\blink-182_enemaofthestate.png",
     "whereBought": "Müller Heidelberg",
     "containsNulltrack": false,
+    "genre": [
+      ""
+    ],
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -171,8 +173,7 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -251,8 +252,7 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -336,8 +336,7 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -436,8 +435,7 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -521,8 +519,7 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -601,8 +598,7 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   },
   {
     "trackList": [
@@ -685,7 +681,6 @@
     "onVinyl": false,
     "onCd": true,
     "onCassette": false,
-    "listenCount": 0,
-    "llListeningTimes": []
+    "llSessions": []
   }
 ]

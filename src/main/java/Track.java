@@ -51,11 +51,23 @@ public class Track {
         listenCount++;
     }
 
+    public void setListenCount(int pListenCount) {
+        listenCount = pListenCount;
+    }
+
     /**
      * Gets the current listen count of the track and returns it
      * @return listen count of the track
      */
     public int getListenCount() {
         return listenCount;
+    }
+
+    public void increaseListenCount() {
+        listenCount++;
+    }
+
+    public void decreaseListenCount() {
+        listenCount--;
     }
 }

@@ -17,6 +17,39 @@ public class ProfileSelectionFrame extends JFrame {
         File folder = new File("data\\saveData");
         File[] files = folder.listFiles();
 
+        // Popup Menu, opens when clicking on AlbumComponent
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem menuLoad = new JMenuItem("Öffnen");
+        JMenuItem menuEdit = new JMenuItem("Umbenennen");
+        JMenuItem menuDelete = new JMenuItem("Löschen");
+
+        menuLoad.addActionListener(_ -> {
+            // TODO
+        });
+        menuEdit.addActionListener(_ -> {
+            // TODO
+        });
+        menuDelete.addActionListener(e -> {
+            int n = JOptionPane.showConfirmDialog(
+                    null,
+                    "Wirklich löschen?",
+                    "Profil löschen",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (n == 0) {
+                // TODO delete
+            } else {
+                System.out.println("Deletion cancelled"); // DEBUG
+            }
+        });
+
+        popupMenu.add(menuLoad);
+        popupMenu.add(menuEdit);
+        popupMenu.add(menuDelete);
+
         // Create label element for each file
         JPanel panProfiles = new JPanel(new GridBagLayout()); // Panel for all profiles
         for (int i = 0; i < files.length; i++) {
@@ -27,7 +60,7 @@ public class ProfileSelectionFrame extends JFrame {
                 // Show menu when clicked
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    // TODO
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
 
                 // Change background colour when hovering
