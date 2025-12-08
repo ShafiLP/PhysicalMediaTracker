@@ -12,7 +12,7 @@ import com.google.gson.reflect.TypeToken;
 public class Pmt {
     private final Gui GUI;
     private Settings settings;
-    private LinkedList<Album> albumList;
+    private LinkedList<Album> llAlbums;
     private SortType sortType = SortType.LAST_ADDED;
     private SortOrder sortOrder = SortOrder.DESCENDING;
 
@@ -20,7 +20,7 @@ public class Pmt {
      * Constructor of Pmt (Physical Media Tracker) class
      */
     public Pmt() {
-        albumList = readAlbumsFromJson("data\\saveData\\data.json");
+        // Read settings
         try {
             settings = Settings.readSettings();
         } catch (JsonIOException e) {
@@ -28,6 +28,10 @@ public class Pmt {
         }
         if (settings == null) settings = new Settings(); // Default settings
 
+        // Load album data
+        llAlbums = readAlbumsFromJson(settings.getDataPath());
+
+        // Initialise GUI
         GUI = new Gui(this, settings);
     }
 
@@ -37,15 +41,15 @@ public class Pmt {
      * @return Album object of the given index
      */
     public Album getAlbum(int Index) {
-        return albumList.get(Index);
+        return llAlbums.get(Index);
     }
 
     /**
      * Gets the local LinkedList<Album> that contains all albums and returns it
      * @return LinkedList<Album> with all albums
      */
-    public LinkedList<Album> getAlbumList() {
-        return albumList;
+    public LinkedList<Album> getAlbums() {
+        return llAlbums;
     }
 
     /**
@@ -55,25 +59,25 @@ public class Pmt {
     public LinkedList<Album> sortAlbums() {
         switch (sortType) {
             case SortType.NAME -> {
-                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                LinkedList<Album> llSorted = new LinkedList<>(llAlbums);
                 llSorted.sort(Comparator.comparing(Album::getAlbumName));
                 if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
                 return llSorted;
             }
             case SortType.ARTIST ->  {
-                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                LinkedList<Album> llSorted = new LinkedList<>(llAlbums);
                 llSorted.sort(Comparator.comparing(Album::getAlbumArtist, String.CASE_INSENSITIVE_ORDER));
                 if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
                 return llSorted;
             }
             case SortType.YEAR -> {
-                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                LinkedList<Album> llSorted = new LinkedList<>(llAlbums);
                 llSorted.sort(Comparator.comparing(Album::getReleaseYear));
                 if (sortOrder == SortOrder.DESCENDING) return llSorted.reversed();
                 return llSorted;
             }
             case SortType.LAST_LISTENED -> {
-                LinkedList<Album> llSorted = new LinkedList<>(albumList);
+                LinkedList<Album> llSorted = new LinkedList<>(llAlbums);
                 llSorted.sort(
                         Comparator.comparing((Album a) -> a.getSessions().isEmpty()
                                                 ? null
@@ -91,11 +95,11 @@ public class Pmt {
                 return llSorted;
             }
             case SortType.LAST_ADDED ->  {
-                if (sortOrder == SortOrder.DESCENDING) return albumList.reversed();
-                return albumList;
+                if (sortOrder == SortOrder.DESCENDING) return llAlbums.reversed();
+                return llAlbums;
             }
             case null, default -> {
-                return albumList;
+                return llAlbums;
             }
         }
 
@@ -141,10 +145,10 @@ public class Pmt {
      * @param pAlbum Album object to add to List and save to JSON
      */
     public void addAlbum(Album pAlbum) {
-        albumList.addLast(pAlbum);
+        llAlbums.addLast(pAlbum);
 
         // Save as JSON file
-        addAlbumToJson(pAlbum, "data\\saveData\\data.json");
+        addAlbumToJson(pAlbum, settings.getDataPath());
 
         System.out.println("Added album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " to JSON."); // DEBUG
         GUI.updateAlbums();
@@ -156,14 +160,14 @@ public class Pmt {
      * @param pAlbumAfter Replacement Album object
      */
     public void editAlbum(Album pAlbumBefore, Album pAlbumAfter) {
-        // Search for album in albumList
-        for (int i = 0; i < albumList.size(); i++) {
-            if (albumList.get(i).getAlbumName().equals(pAlbumBefore.getAlbumName()) & albumList.get(i).getAlbumArtist().equals(pAlbumBefore.getAlbumArtist())) {
+        // Search for album in llAlbums
+        for (int i = 0; i < llAlbums.size(); i++) {
+            if (llAlbums.get(i).getAlbumName().equals(pAlbumBefore.getAlbumName()) & llAlbums.get(i).getAlbumArtist().equals(pAlbumBefore.getAlbumArtist())) {
                 // Override album
-                albumList.set(i, pAlbumAfter);
+                llAlbums.set(i, pAlbumAfter);
 
                 // Override in JSON file
-                overrideAlbumsInJson(albumList, "data\\saveData\\data.json");
+                overrideAlbumsInJson(llAlbums, settings.getDataPath());
                 System.out.println("Changed album " + pAlbumAfter.getAlbumName() + " by " + pAlbumAfter.getAlbumArtist() + " in JSON."); // DEBUG
                 
                 GUI.updateAlbums();
@@ -180,14 +184,14 @@ public class Pmt {
      * @param pAlbum Album object to remove from List and JSON
      */
     public void deleteAlbum(Album pAlbum) {
-        // Search for album in albumList
-        for (int i = 0; i < albumList.size(); i++) {
-            if (albumList.get(i).getAlbumName().equals(pAlbum.getAlbumName()) & albumList.get(i).getAlbumArtist().equals(pAlbum.getAlbumArtist())) {
+        // Search for album in llAlbums
+        for (int i = 0; i < llAlbums.size(); i++) {
+            if (llAlbums.get(i).getAlbumName().equals(pAlbum.getAlbumName()) & llAlbums.get(i).getAlbumArtist().equals(pAlbum.getAlbumArtist())) {
                 // Remove from LinkedList
-                albumList.remove(i);
+                llAlbums.remove(i);
 
                 // Remove from JSON file
-                overrideAlbumsInJson(albumList, "savaData\\data.json");
+                overrideAlbumsInJson(llAlbums, settings.getDataPath());
                 System.out.println("Removed album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " from JSON."); // DEBUG
                 
                 GUI.updateAlbums();
@@ -209,7 +213,7 @@ public class Pmt {
         pSearch = pSearch.trim().toLowerCase();
         LinkedList<Album> llResults = new LinkedList<>();
 
-        for (Album album : albumList) {
+        for (Album album : llAlbums) {
             if (album.getAlbumName().trim().toLowerCase().contains(pSearch) || album.getAlbumArtist().trim().toLowerCase().contains(pSearch))
                 llResults.add(album);
         }
@@ -268,5 +272,16 @@ public class Pmt {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Updates path to album data, loads it and updates GUI
+     * @param pPath New path to album data
+     */
+    public void setDataPath(String pPath) {
+        settings.setDataPath(pPath);
+        Settings.writeSettings(settings);
+        llAlbums = readAlbumsFromJson(settings.getDataPath());
+        GUI.updateAlbums();
     }
 }

@@ -131,7 +131,7 @@ public class Gui extends JFrame {
         };
 
         // Add albums from JSON save file
-        LinkedList<Album> llAlbums = PMT.getAlbumList().reversed();
+        LinkedList<Album> llAlbums = PMT.getAlbums().reversed();
         for (int i = llAlbums.size() - 1; i >= 0; i--) {
             Album idxAlbum = llAlbums.get(i);
             panAlbums.add(new AlbumComponent(this, PMT, idxAlbum, settings));
@@ -224,7 +224,7 @@ public class Gui extends JFrame {
         JMenuItem itemOpenFile = new JMenuItem("Profil öffnen");
         itemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
         itemOpenFile.addActionListener(e -> {
-            new ProfileSelectionFrame(settings);
+            new ProfileSelectionFrame(this, PMT, settings);
         });
         menuFile.add(itemOpenFile);
 

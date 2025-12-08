@@ -15,7 +15,7 @@ public class Settings {
     private int coverResolution = 200;
     private boolean autoSave = true;
 
-    private String pathToData = "saveData/data.json";
+    private String pathToData = "data/saveData/data.json";
 
     public Settings() {
         // Keep default settings
