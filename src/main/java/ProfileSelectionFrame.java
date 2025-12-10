@@ -83,13 +83,13 @@ public class ProfileSelectionFrame extends JFrame {
         JButton bDel = new JButton("Löschen");
         bDel.setPreferredSize(preferredSize);
         bDel.addActionListener(_ -> {
-            listProfiles.remove(listProfiles.getSelectedIndex());
             try {
                 Files.deleteIfExists(Paths.get("data/saveData/" + listProfiles.getSelectedValue()));
                 System.out.println("data/saveData/" + listProfiles.getSelectedValue());
             } catch (RuntimeException | IOException e) {
                 e.printStackTrace();
             }
+            listProfiles.remove(listProfiles.getSelectedIndex());
         });
         panButtons.add(bDel, gbcButtons);
         gbcButtons.gridx++;

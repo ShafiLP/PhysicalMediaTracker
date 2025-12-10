@@ -213,28 +213,28 @@ public class Gui extends JFrame {
         JMenu menuFile = new JMenu("Profil");
 
         // Item to create a new save file
-        JMenuItem itemNewFile = new JMenuItem("Neues Profil");
-        itemNewFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.SHIFT_MASK));
-        itemNewFile.addActionListener(e -> {
-            // TODO
+        JMenuItem itemNewProfile = new JMenuItem("Neues Profil");
+        itemNewProfile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.SHIFT_MASK));
+        itemNewProfile.addActionListener(e -> {
+            new ProfileCreateFrame(this, PMT, settings);
         });
-        menuFile.add(itemNewFile);
+        menuFile.add(itemNewProfile);
 
         // Item to open a save file
-        JMenuItem itemOpenFile = new JMenuItem("Profil öffnen");
-        itemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
-        itemOpenFile.addActionListener(e -> {
+        JMenuItem itemOpenProfile = new JMenuItem("Profil öffnen");
+        itemOpenProfile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.SHIFT_MASK));
+        itemOpenProfile.addActionListener(e -> {
             new ProfileSelectionFrame(this, PMT, settings);
         });
-        menuFile.add(itemOpenFile);
+        menuFile.add(itemOpenProfile);
 
         // Item to save current file
-        JMenuItem itemSaveFile = new JMenuItem("Profil speichern");
-        itemSaveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK));
-        itemSaveFile.addActionListener(e -> {
-            // TODO
+        JMenuItem itemSaveProfile = new JMenuItem("Profil speichern");
+        itemSaveProfile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK));
+        itemSaveProfile.addActionListener(e -> {
+            PMT.save();
         });
-        menuFile.add(itemSaveFile);
+        menuFile.add(itemSaveProfile);
 
         menuBar.add(menuFile);
 

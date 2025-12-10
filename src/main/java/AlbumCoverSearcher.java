@@ -12,8 +12,19 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 public class AlbumCoverSearcher extends Thread {
-    public static void searchCover(CoverSearcher pFrame, String pAlbumName, String pArtist) throws IOException {
-        String queryString = "artist:" + pArtist + " AND release:" + pAlbumName;
+    private final CoverSearcher PARENT;
+    private final String albumName;
+    private final String albumArtist;
+
+    public AlbumCoverSearcher(CoverSearcher PARENT, String albumName, String albumArtist) {
+        this.PARENT = PARENT;
+        this.albumName = albumName;
+        this.albumArtist = albumArtist;
+    }
+
+    @Override
+    public void run() {
+        String queryString = "artist:" + albumArtist + " AND release:" + albumName;
         String query = "https://musicbrainz.org/ws/2/release-group/?query=" + URLEncoder.encode(queryString, StandardCharsets.UTF_8) + "&fmt=json";
 
         HttpClient client = HttpClient.newHttpClient();
@@ -38,6 +49,6 @@ public class AlbumCoverSearcher extends Thread {
         String coverUrl = "https://coverartarchive.org/release-group/" + releaseGroupId + "/front"; // Final URL to the album cover
         System.out.println("Cover URL: " + coverUrl);
 
-        pFrame.setCoverFromUrl(coverUrl);
+        PARENT.setCoverFromUrl(coverUrl);
     }
 }

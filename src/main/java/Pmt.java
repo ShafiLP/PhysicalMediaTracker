@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -283,5 +284,23 @@ public class Pmt {
         Settings.writeSettings(settings);
         llAlbums = readAlbumsFromJson(settings.getDataPath());
         GUI.updateAlbums();
+    }
+
+    public void createProfile(String pPath) {
+        try {
+            File file = new File("data/saveData/" + pPath + ".json");
+            if (file.createNewFile()) {
+                System.out.println("Profile has been created.");
+            } else {
+                System.out.println("Profile already exists.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setDataPath("data/saveData/" + pPath + ".json");
+    }
+
+    public void save() {
+        overrideAlbumsInJson(llAlbums, settings.getDataPath());
     }
 }

@@ -206,11 +206,7 @@ public class AlbumEditFrame extends JFrame implements CoverSearcher {
         JButton bSearchForCover = new JButton("Nach Cover suchen");
         bSearchForCover.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bSearchForCover.addActionListener(e -> {
-            try {
-                AlbumCoverSearcher.searchCover(this, tfName.getText(), tfArtist.getText());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            new AlbumCoverSearcher(this, tfName.getText(), tfArtist.getText()).start();
         });
         panUpper.add(bSearchForCover, new GridBagConstraints() {{
             gridx = 0;
