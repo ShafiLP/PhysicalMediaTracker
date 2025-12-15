@@ -24,6 +24,10 @@ public class Gui extends JFrame {
     private final Settings settings;
     private final JPanel panAlbums;
 
+    // * Global GUI elements
+    private final JButton bSortOrder;
+    private final JComboBox<String> cbSortBy;
+
     public Gui(Pmt pPmt, Settings pSettings) {
         PMT = pPmt;
         settings = pSettings;
@@ -68,9 +72,9 @@ public class Gui extends JFrame {
         }});
 
         // Sorter
-        JComboBox<String> cbSortBy = new JComboBox<>();
-        JButton bSortOrder = new JButton("↑");
-        cbSortBy.addItem("Kürzlich hinzugefügt");
+        cbSortBy = new JComboBox<>();
+        bSortOrder = new JButton("↓");
+        cbSortBy.addItem("Zuletzt hinzugefügt");
         cbSortBy.addItem("Name");
         cbSortBy.addItem("Künstler");
         cbSortBy.addItem("Erscheinungsjahr");
@@ -250,13 +254,64 @@ public class Gui extends JFrame {
         menuAlbum.add(itemNewAlbum);
 
         // Item to sort albums
-        JMenuItem itemSort = new JMenuItem("Sortieren");
-        itemSort.addActionListener(e -> {
-           // TODO
-        });
-        menuAlbum.add(itemSort);
+        JMenu itemSort = new JMenu("Sortieren nach...");
 
+        JMenuItem itemRecentlyAdded = new JMenuItem("Zuletzt hizugefügt");
+        itemRecentlyAdded.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortType.LAST_ADDED));
+            cbSortBy.setSelectedIndex(0);
+        });
+        itemSort.add(itemRecentlyAdded);
+
+        JMenuItem itemName = new  JMenuItem("Name");
+        itemName.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortType.NAME));
+            cbSortBy.setSelectedIndex(1);
+        });
+        itemSort.add(itemName);
+
+        JMenuItem itemArtists = new JMenuItem("Künstler");
+        itemArtists.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortType.ARTIST));
+            cbSortBy.setSelectedIndex(2);
+        });
+        itemSort.add(itemArtists);
+
+        JMenuItem itemRelease = new JMenuItem("Erscheinungsjahr");
+        itemRelease.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortType.YEAR));
+            cbSortBy.setSelectedIndex(3);
+        });
+        itemSort.add(itemRelease);
+
+        JMenuItem itemLastListened = new JMenuItem("Zuletzt gehört");
+        itemLastListened.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortType.LAST_LISTENED));
+            cbSortBy.setSelectedIndex(4);
+        });
+        itemSort.add(itemLastListened);
+
+        menuAlbum.add(itemSort);
         menuBar.add(menuAlbum);
+
+        // Item to change sort order
+        JMenu itemSortOrder = new  JMenu("Sortierreihenfolge");
+
+        JMenuItem itemAsc = new  JMenuItem("Aufwärts");
+        itemAsc.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortOrder.ASCENDING));
+            bSortOrder.setText("↑");
+        });
+        itemSortOrder.add(itemAsc);
+
+        JMenuItem itemDesc = new  JMenuItem("Abwärts");
+        itemDesc.addActionListener(_ -> {
+            displayAlbumList(PMT.sortAlbums(SortOrder.DESCENDING));
+            bSortOrder.setText("↓");
+        });
+        itemSortOrder.add(itemDesc);
+
+        menuAlbum.add(itemSortOrder);
 
         // * Settings
         JMenu menuSettings = new JMenu("Einstellungen");
