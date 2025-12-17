@@ -605,67 +605,67 @@
       {
         "trackName": "American Idiot",
         "trackNumber": 1,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "Jesus Of Suburbia",
         "trackNumber": 2,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "Holiday",
         "trackNumber": 3,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "Boulevard Of Broken Dreams",
         "trackNumber": 4,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "Are We The Waiting",
         "trackNumber": 5,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "St. Jimmy",
         "trackNumber": 6,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "Give Me Novacaine",
         "trackNumber": 7,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "She\u0027s A Rebel",
         "trackNumber": 8,
-        "listenCount": 3
+        "listenCount": 2
       },
       {
         "trackName": "Extraordinary Girl",
         "trackNumber": 9,
-        "listenCount": 2
+        "listenCount": 1
       },
       {
         "trackName": "Letterbomb",
         "trackNumber": 10,
-        "listenCount": 2
+        "listenCount": 1
       },
       {
         "trackName": "Wake Me Up When September Ends",
         "trackNumber": 11,
-        "listenCount": 2
+        "listenCount": 1
       },
       {
         "trackName": "Homecoming",
         "trackNumber": 12,
-        "listenCount": 2
+        "listenCount": 1
       },
       {
         "trackName": "Whatsername",
         "trackNumber": 13,
-        "listenCount": 2
+        "listenCount": 1
       }
     ],
     "albumName": "American Idiot",
@@ -701,27 +701,6 @@
         "dateTime": {
           "date": "09.12.2025",
           "time": "17:55"
-        }
-      },
-      {
-        "llListenedTracks": [
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true
-        ],
-        "dateTime": {
-          "date": "09.12.2025",
-          "time": "17:59"
         }
       },
       {

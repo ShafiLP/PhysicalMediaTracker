@@ -19,25 +19,25 @@ import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-public class AlbumCreateFrame extends JFrame implements CoverSearcher {
-    private Settings settings;
+public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher {
+    private final JFrame PARENT;
+    private final Settings SETTINGS;
     private JButton bCover;
     private Image[] albumCover = {null}; // Array so local object can be accessed in action listener
-    private int[] latestIndex = {1}; // Must be array to be changable in ActionListener class
+    private int[] latestIndex = {1}; // Must be an array to be editable in ActionListener class
     private LinkedList<TrackEntry> llTracks = new LinkedList<>();
     private JLabel lDelete;
     private JPanel panTracks;
     private JCheckBox cbNulltrack;
-    private Gui gui;
 
     /**
      * Opens a JFrame where a new Album object can be created
      * @param pPmt Object of control class
      */
-    public AlbumCreateFrame(Gui gui, Pmt pPmt, Settings settings) {
-        this.settings = settings;
-        this.gui = gui;
-        gui.setEnabled(false);
+    public AlbumCreateFrame(JFrame PARENT, Pmt pPmt, Settings SETTINGS) {
+        this.SETTINGS = SETTINGS;
+        this.PARENT = PARENT;
+        PARENT.setEnabled(false);
 
         // Frame settings
         this.setTitle("Neues Album");
@@ -58,7 +58,7 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
         // JButton where cover can be uploaded
         bCover = new JButton("Cover hinzufügen");
         bCover.setOpaque(true);
-        bCover.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
+        bCover.setBackground(SETTINGS.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         bCover.setForeground(new Color(150, 150, 150));
         bCover.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         bCover.setPreferredSize(new Dimension(200, 200));
@@ -183,7 +183,7 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
         JButton bSearchForCover = new JButton("Nach Cover suchen");
         bSearchForCover.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bSearchForCover.addActionListener(e -> {
-            new AlbumCoverSearcher(this, tfName.getText(), tfArtist.getText()).start();
+            new WebCoverSearcher(this, tfName.getText(), tfArtist.getText()).start();
         });
         panUpper.add(bSearchForCover, new GridBagConstraints() {{
             gridx = 0;
@@ -228,7 +228,7 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
 
         // Head row with category names to make it look like a table
         JPanel headRow = new JPanel(new GridBagLayout());
-        if (settings.getRowContrast()) headRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
+        if (SETTINGS.getRowContrast()) headRow.setBackground(SETTINGS.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
         GridBagConstraints gbcHeadRow = new GridBagConstraints() {{
             gridx = 0;
@@ -379,13 +379,13 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
     }
 
     /**
-     * Creates a new rock with index, text field and delete button and adds it to the tracks panel
+     * Adds a new row to track list on frame.
      */
     private void addTrackRow() {
         llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField()));
 
         JPanel newRow = new JPanel(new GridBagLayout());
-        if (latestIndex[0] % 2 == 0 & settings.getRowContrast()) newRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
+        if (latestIndex[0] % 2 == 0 & SETTINGS.getRowContrast()) newRow.setBackground(SETTINGS.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
         GridBagConstraints gbcNewRow = new GridBagConstraints();
         gbcNewRow.insets = new Insets(4, 8, 4, 8);
@@ -460,7 +460,18 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
         latestIndex[0]++;
     }
 
+    /**
+     * Changes the album cover image to an image of a given URL.
+     * Displays error text on album cover button if pUrl is null.
+     * @param pUrl URL link to album cover image.
+     */
     public void setCoverFromUrl(String pUrl) {
+        // If no cover was found or an error occurred
+        if (pUrl == null) {
+            bCover.setText("Cover nicht gefunden");
+            return;
+        }
+
         BufferedImage loadedImg;
         try {
             loadedImg = ImageIO.read(new URL(pUrl));
@@ -471,15 +482,22 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
         albumCover[0] = loadedImg.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         bCover.setIcon(new ImageIcon(albumCover[0]));
         bCover.setText("");
+        System.out.println("[INFO] Cover wurde durch URL gesetzt: " + pUrl);
     }
 
+    /**
+     * Opens frame for user to upload own image for album cover and returns it scaled as an Image object.
+     * @param pWidth Width of cover.
+     * @param pHeight Height of cover.
+     * @return Scaled image uploaded by user.
+     */
     private Image iconFromUpload(int pWidth, int pHeight) {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
         int result = chooser.showOpenDialog(this);
 
-        if(result == JFileChooser.APPROVE_OPTION) {
+        if (result == JFileChooser.APPROVE_OPTION) {
             File chosenFile = chooser.getSelectedFile();
 
             ImageIcon icon = new ImageIcon(chosenFile.getAbsolutePath());
@@ -490,10 +508,13 @@ public class AlbumCreateFrame extends JFrame implements CoverSearcher {
         }
     }
 
+    /**
+     * Override dispose method to focus on parent frame when disposing
+     */
     @Override
     public void dispose() {
         super.dispose();
-        gui.setEnabled(true);
-        gui.requestFocus();
+        PARENT.setEnabled(true);
+        PARENT.requestFocus();
     }
 }

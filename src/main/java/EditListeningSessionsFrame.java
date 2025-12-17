@@ -5,10 +5,10 @@ import java.awt.*;
 import java.util.LinkedList;
 
 public class EditListeningSessionsFrame extends JFrame {
-    private final JFrame parent;
+    private final JFrame PARENT;
 
     public EditListeningSessionsFrame(Settings settings, Pmt pmt, JFrame parent, Album album) {
-        this.parent = parent;
+        this.PARENT = parent;
 
         this.setTitle(album.getAlbumName() + " Sessions");
         this.setSize(500, 480);
@@ -16,7 +16,7 @@ public class EditListeningSessionsFrame extends JFrame {
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        parent.setEnabled(false);
+        PARENT.setEnabled(false);
 
         JPanel panSessions = new JPanel(new GridBagLayout());
         GridBagConstraints gbcIdx = new  GridBagConstraints() {{
@@ -136,7 +136,7 @@ public class EditListeningSessionsFrame extends JFrame {
     @Override
     public void dispose() {
         super.dispose();
-        parent.setEnabled(true);
-        parent.requestFocus();
+        PARENT.setEnabled(true);
+        PARENT.requestFocus();
     }
 }
