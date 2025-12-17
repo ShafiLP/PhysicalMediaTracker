@@ -1,14 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -19,7 +12,7 @@ import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher {
+public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebTracklistSearcher {
     private final JFrame PARENT;
     private final Settings SETTINGS;
     private JButton bCover;
@@ -281,20 +274,30 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher {
             fill = GridBagConstraints.BOTH;
         }});
 
+        // Button to search for track list
+        JButton bSearchTracks = new JButton("Tracklist suchen");
+        bSearchTracks.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
+        bSearchTracks.addActionListener(_ -> {
+            new WebTracklistSearcher(this, tfName.getText(), tfArtist.getText()).start();
+        });
+        panLower.add(bSearchTracks, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 4;
+            anchor = GridBagConstraints.WEST;
+            fill = GridBagConstraints.NONE;
+        }});
+
         // Button to add tracks at the bottom of main panel
         JButton bAddTrack = new JButton("+");
         bAddTrack.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-        bAddTrack.addActionListener(e -> {
+        bAddTrack.addActionListener(_ -> {
             addTrackRow();
         });
         panLower.add(bAddTrack, new GridBagConstraints() {{
-            gridx = 0;
+            gridx = 1;
             gridy = 4;
-            gridwidth = 2;
-            weightx = 1;
-            insets = new Insets(5, 0, 5, 0);
-            anchor = GridBagConstraints.NORTH;
-            fill = GridBagConstraints.NONE;
+            anchor  = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
         }});
 
         // Add panels to main panel
@@ -459,6 +462,18 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher {
         this.revalidate();
         latestIndex[0]++;
     }
+
+    /**
+     * Fills text fields for track names with data from a LinkedList.
+     * @param pTracklist LinkedList containing tracks (TrackObjects).
+     */
+    public void setTracklist(LinkedList<TrackObject> pTracklist) {
+        for (int i = 0; i < pTracklist.size(); i++) {
+            llTracks.get(i).getTextField().setText(pTracklist.get(i).getTitle());
+            if (llTracks.get(i).equals(llTracks.getLast()) & pTracklist.get(i) != pTracklist.getLast()) addTrackRow();
+        }
+    }
+
 
     /**
      * Changes the album cover image to an image of a given URL.

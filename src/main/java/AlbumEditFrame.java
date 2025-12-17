@@ -21,7 +21,7 @@ import java.util.LinkedList;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-public class AlbumEditFrame extends JFrame implements IWebCoverSearcher {
+public class AlbumEditFrame extends JFrame implements IWebCoverSearcher, IWebTracklistSearcher {
     private final Settings SETTINGS;
     private final JFrame PARENT;
     private LinkedList<TrackEntry> llTracks = new LinkedList<>();
@@ -381,20 +381,30 @@ public class AlbumEditFrame extends JFrame implements IWebCoverSearcher {
             fill = GridBagConstraints.BOTH;
         }});
 
+        // Button to search for track list
+        JButton bSearchTracks = new JButton("Tracklist suchen");
+        bSearchTracks.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
+        bSearchTracks.addActionListener(_ -> {
+            new WebTracklistSearcher(this, tfName.getText(), tfArtist.getText()).start();
+        });
+        panLower.add(bSearchTracks, new GridBagConstraints() {{
+            gridx = 0;
+            gridy = 4;
+            anchor = GridBagConstraints.WEST;
+            fill = GridBagConstraints.NONE;
+        }});
+
         // Button to add tracks at the bottom of main panel
         JButton bAddTrack = new JButton("+");
         bAddTrack.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-        bAddTrack.addActionListener(e -> {
-             addTrackRow();
+        bAddTrack.addActionListener(_ -> {
+            addTrackRow();
         });
         panLower.add(bAddTrack, new GridBagConstraints() {{
-            gridx = 0;
+            gridx = 1;
             gridy = 4;
-            gridwidth = 2;
-            weightx = 1;
-            insets = new Insets(5, 0, 5, 0);
-            anchor = GridBagConstraints.NORTH;
-            fill = GridBagConstraints.NONE;
+            anchor  = GridBagConstraints.CENTER;
+            fill = GridBagConstraints.HORIZONTAL;
         }});
 
         // Add panels to main panel
@@ -571,6 +581,17 @@ public class AlbumEditFrame extends JFrame implements IWebCoverSearcher {
         panTracks.add(newRow, gbcTrack);
         this.revalidate();
         latestIndex[0]++;
+    }
+
+    /**
+     * Fills text fields for track names with data from a LinkedList.
+     * @param pTracklist LinkedList containing tracks (TrackObjects).
+     */
+    public void setTracklist(LinkedList<TrackObject> pTracklist) {
+        for (int i = 0; i < pTracklist.size(); i++) {
+            llTracks.get(i).getTextField().setText(pTracklist.get(i).getTitle());
+            if (llTracks.get(i).equals(llTracks.getLast()) & pTracklist.get(i) != pTracklist.getLast()) addTrackRow();
+        }
     }
 
     /**

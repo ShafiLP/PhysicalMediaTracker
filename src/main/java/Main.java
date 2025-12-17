@@ -2,7 +2,7 @@
  * Main class
  * 
  * @author ShafiLP
- * @version 0.2.3
+ * @version 0.2.4
  */
 public class Main {
     public static void main(String[] args) {
@@ -14,6 +14,5 @@ public class Main {
  * TODO:
  * * Search for updates
  * * Port to Android
- * * Saves export & import
  * * List of saves
  */
