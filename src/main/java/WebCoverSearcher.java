@@ -23,20 +23,21 @@ public class WebCoverSearcher extends Thread {
 
     @Override
     public void run() {
+        Log.info("Started searching for album cover with musicbrainz API.");
         String queryString = "artist:" + albumArtist + " AND release:" + albumName;
         String query = "https://musicbrainz.org/ws/2/release-group/?query=" + URLEncoder.encode(queryString, StandardCharsets.UTF_8) + "&fmt=json";
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(query))
-                .header("User-Agent", "PhysicalMediaTracker/0.2.4 ( https://github.com/ShafiLP )")
+                .header("User-Agent", "PhysicalMediaTracker/0.2.5 ( https://github.com/ShafiLP )")
                 .header("Accept", "application/json")
                 .build();
         HttpResponse<String> response = null;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException | IOException ex) {
-            System.out.println("[ERROR] No response from server.");
+            Log.error("No response from server.");
             PARENT.setCoverFromUrl(null);
             return;
         }
@@ -44,14 +45,20 @@ public class WebCoverSearcher extends Thread {
         JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
         JsonArray groups = json.getAsJsonArray("release-groups");
         if (groups == null) {
-            System.out.println("[WARNING] No album cover found.");
+            Log.warn("No album cover found.");
             PARENT.setCoverFromUrl(null);
             return;
         }
-        String releaseGroupId = groups.get(0).getAsJsonObject().get("id").getAsString();
+
+        String releaseGroupId;
+        try {
+            releaseGroupId = groups.get(0).getAsJsonObject().get("id").getAsString();
+        } catch (IndexOutOfBoundsException e) {
+            Log.error(e.getMessage());
+            return;
+        }
 
         String coverUrl = "https://coverartarchive.org/release-group/" + releaseGroupId + "/front"; // Final URL to the album cover
-        System.out.println("Cover URL: " + coverUrl);
 
         PARENT.setCoverFromUrl(coverUrl);
     }

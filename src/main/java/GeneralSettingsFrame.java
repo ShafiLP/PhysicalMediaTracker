@@ -59,7 +59,7 @@ public class GeneralSettingsFrame extends JFrame {
             try {
                 settings.setCoverResolution(Integer.parseInt(tfCoverResolution.getText()));
             }  catch (NumberFormatException ex) {
-                ex.printStackTrace();
+                Log.error(ex.getMessage());
                 // Keep current settings
             }
             Settings.writeSettings(settings); // * Save settings to JSON

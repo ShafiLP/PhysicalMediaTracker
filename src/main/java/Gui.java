@@ -88,7 +88,7 @@ public class Gui extends JFrame {
                 case "Künstler" -> displayAlbumList(PMT.sortAlbums(SortType.ARTIST));
                 case "Erscheinungsjahr" -> displayAlbumList(PMT.sortAlbums(SortType.YEAR));
                 case "Zuletzt gehört" -> displayAlbumList(PMT.sortAlbums(SortType.LAST_LISTENED));
-                case null, default -> System.out.println("Items couldn't be sorted."); //! Error
+                case null, default -> Log.error("Items couldn't be sorted.");
             }
         });
         panSearchSort.add(cbSortBy, new GridBagConstraints() {{
@@ -168,7 +168,7 @@ public class Gui extends JFrame {
         }
         panAlbums.revalidate();
         panAlbums.repaint();
-        System.out.println("GUI updated."); // DEBUG
+        Log.info("GUI updated.");
     }
 
     /**
@@ -183,7 +183,7 @@ public class Gui extends JFrame {
         }
         panAlbums.revalidate();
         panAlbums.repaint();
-        System.out.println("GUI updated."); // DEBUG
+        Log.info("GUI updated.");
     }
 
     public void setUiScale(int pUiScale) {

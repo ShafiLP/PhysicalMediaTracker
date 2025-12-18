@@ -25,7 +25,7 @@ public class Pmt {
         try {
             settings = Settings.readSettings();
         } catch (JsonIOException e) {
-            e.printStackTrace();
+            Log.error(e.getMessage());
         }
         if (settings == null) settings = new Settings(); // Default settings
 
@@ -151,7 +151,7 @@ public class Pmt {
         // Save as JSON file
         addAlbumToJson(pAlbum, settings.getDataPath());
 
-        System.out.println("Added album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " to JSON."); // DEBUG
+        Log.info("Added album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " to JSON.");
         GUI.updateAlbums();
     }
 
@@ -169,7 +169,7 @@ public class Pmt {
 
                 // Override in JSON file
                 overrideAlbumsInJson(llAlbums, settings.getDataPath());
-                System.out.println("Changed album " + pAlbumAfter.getAlbumName() + " by " + pAlbumAfter.getAlbumArtist() + " in JSON."); // DEBUG
+                Log.info("Changed album " + pAlbumAfter.getAlbumName() + " by " + pAlbumAfter.getAlbumArtist() + " in JSON.");
                 
                 GUI.updateAlbums();
                 return;
@@ -177,7 +177,7 @@ public class Pmt {
         }
 
         // If no matching album was found
-        System.out.println("No matching album found to change.");
+        Log.warn("No matching album found to change.");
     }
 
     /**
@@ -193,7 +193,7 @@ public class Pmt {
 
                 // Remove from JSON file
                 overrideAlbumsInJson(llAlbums, settings.getDataPath());
-                System.out.println("Removed album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " from JSON."); // DEBUG
+                Log.info("Removed album " + pAlbum.getAlbumName() + " by " + pAlbum.getAlbumArtist() + " from JSON."); // DEBUG
                 
                 GUI.updateAlbums();
                 return;
@@ -201,7 +201,7 @@ public class Pmt {
         }
 
         // If no matching album was found
-        System.out.println("No matching album found to delete.");
+        Log.warn("No matching album found to delete.");
     }
 
     /**
@@ -271,7 +271,7 @@ public class Pmt {
         try (FileWriter writer = new FileWriter(pPath)) {
             gson.toJson(pAlbums, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error(e.getMessage());
         }
     }
 
@@ -290,12 +290,12 @@ public class Pmt {
         try {
             File file = new File("data/saveData/" + pPath + ".json");
             if (file.createNewFile()) {
-                System.out.println("Profile has been created.");
+                Log.info("Profile has been created.");
             } else {
-                System.out.println("Profile already exists.");
+                Log.warn("Profile already exists.");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error(e.getMessage());
         }
         setDataPath("data/saveData/" + pPath + ".json");
     }

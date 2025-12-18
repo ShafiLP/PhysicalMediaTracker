@@ -54,7 +54,7 @@ public class DisplaySettingsFrame extends JFrame {
             final int idx = i;
             bColors[i].addActionListener(e -> {
                 applyAccentColor(bColors[idx].getBackground());
-                System.out.println("Changed accent color."); // DEBUG
+                Log.info("Changed accent color.");
             });
             panColors.add(bColors[i], new GridBagConstraints() {{
                 gridx = idx;

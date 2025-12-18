@@ -364,7 +364,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
                 pPmt.addAlbum(newAlbum);
                 this.dispose();
             } catch (NumberFormatException | IOException e) {
-                e.printStackTrace();
+                Log.error(e.getMessage());
             }
         });
         panButtons.add(bConfirm, new GridBagConstraints() {{
@@ -468,10 +468,20 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
      * @param pTracklist LinkedList containing tracks (TrackObjects).
      */
     public void setTracklist(LinkedList<TrackObject> pTracklist) {
+        // Add all tracks to text fields
         for (int i = 0; i < pTracklist.size(); i++) {
             llTracks.get(i).getTextField().setText(pTracklist.get(i).getTitle());
             if (llTracks.get(i).equals(llTracks.getLast()) & pTracklist.get(i) != pTracklist.getLast()) addTrackRow();
         }
+
+        // Delete additional track rows
+        if (llTracks.size() > pTracklist.size()) {
+            do {
+                llTracks.getLast().getDeleteButton().doClick();
+            } while (llTracks.size() > pTracklist.size());
+        }
+
+        Log.info("Set track list.");
     }
 
 
@@ -483,21 +493,22 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
     public void setCoverFromUrl(String pUrl) {
         // If no cover was found or an error occurred
         if (pUrl == null) {
-            bCover.setText("Cover nicht gefunden");
+            bCover.setText("Cover not found.");
             return;
         }
 
         BufferedImage loadedImg;
         try {
             loadedImg = ImageIO.read(new URL(pUrl));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException _) {
+            Log.error("Image from API couldn't be converted to Image object.");
+            return;
         }
 
         albumCover[0] = loadedImg.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         bCover.setIcon(new ImageIcon(albumCover[0]));
         bCover.setText("");
-        System.out.println("[INFO] Cover wurde durch URL gesetzt: " + pUrl);
+        Log.info("Cover set by URL: " + pUrl);
     }
 
     /**

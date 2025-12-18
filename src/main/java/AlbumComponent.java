@@ -68,7 +68,7 @@ class AlbumComponent extends JPanel {
             if (n == 0) {
                 pmt.deleteAlbum(album);
             } else {
-                System.out.println("Deletion cancelled"); // DEBUG
+                Log.info("Deletion cancelled");
             }
         });
 

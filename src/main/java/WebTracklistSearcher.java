@@ -24,6 +24,7 @@ public class WebTracklistSearcher extends Thread {
 
     @Override
     public void run() {
+        Log.info("Started searching for track list with musicbrainz API.");
         String queryString = "artist:" + albumArtist + " AND release:" + albumName;
         String query = "https://musicbrainz.org/ws/2/release/?query=" + URLEncoder.encode(queryString, StandardCharsets.UTF_8) + "&fmt=json";
 
@@ -37,14 +38,14 @@ public class WebTracklistSearcher extends Thread {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException | IOException ex) {
-            System.out.println("[ERROR] No response from server.");
+            Log.error("No response from server.");
             return;
         }
 
         JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
         JsonArray releases = json.getAsJsonArray("releases");
         if (releases == null) {
-            System.out.println("[WARNING] No track list found.");
+            Log.warn("No track list found.");
             return;
         }
         String releaseId = releases.get(0).getAsJsonObject().get("id").getAsString();
@@ -52,14 +53,14 @@ public class WebTracklistSearcher extends Thread {
 
         request = HttpRequest.newBuilder()
                 .uri(URI.create(trackQuery))
-                .header("User-Agent", "PhysicalMediaTracker/0.2.4 ( https://github.com/ShafiLP )")
+                .header("User-Agent", "PhysicalMediaTracker/0.2.5 ( https://github.com/ShafiLP )")
                 .header("Accept", "application/json")
                 .build();
         HttpResponse<String> trackResponse = null;
         try {
             trackResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException | IOException ex) {
-            System.out.println("[ERROR] No response from server.");
+            Log.error("No response from server.");
             return;
         }
 
@@ -68,13 +69,13 @@ public class WebTracklistSearcher extends Thread {
 
         // Check if media equals null
         if (media == null) {
-            System.out.println("[WARNING] No media found.");
+            Log.warn("No media found.");
             return;
         }
 
         LinkedList<TrackObject> llTracks = new LinkedList<>();
 
-        System.out.println("[RESULTS FROM TRACK LIST SEARCHER]");
+        Log.print("[RESULTS FROM TRACK LIST SEARCHER]");
         for (int i = 0; i < media.size(); i++) {
             JsonArray tracks = media.get(i).getAsJsonObject().getAsJsonArray("tracks");
             for (int j = 0; j < tracks.size(); j++) {
@@ -82,11 +83,11 @@ public class WebTracklistSearcher extends Thread {
                 String title =  track.get("title").getAsString();
                 int position = track.get("position").getAsInt();
 
-                System.out.println(position + ". " + title);
+                Log.print(position + ". " + title);
                 llTracks.add(new TrackObject(position, title));
             }
         }
-        System.out.println("[RESULTS END]");
+        Log.print("[RESULTS END]");
 
         PARENT.setTracklist(llTracks);
     }

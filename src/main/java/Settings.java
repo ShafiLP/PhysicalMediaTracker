@@ -98,8 +98,9 @@ public class Settings {
         Gson gson = new Gson();
         try (FileReader reader = new FileReader("data\\settings.json")) {
             settingsFromJson = gson.fromJson(reader, Settings.class);
+            Log.info("Loaded settings from \"data\\settings.json\".");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error(e.getMessage());
         }
         return settingsFromJson;
     }
@@ -108,9 +109,9 @@ public class Settings {
         Gson gson = new Gson();
         try (FileWriter writer = new FileWriter("data\\settings.json")) {
             gson.toJson(pSettings, writer);
-            System.out.println("Saved settings to \"data/settings.json\"");
+            Log.info("Saved settings to \"data/settings.json\".");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error(e.getMessage());
         }
     }
 }

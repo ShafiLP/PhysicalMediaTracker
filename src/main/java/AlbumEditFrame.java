@@ -481,10 +481,8 @@ public class AlbumEditFrame extends JFrame implements IWebCoverSearcher, IWebTra
                 newAlbum.setTrackList(album.getTrackList());
                 pmt.editAlbum(album, newAlbum);
                 this.dispose();
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (NumberFormatException | IOException e) {
+                Log.error(e.getMessage());
             }
         });
         panButtons.add(bConfirm, new GridBagConstraints() {{
@@ -616,7 +614,7 @@ public class AlbumEditFrame extends JFrame implements IWebCoverSearcher, IWebTra
         albumCover[0] = loadedImg.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         bCover.setIcon(new ImageIcon(albumCover[0]));
         bCover.setText("");
-        System.out.println("[INFO] Cover wurde durch URL gesetzt: " + pUrl);
+        Log.info("Cover wurde durch URL gesetzt: " + pUrl);
     }
 
     /**

@@ -66,7 +66,7 @@ public class ProfileSelectionFrame extends JFrame {
         bLoad.setPreferredSize(preferredSize);
         bLoad.addActionListener(_ -> {
             PMT.setDataPath("data/saveData/" + listProfiles.getSelectedValue());
-            System.out.println("loaded " + settings.getDataPath()); // Debug
+            Log.info("loaded " + settings.getDataPath());
             this.dispose();
         });
         panButtons.add(bLoad, gbcButtons);
@@ -85,9 +85,9 @@ public class ProfileSelectionFrame extends JFrame {
         bDel.addActionListener(_ -> {
             try {
                 Files.deleteIfExists(Paths.get("data/saveData/" + listProfiles.getSelectedValue()));
-                System.out.println("data/saveData/" + listProfiles.getSelectedValue());
+                Log.info("Deleted profile.");
             } catch (RuntimeException | IOException e) {
-                e.printStackTrace();
+                Log.error(e.getMessage());
             }
             listProfiles.remove(listProfiles.getSelectedIndex());
         });
