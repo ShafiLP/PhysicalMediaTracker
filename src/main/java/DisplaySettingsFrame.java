@@ -25,11 +25,14 @@ public class DisplaySettingsFrame extends JFrame {
 
         // Darkmode settings
         JCheckBox cbDarkmode = new JCheckBox("Dunkler Modus", settings.isDarkmode());
+        cbDarkmode.setFont(settings.getFont());
         panSettings.add(cbDarkmode);
 
         // Accent colour settings
         JPanel panAccentColor = new JPanel(new GridLayout(2, 1));
-        panAccentColor.add(new JLabel("Akzentfarbe"));
+        panAccentColor.add(new JLabel("Akzentfarbe") {{
+            setFont(settings.getFont());
+        }});
         JPanel panColors  = new JPanel(new GridBagLayout());
         JButton[] bColors = {
                 new JButton() {{
@@ -63,7 +66,9 @@ public class DisplaySettingsFrame extends JFrame {
                 anchor = GridBagConstraints.WEST;
             }});
         }
-        JPanel panColorsWrapped = new JPanel(new BorderLayout());
+        JPanel panColorsWrapped = new JPanel(new BorderLayout()) {{
+            setFont(settings.getFont());
+        }};
         panColorsWrapped.add(panColors, BorderLayout.WEST);
         panAccentColor.add(panColorsWrapped);
         panSettings.add(panAccentColor);
@@ -72,6 +77,7 @@ public class DisplaySettingsFrame extends JFrame {
         JPanel panFontType = new JPanel(new GridLayout(2, 1));
         panFontType.add(new JLabel("Schriftart"));
         JComboBox<String> cbFontType = new JComboBox<>();
+        cbFontType.setFont(settings.getFont());
         // Load all fonts from system
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fontFamilies  = ge.getAvailableFontFamilyNames();
@@ -84,8 +90,10 @@ public class DisplaySettingsFrame extends JFrame {
 
         // Font size settings
         JPanel panFontSize = new JPanel(new GridLayout(2, 1));
+        panSettings.setFont(settings.getFont());
         panFontSize.add(new JLabel("Schriftgröße"));
         JSlider slFontSize = new JSlider(8, 15, settings.getFont().getSize());
+        slFontSize.setFont(settings.getFont());
         slFontSize.setPaintLabels(true);
         slFontSize.setLabelTable(slFontSize.createStandardLabels(1));
         slFontSize.setSnapToTicks(true);
@@ -93,9 +101,12 @@ public class DisplaySettingsFrame extends JFrame {
         panSettings.add(panFontSize);
 
         // UI scale / AlbumComponent size settings
-        JPanel panUiScale = new JPanel(new GridLayout(2, 1));
+        JPanel panUiScale = new JPanel(new GridLayout(2, 1)) {{
+            setFont(settings.getFont());
+        }};
         panUiScale.add(new JLabel("Größe der Benutzeroberfläche"));
         JSlider slUiScale = new JSlider(1, 5, settings.getUiScale());
+        slUiScale.setFont(settings.getFont());
         slUiScale.setPaintLabels(true);
         slUiScale.setLabelTable(slUiScale.createStandardLabels(1));
         slUiScale.setSnapToTicks(true);
@@ -104,6 +115,7 @@ public class DisplaySettingsFrame extends JFrame {
 
         // Row contrast settings
         JCheckBox cbRowContrast = new JCheckBox("Kontrast zwischen Reihen", settings.getRowContrast());
+        cbRowContrast.setFont(settings.getFont());
         panSettings.add(cbRowContrast);
 
         // Apply and cancel buttons

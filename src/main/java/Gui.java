@@ -15,6 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -44,6 +45,7 @@ public class Gui extends JFrame {
 
         // Setup JFrame
         this.setTitle("Physical Media Tracker");
+        this.pack();
         this.setSize(510, 800);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -57,6 +59,7 @@ public class Gui extends JFrame {
 
         // Search bar
         PlaceholderTextField tfSearchBar = new PlaceholderTextField("Suchen");
+        tfSearchBar.setFont(settings.getFont());
         tfSearchBar.addActionListener(_ -> {
             // Search for matches when changes are made
             displayAlbumList(PMT.searchForAlbum(tfSearchBar.getText()));
@@ -73,7 +76,9 @@ public class Gui extends JFrame {
 
         // Sorter
         cbSortBy = new JComboBox<>();
+        cbSortBy.setFont(settings.getFont());
         bSortOrder = new JButton("↓");
+        bSortOrder.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         cbSortBy.addItem("Zuletzt hinzugefügt");
         cbSortBy.addItem("Name");
         cbSortBy.addItem("Künstler");
@@ -212,6 +217,7 @@ public class Gui extends JFrame {
     private void initializeJMenuBar() {
         // Menu bar at the top
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setFont(settings.getFont());
 
         // * Profile options
         JMenu menuFile = new JMenu("Profil");

@@ -25,12 +25,16 @@ public class GeneralSettingsFrame extends JFrame {
 
         // Auto-save settings
         JCheckBox cbAutosave = new JCheckBox("Automatisch speichern", settings.getAutoSave());
+        cbAutosave.setFont(settings.getFont());
         panSettings.add(cbAutosave);
 
         // Resolution for uploaded album covers
-        JPanel panResolution = new JPanel(new GridLayout(2, 1));
+        JPanel panResolution = new JPanel(new GridLayout(2, 1) {{
+            setFont(settings.getFont());
+        }});
         panResolution.add(new JLabel("Cover-Auflösung"));
         JTextField tfCoverResolution = new JTextField(String.valueOf(settings.getCoverResolution()));
+        tfCoverResolution.setFont(settings.getFont());
         panResolution.add(tfCoverResolution);
         panSettings.add(panResolution);
 

@@ -72,8 +72,12 @@ public class AlbumViewFrame extends JFrame {
 
         // Album name
         JPanel panName = new JPanel(new GridLayout(2, 1));
-        panName.add(new JLabel("Name:"));
-        panName.add(new JLabel(pAlbum.getAlbumName()));
+        panName.add(new JLabel("Name:") {{
+            setFont(settings.getFont());
+        }});
+        panName.add(new JLabel(pAlbum.getAlbumName()) {{
+            setFont(settings.getFont());
+        }});
         panUpper.add(panName, new GridBagConstraints() {{
             gridx = 1;
             gridy = 0;
@@ -85,8 +89,12 @@ public class AlbumViewFrame extends JFrame {
 
         // Album artist
         JPanel panArtist = new JPanel(new GridLayout(2, 1));
-        panArtist.add(new JLabel("Künstler:"));
-        panArtist.add(new JLabel(pAlbum.getAlbumArtist()));
+        panArtist.add(new JLabel("Künstler:") {{
+            setFont(settings.getFont());
+        }});
+        panArtist.add(new JLabel(pAlbum.getAlbumArtist()) {{
+            setFont(settings.getFont());
+        }});
         panUpper.add(panArtist, new GridBagConstraints() {{
             gridx = 1;
             gridy = 1;
@@ -98,8 +106,12 @@ public class AlbumViewFrame extends JFrame {
 
         // Release Year
         JPanel panRelease = new JPanel(new GridLayout(2, 1));
-        panRelease.add(new JLabel("Erscheinungsjahr:"));
-        panRelease.add(new JLabel(pAlbum.getReleaseYear() + ""));
+        panRelease.add(new JLabel("Erscheinungsjahr:") {{
+            setFont(settings.getFont());
+        }});
+        panRelease.add(new JLabel(pAlbum.getReleaseYear() + "") {{
+            setFont(settings.getFont());
+        }});
         panUpper.add(panRelease, new GridBagConstraints() {{
             gridx = 1;
             gridy = 2;
@@ -111,7 +123,9 @@ public class AlbumViewFrame extends JFrame {
 
         // Type of media
         JPanel panMedia = new JPanel(new GridLayout(2, 1));
-        panMedia.add(new JLabel("Tonträger:"));
+        panMedia.add(new JLabel("Tonträger:") {{
+            setFont(settings.getFont());
+        }});
 
         LinkedList<String> llMedia = new LinkedList<>();
         if (pAlbum.isOnVinyl()) llMedia.add("Vinyl");
@@ -126,7 +140,9 @@ public class AlbumViewFrame extends JFrame {
                 typeOfMedia.append(", ").append(s);
             }
         }
-        panMedia.add(new JLabel(typeOfMedia.toString()));
+        panMedia.add(new JLabel(typeOfMedia.toString()) {{
+            setFont(settings.getFont());
+        }});
 
         panUpper.add(panMedia, new GridBagConstraints() {{
             gridx = 1;
@@ -139,12 +155,18 @@ public class AlbumViewFrame extends JFrame {
 
         // Genre(s)
         JPanel panGenre = new JPanel(new GridLayout(2, 1));
-        panGenre.add(new JLabel("Genre:"));
-        if (pAlbum.getGenres() != null) {
+        panGenre.add(new JLabel("Genre:") {{
+            setFont(settings.getFont());
+        }});
+        if (pAlbum.getGenres() != null && !pAlbum.getGenres().equals("")) {
             String genre = String.join(", ", pAlbum.getGenres());
-            panGenre.add(new JLabel(genre));
+            panGenre.add(new JLabel(genre) {{
+                setFont(settings.getFont());
+            }});
         } else {
-            panGenre.add(new JLabel("Keine"));
+            panGenre.add(new JLabel("Keine") {{
+                setFont(settings.getFont());
+            }});
         }
         panUpper.add(panGenre, new GridBagConstraints() {{
             gridx = 1;
@@ -157,8 +179,12 @@ public class AlbumViewFrame extends JFrame {
 
         // Where bought?
         JPanel panFromWhere = new JPanel(new GridLayout(2, 1));
-        panFromWhere.add(new JLabel("Erhalten von/bei:"));
-        panFromWhere.add(new JLabel(pAlbum.getWhereBought()));
+        panFromWhere.add(new JLabel("Erhalten von/bei:") {{
+            setFont(settings.getFont());
+        }});
+        panFromWhere.add(new JLabel(pAlbum.getWhereBought()) {{
+            setFont(settings.getFont());
+        }});
         panUpper.add(panFromWhere, new GridBagConstraints() {{
             gridx = 1;
             gridy = 5;
@@ -170,11 +196,17 @@ public class AlbumViewFrame extends JFrame {
 
         // Last time listened
         JPanel panLastListen = new  JPanel(new GridLayout(2, 1));
-        panLastListen.add(new JLabel("Letztes Mal gehört:"));
+        panLastListen.add(new JLabel("Letztes Mal gehört:") {{
+            setFont(settings.getFont());
+        }});
         if (!pAlbum.getSessions().isEmpty()) {
-            panLastListen.add(new JLabel(pAlbum.getSessions().getLast().getDate() + ", " + pAlbum.getSessions().getLast().getTime() + " Uhr."));
+            panLastListen.add(new JLabel(pAlbum.getSessions().getLast().getDate() + ", " + pAlbum.getSessions().getLast().getTime() + " Uhr.") {{
+                setFont(settings.getFont());
+            }});
         } else {
-            panLastListen.add(new JLabel("Noch nicht gehört."));
+            panLastListen.add(new JLabel("Noch nicht gehört.") {{
+                setFont(settings.getFont());
+            }});
         }
         panUpper.add(panLastListen, new GridBagConstraints() {{
             gridx = 1;
@@ -200,7 +232,9 @@ public class AlbumViewFrame extends JFrame {
         c.gridx = 0;
         c.weightx = 0;
 
-        JLabel lNr = new JLabel("Nr.", SwingConstants.CENTER);
+        JLabel lNr = new JLabel("Nr.", SwingConstants.CENTER) {{
+            setFont(settings.getFont());
+        }};
         lNr.setPreferredSize(new Dimension(20, lNr.getPreferredSize().height));
         panTracks.add(lNr, c);
 
@@ -208,7 +242,9 @@ public class AlbumViewFrame extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1.0;
 
-        JLabel lName = new JLabel("Trackname", SwingConstants.CENTER);
+        JLabel lName = new JLabel("Trackname", SwingConstants.CENTER) {{
+            setFont(settings.getFont());
+        }};
         lNr.setPreferredSize(new Dimension(20, lName.getPreferredSize().height));
         panTracks.add(lName, c);
 
@@ -216,12 +252,14 @@ public class AlbumViewFrame extends JFrame {
         c.weightx = 0;
         c.fill = GridBagConstraints.NONE;
 
-        JLabel lListen = new JLabel("Gehört", SwingConstants.CENTER);
+        JLabel lListen = new JLabel("Gehört", SwingConstants.CENTER) {{
+            setFont(settings.getFont());
+        }};
         panTracks.add(lListen, c);
 
         // Add all tracks from album
         if (pAlbum.containsNulltrack()) latestIndex = 0;
-        for(int i = 0; i < pAlbum.getTrackList().size(); i++) {
+        for (int i = 0; i < pAlbum.getTrackList().size(); i++) {
             JPanel newRow = new JPanel(new GridBagLayout());
             if (i % 2 == 0 & settings.getRowContrast()) newRow.setBackground(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
 
@@ -230,7 +268,9 @@ public class AlbumViewFrame extends JFrame {
             gbcNewRow.weightx = 0;
 
             // Track number
-            JLabel newRowLabel = new JLabel(String.valueOf(latestIndex), SwingConstants.CENTER);
+            JLabel newRowLabel = new JLabel(String.valueOf(latestIndex), SwingConstants.CENTER) {{
+                setFont(settings.getFont());
+            }};
             newRowLabel.setPreferredSize(new Dimension(20, newRowLabel.getPreferredSize().height));
             gbcNewRow.gridx = 0;
             newRow.add(newRowLabel, gbcNewRow);
@@ -239,13 +279,17 @@ public class AlbumViewFrame extends JFrame {
             gbcNewRow.gridx = 1;
             gbcNewRow.fill = GridBagConstraints.HORIZONTAL;
             gbcNewRow.weightx = 1.0;
-            newRow.add(new JLabel(pAlbum.getTrackList().get(i).getTrackName(), SwingConstants.LEFT), gbcNewRow);
+            newRow.add(new JLabel(pAlbum.getTrackList().get(i).getTrackName(), SwingConstants.LEFT) {{
+                setFont(settings.getFont());
+            }}, gbcNewRow);
 
             // Listen counter
             gbcNewRow.gridx = 2;
             gbcNewRow.weightx = 0;
             gbcNewRow.fill = GridBagConstraints.NONE;
-            JLabel newRowListen = new JLabel(String.valueOf(pAlbum.getTrackList().get(i).getListenCount()), SwingConstants.CENTER);
+            JLabel newRowListen = new JLabel(String.valueOf(pAlbum.getTrackList().get(i).getListenCount()), SwingConstants.CENTER) {{
+                setFont(settings.getFont());
+            }};
             newRowListen.setPreferredSize(new Dimension(lListen.getPreferredSize().width, newRowListen.getPreferredSize().height));
             newRow.add(newRowListen, gbcNewRow);
 
@@ -306,7 +350,9 @@ public class AlbumViewFrame extends JFrame {
         JPanel panButtons = new JPanel();
         panButtons.setLayout(new GridBagLayout());
 
-        JButton bReturn = new JButton("Zurück");
+        JButton bReturn = new JButton("Zurück") {{
+            setFont(settings.getFont());
+        }};
         bReturn.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bReturn.addActionListener(_ -> {
             this.dispose();

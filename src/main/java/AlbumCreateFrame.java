@@ -50,6 +50,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // JButton where cover can be uploaded
         bCover = new JButton("Cover hinzufügen");
+        bCover.setFont(SETTINGS.getFont());
         bCover.setOpaque(true);
         bCover.setBackground(SETTINGS.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
         bCover.setForeground(new Color(150, 150, 150));
@@ -57,7 +58,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
         bCover.setPreferredSize(new Dimension(200, 200));
         bCover.setMinimumSize(new Dimension(200, 200));
         bCover.setMaximumSize(new Dimension(200, 200));
-        bCover.addActionListener(e -> {
+        bCover.addActionListener(_ -> {
             albumCover[0] = iconFromUpload(bCover.getWidth(), bCover.getHeight());
             if(albumCover[0] != null) {
                 bCover.setIcon(new ImageIcon(albumCover[0]));
@@ -69,7 +70,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
             gridy = 0;
             weightx = 0;
             weighty = 1.0;
-            gridheight = 8;
+            gridheight = 7;
             anchor = GridBagConstraints.CENTER;
             fill = GridBagConstraints.NONE;
         }});
@@ -77,6 +78,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Album name
         PlaceholderTextField tfName = new PlaceholderTextField("Name");
+        tfName.setFont(SETTINGS.getFont());
         panUpper.add(tfName, new GridBagConstraints() {{
             gridx = 1;
             gridy = 0;
@@ -88,6 +90,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Album artist
         PlaceholderTextField tfArtist = new PlaceholderTextField("Künstler");
+        tfArtist.setFont(SETTINGS.getFont());
         panUpper.add(tfArtist, new GridBagConstraints() {{
             gridx = 1;
             gridy = 1;
@@ -99,6 +102,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Release Year
         PlaceholderTextField tfRelease = new PlaceholderTextField("Erscheinungsjahr");
+        tfRelease.setFont(SETTINGS.getFont());
         panUpper.add(tfRelease, new GridBagConstraints() {{
             gridx = 1;
             gridy = 2;
@@ -110,9 +114,13 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Type of media
         JLabel lTypeOfMedia = new JLabel("Tonträger:");
+        lTypeOfMedia.setFont(SETTINGS.getFont());
         JCheckBox cbVinyl = new JCheckBox("Vinyl");
+        cbVinyl.setFont(SETTINGS.getFont());
         JCheckBox cbCd = new JCheckBox("CD");
+        cbCd.setFont(SETTINGS.getFont());
         JCheckBox cbCassette = new JCheckBox("Kassette");
+        cbCassette.setFont(SETTINGS.getFont());
 
         panUpper.add(lTypeOfMedia, new GridBagConstraints() {{
             gridx = 1;
@@ -152,6 +160,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Genre(s)
         PlaceholderTextField tfGenre = new PlaceholderTextField("Genres (Mit Komma trennen)");
+        tfGenre.setFont(SETTINGS.getFont());
         panUpper.add(tfGenre, new GridBagConstraints() {{
             gridx = 1;
             gridy = 7;
@@ -163,6 +172,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Where bought?
         PlaceholderTextField tfWhereBought = new PlaceholderTextField("Woher?");
+        tfWhereBought.setFont(SETTINGS.getFont());
         panUpper.add(tfWhereBought, new GridBagConstraints() {{
             gridx = 1;
             gridy = 8;
@@ -175,12 +185,14 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
         // Button to search for cover in web
         JButton bSearchForCover = new JButton("Nach Cover suchen");
         bSearchForCover.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
-        bSearchForCover.addActionListener(e -> {
+        bSearchForCover.setFont(SETTINGS.getFont());
+        bSearchForCover.addActionListener(_ -> {
             new WebCoverSearcher(this, tfName.getText(), tfArtist.getText()).start();
         });
         panUpper.add(bSearchForCover, new GridBagConstraints() {{
             gridx = 0;
-            gridy = 8;
+            gridy = 7;
+            gridheight = 2;
             weightx = 0.3;
             weighty = 0;
             insets = new Insets(5, 5, 0, 5);
@@ -197,6 +209,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // CheckBox for Nulltracks
         cbNulltrack = new JCheckBox("Beinhaltet Nulltrack"); // If checked, index will start at 0
+        cbNulltrack.setFont(SETTINGS.getFont());
         cbNulltrack.addActionListener(_ -> {
             if(cbNulltrack.isSelected()) {
                 for (TrackEntry llTrack : llTracks) {
@@ -228,17 +241,23 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
             weightx = 0;
             insets = new Insets(4, 8, 4, 8);
         }};
-        headRow.add(new JLabel("Nr.", SwingConstants.CENTER), gbcHeadRow); // Track number
+        headRow.add(new JLabel("Nr.", SwingConstants.CENTER) {{
+            setFont(SETTINGS.getFont());
+        }}, gbcHeadRow); // Track number
 
         gbcHeadRow.gridx = 1;
         gbcHeadRow.fill = GridBagConstraints.HORIZONTAL;
         gbcHeadRow.weightx = 1.0;
-        headRow.add(new JLabel("Trackname", SwingConstants.CENTER), gbcHeadRow); // Track name
+        headRow.add(new JLabel("Trackname", SwingConstants.CENTER) {{
+            setFont(SETTINGS.getFont());
+        }}, gbcHeadRow); // Track name
 
         gbcHeadRow.gridx = 2;
         gbcHeadRow.weightx = 0;
         gbcHeadRow.fill = GridBagConstraints.NONE;
-        lDelete = new JLabel("Löschen", SwingConstants.CENTER);
+        lDelete = new JLabel("Löschen", SwingConstants.CENTER) {{
+            setFont(SETTINGS.getFont());
+        }};
         headRow.add(lDelete, gbcHeadRow); // Delete button
 
         panTracks.add(headRow, new GridBagConstraints() {{
@@ -276,6 +295,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Button to search for track list
         JButton bSearchTracks = new JButton("Tracklist suchen");
+        bSearchTracks.setFont(SETTINGS.getFont());
         bSearchTracks.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bSearchTracks.addActionListener(_ -> {
             new WebTracklistSearcher(this, tfName.getText(), tfArtist.getText()).start();
@@ -289,6 +309,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
 
         // Button to add tracks at the bottom of main panel
         JButton bAddTrack = new JButton("+");
+        bAddTrack.setFont(SETTINGS.getFont());
         bAddTrack.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_ROUND_RECT);
         bAddTrack.addActionListener(_ -> {
             addTrackRow();
@@ -356,6 +377,7 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
                 String path = "media\\albumCovers\\" + tfArtist.getText().toLowerCase().replace(" ", "") + "_" + tfName.getText().toLowerCase().replace(" ", "") + ".png";
                 File outputFile = new File(path);
                 ImageIO.write(bImage, "png", outputFile);
+                Log.info("Saved album cover image to: \"" + path + "\".");
 
                 // Save album in control class
                 String[] genre = tfGenre.getText().replace(" ", "").split(",");
@@ -385,7 +407,9 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
      * Adds a new row to track list on frame.
      */
     private void addTrackRow() {
-        llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField()));
+        llTracks.addLast(new TrackEntry(latestIndex[0], new JTextField() {{
+            setFont(SETTINGS.getFont());
+        }}));
 
         JPanel newRow = new JPanel(new GridBagLayout());
         if (latestIndex[0] % 2 == 0 & SETTINGS.getRowContrast()) newRow.setBackground(SETTINGS.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200));
@@ -397,12 +421,14 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
         // Track number
         gbcNewRow.gridx = 0;
         if (cbNulltrack.isSelected()) llTracks.getLast().setIndex(llTracks.getLast().getIndex() - 1);
+        llTracks.getLast().getIndexLabel().setFont(SETTINGS.getFont());
         newRow.add(llTracks.getLast().getIndexLabel(), gbcNewRow);
 
         // Track name
         gbcNewRow.gridx = 1;
         gbcNewRow.fill = GridBagConstraints.HORIZONTAL;
         gbcNewRow.weightx = 1.0;
+        llTracks.getLast().getTextField().setFont(SETTINGS.getFont());
         newRow.add(llTracks.getLast().getTextField(), gbcNewRow);
         llTracks.getLast().getTextField().addKeyListener(new KeyListener() {
             final int idx = llTracks.getLast().getIndex();
@@ -449,6 +475,8 @@ public class AlbumCreateFrame extends JFrame implements IWebCoverSearcher, IWebT
             llTracks.getLast().getDeleteButton().setVisible(false);
             llTracks.removeLast();
             latestIndex[0]--;
+
+            Log.info("Deleted row.");
         });
 
         // Add row to tracks panel

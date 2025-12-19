@@ -43,20 +43,24 @@ class AlbumComponent extends JPanel {
         JPopupMenu popupMenu = new JPopupMenu();
 
         JMenuItem menuListen = new JMenuItem("Gehört");
+        menuListen.setFont(settings.getFont());
         JMenuItem menuView = new JMenuItem("Ansehen");
+        menuView.setFont(settings.getFont());
         JMenuItem menuEdit = new JMenuItem("Bearbeiten");
+        menuEdit.setFont(settings.getFont());
         JMenuItem menuDelete = new JMenuItem("Löschen");
+        menuDelete.setFont(settings.getFont());
 
-        menuListen.addActionListener(e -> {
+        menuListen.addActionListener(_ -> {
             new AddSessionFrame(pmt, album);
         });
-        menuView.addActionListener(e -> {
+        menuView.addActionListener(_ -> {
             new AlbumViewFrame(gui, pmt, album, settings);
         });
-        menuEdit.addActionListener(e -> {
+        menuEdit.addActionListener(_ -> {
             new AlbumEditFrame(gui, pmt, album, settings);
         });
-        menuDelete.addActionListener(e -> {
+        menuDelete.addActionListener(_ -> {
             int n = JOptionPane.showConfirmDialog(
                 null,
                 "Wirklich " + album.getAlbumName() + " löschen?",
@@ -98,7 +102,7 @@ class AlbumComponent extends JPanel {
             public void mouseExited(MouseEvent e) {
                 if (mouseListenerEnabled) {
                     AlbumComponent.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    AlbumComponent.this.setBorder(BorderFactory.createLineBorder(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200)));
+                    AlbumComponent.this.setBorder(BorderFactory.createLineBorder(settings.isDarkmode() ? new Color(75, 75, 75) : new Color(200, 200, 200), 2));
                 }
             }
         });
