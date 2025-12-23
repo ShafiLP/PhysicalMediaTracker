@@ -31,7 +31,7 @@ public class WebTracklistSearcher extends Thread {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(query))
-                .header("User-Agent", "PhysicalMediaTracker/0.2.6 ( https://github.com/ShafiLP )")
+                .header("User-Agent", "PhysicalMediaTracker/0.2.7 ( https://github.com/ShafiLP )")
                 .header("Accept", "application/json")
                 .build();
         HttpResponse<String> response = null;
